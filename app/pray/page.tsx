@@ -244,7 +244,7 @@ Please offer a prayer or reflection as ${avatar.label} in the ${path} tradition.
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative overflow-hidden text-gray-900">
       {/* Readability veil (keeps sunrise but makes text readable) */}
-      <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] pointer-events-none" />
+      <div className="absolute inset-0 bg-white/85 backdrop-blur-[1px] pointer-events-none" />
 
       {/* Background Rays (Standardized) */}
       <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${path === 'quiet' ? 'opacity-10' : 'opacity-40'}`}>
