@@ -1,50 +1,80 @@
-import React from 'react';
+'use client';
 
-const FooterLinkArray = () => {
-  const sections = [
-    {
-      title: "Spiritual",
-      links: ["Daily Prayer", "Meditation", "Scripture", "Traditions"]
-    },
-    {
-      title: "Community",
-      links: ["Prayer Requests", "Testimonies", "Circles", "Events"]
-    },
-    {
-      title: "Resources",
-      links: ["Library", "Guides", "Podcasts", "Videos"]
-    },
-    {
-      title: "About",
-      links: ["Our Mission", "Grace", "Privacy", "Contact"]
-    }
-  ];
+import Link from 'next/link';
 
+export default function FooterLinkArray() {
   return (
-    <footer className="w-full border-t border-white/10 bg-black/50 backdrop-blur-md py-12 px-6 mt-auto relative z-50">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-        {sections.map((section) => (
-          <div key={section.title}>
-            <h3 className="text-spiritual-gold font-semibold mb-4 uppercase tracking-wider text-[10px]">
-              {section.title}
-            </h3>
-            <ul className="space-y-2">
-              {section.links.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
-                    {link}
-                  </a>
-                </li>
-              ))}
+    <footer className="w-full bg-[#6b553b] relative overflow-hidden">
+
+      {/* Inner readability veil */}
+      <div className="absolute inset-0 bg-white/70 pointer-events-none" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+
+          {/* Spiritual */}
+          <div className="space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-950/80">
+              Spiritual
+            </div>
+            <ul className="space-y-2 text-[14px]">
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Daily Prayer</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Meditation</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Scripture</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Traditions</Link></li>
             </ul>
           </div>
-        ))}
-      </div>
-      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/5 text-center text-gray-500 text-[10px] uppercase tracking-widest">
-        &copy; {new Date().getFullYear()} PrayWithGod.ai • Holding Space for All
+
+          {/* Community */}
+          <div className="space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-950/80">
+              Community
+            </div>
+            <ul className="space-y-2 text-[14px]">
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Prayer Requests</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Testimonies</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Circles</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Events</Link></li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div className="space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-950/80">
+              Resources
+            </div>
+            <ul className="space-y-2 text-[14px]">
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Library</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Guides</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Podcasts</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Videos</Link></li>
+            </ul>
+          </div>
+
+          {/* About */}
+          <div className="space-y-4">
+            <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-950/80">
+              About
+            </div>
+            <ul className="space-y-2 text-[14px]">
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Our Mission</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Grace</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Privacy</Link></li>
+              <li><Link className="text-gray-950/70 hover:text-gray-950" href="#">Contact</Link></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-black/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="text-[12px] uppercase tracking-[0.25em] text-gray-950/60">
+            PrayWithGod.ai
+          </div>
+          <div className="text-[12px] text-gray-950/60">
+            © {new Date().getFullYear()} • Calm, respectful, non-coercive support.
+          </div>
+        </div>
       </div>
     </footer>
   );
-};
-
-export default FooterLinkArray;
+}
