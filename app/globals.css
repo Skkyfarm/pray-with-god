@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --glow-color: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  background: linear-gradient(to bottom, #a5b4fc 0%, #fbcfe8 30%, #fef3c7 60%, #fdba74 100%);
+  background-attachment: fixed;
+  color: #1a1a1a;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Crepuscular Rays Effect - Softened and pattern-free */
+.bg-rays {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: 
+    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.05) 55%, transparent 60%),
+    linear-gradient(245deg, transparent 40%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.05) 55%, transparent 60%);
+  background-size: 200% 200%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.4;
+}
+
+/* Glassmorphism - Refined for light background */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Float Animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glow Effect */
+.glow-soft {
+  filter: drop-shadow(0 0 15px var(--glow-color));
+}
+
+.glow-intense {
+  filter: drop-shadow(0 0 25px var(--glow-color));
+}
