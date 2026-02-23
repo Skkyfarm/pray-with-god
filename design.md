@@ -156,3 +156,187 @@ TraditionCards.tsx
 avatars.ts (Tradition and avatar definitions)
 /public
 Static assets (images, icons, etc.)
+_____________________________________________________________________________________________
+
+# PrayWithGod.ai — Design Spec (PWG Version 3)
+
+## Vision
+PrayWithGod.ai is a universal, compassionate prayer experience that helps people express need, gratitude, grief, hope, and transformation across multiple spiritual traditions.
+
+The experience centers on a welcoming guide (“Grace”) and tradition-specific guides who help shape prayer language respectfully.
+
+---
+
+## Core Prayer Paths
+
+### 1. Quick Prayer (Non-Denominational)
+- Guided by Grace
+- User shares situation
+- Prayer generated using structured templates + tone rules
+- Option:
+  - Pray with me (guided)
+  - Show prayer text
+
+### 2. Types of Prayers (Tradition-Specific)
+User selects a tradition and a prayer type.
+The system shapes language, structure, imagery, and tone accordingly.
+
+Supported traditions:
+- Grace (universal)
+- Catholic
+- Protestant
+- Jewish
+- Muslim
+- Hindu
+- Buddhist
+
+---
+
+## Formation Rules by Tradition
+
+### Grace (Universal)
+- Simple acknowledgment
+- Gentle prayer language
+- Hope line
+- Quiet release
+
+### Catholic
+- Invocation
+- Petition
+- Surrender to God’s will
+- Traditional closing tone
+
+### Protestant
+- Conversational pastoral voice
+- Scripture-flavored encouragement
+- Direct address to God
+
+### Jewish
+- Reflective naming (Source of Peace, Eternal One)
+- Wisdom framing
+- Hope rooted in continuity
+
+### Muslim
+- Mercy attributes of God
+- Trust language
+- Submission framing
+- Closing peace tone
+
+### Hindu
+- Poetic imagery
+- Devotion language (Bhakti)
+- Inner transformation theme
+- Sacred intention language
+
+### Buddhist
+- Present awareness
+- Compassion outward
+- Release of suffering
+- Minimal theistic language
+- Dedication of goodness to all beings
+
+---
+
+## Prayer Type Lists
+
+### Catholic
+Adoration  
+Confession  
+Thanksgiving  
+Supplication  
+The Lord’s Prayer  
+The Prayer of Jabez  
+The Serenity Prayer  
+The Prayer of St. Francis  
+The Prayer of Hannah  
+The Prayer of King Solomon  
+The Prayer of Mary  
+The Prayer of St. Augustine  
+The Prayer of St. Ignatius of Loyola  
+The Prayer of St. Therese of Lisieux  
+
+### Protestant
+Confessional  
+Thanksgiving  
+Intercessory  
+Petition  
+Adoration  
+Praise  
+Lament  
+Liturgical  
+Penitence  
+Meditative  
+
+### Jewish
+Shacharit  
+Mincha  
+Maariv  
+Kabbalat Shabbat  
+Mussaf  
+Hallel  
+Vidui  
+Selichot  
+Tehillim  
+Tashlich  
+Birkat Hamazon  
+Tefilat Haderech  
+
+### Muslim
+Fajr  
+Dhuhr  
+Asr  
+Maghrib  
+Isha  
+
+---
+
+## Hindu Prayer Types
+Gayatri / Sacred Mantra  
+Bhakti Devotional  
+Stuti (Praise)  
+Prarthana (Personal Request)  
+Shanti Path (Peace Prayer)  
+Sankalpa (Intention Setting)  
+Gratitude / Offering  
+Kshama Prarthana (Forgiveness)
+
+---
+
+## Buddhist Prayer / Reflection Types
+Metta (Loving Kindness)  
+Karuna (Compassion)  
+Mindfulness Reflection  
+Letting Go / Release  
+Forgiveness Reflection  
+Dedication of Merit  
+Refuge / Protection  
+Equanimity Practice  
+
+---
+
+## UX Principles
+- Calm, human, non-judgmental
+- Short readable prayers
+- Guided option always available
+- Respectful representation of traditions
+- No coercion
+- Gentle crisis guidance when needed
+
+---
+
+## Technical Direction (Current)
+- Next.js App Router
+- Tailwind
+- LocalStorage for profile + session
+- Template-based generation with future AI layer
+- GitHub + Vercel deployment
+
+---
+
+## Next Phase Focus
+- Scroll positioning fix (reading flow)
+- Finalize prayer generation engine
+- Avatar expansion for traditions
+- AI-assisted prayer refinement
+- Community evolution
+- 
