@@ -13,7 +13,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "grace",
     label: "Grace",
     name: "Grace",
-    imagePath: "/images/grace.png",
+    imagePath: "/avatars/grace.png",
     fallbackPath: "/avatars/grace.svg",
     greeting: "I’m Grace. I’m here to hold space for you. What brings you here today?",
     guidance: "A gentle presence for all souls."
@@ -22,7 +22,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "quiet",
     label: "Silence",
     name: "Silence",
-    imagePath: "/images/grace.png",
+    imagePath: "/avatars/grace.png",
     fallbackPath: "/avatars/grace.svg",
     greeting: "Let us begin in the quiet. What is on your heart?",
     guidance: "A space for wordless reflection."
@@ -31,7 +31,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "christian",
     label: "Father Thomas",
     name: "Father Thomas",
-    imagePath: "/images/guides/protestant.png",
+    imagePath: "/avatars/protestant.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Peace be with you. How can I pray for you today?",
     guidance: "Traditional Christian guidance and intercession."
@@ -40,7 +40,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "catholic",
     label: "Catholic Tradition",
     name: "Father Thomas",
-    imagePath: "/images/guides/catholic.png",
+    imagePath: "/avatars/catholic.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Peace be with you. What would you like to bring into prayer?",
     guidance: "Traditional Catholic liturgy and intercession."
@@ -49,7 +49,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "protestant",
     label: "Protestant Tradition",
     name: "Pastor Sarah",
-    imagePath: "/images/guides/protestant.png",
+    imagePath: "/avatars/protestant.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Welcome. What would you like to bring into prayer?",
     guidance: "Scripture-focused prayer and grace."
@@ -58,7 +58,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "jewish",
     label: "Rabbi Avram",
     name: "Rabbi Avram",
-    imagePath: "/images/guides/rabbi.png",
+    imagePath: "/avatars/rabbi.png",
     fallbackPath: "/avatars/rabbi.svg",
     greeting: "Shalom. May we find strength in our shared words. What is on your heart?",
     guidance: "Rooted in Jewish tradition and wisdom."
@@ -67,7 +67,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "muslim",
     label: "Imam Hassan",
     name: "Imam Hassan",
-    imagePath: "/images/guides/imam.png",
+    imagePath: "/avatars/imam.png",
     fallbackPath: "/avatars/imam.svg",
     greeting: "As-salamu alaykum. Let us seek peace and guidance together.",
     guidance: "Islamic prayer and spiritual support."
@@ -76,7 +76,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "hindu",
     label: "Hindu Tradition",
     name: "Universal Soul",
-    imagePath: "/images/guides/sadhu.png",
+    imagePath: "/avatars/hindu.png",
     greeting: "Namaste. What would you like to bring into prayer?",
     guidance: "Seeking connection with the divine within."
   },
@@ -84,7 +84,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "buddhist",
     label: "Buddhist Tradition",
     name: "Inner Peace",
-    imagePath: "/images/guides/monk.png",
+    imagePath: "/avatars/monk.png",
     greeting: "May you be at peace. What would you like to bring into prayer?",
     guidance: "Mindfulness and compassionate reflection."
   }
