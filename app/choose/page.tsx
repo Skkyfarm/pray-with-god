@@ -7,7 +7,7 @@ import { AVATARS } from '@/lib/avatars';
 export default function ChoosePage() {
   const traditions = [
     { name: 'Non-denominational', path: '/pray?path=grace', icon: <Heart className="w-5 h-5" />, subtitle: 'Grace', avatar: AVATARS.grace },
-    { name: 'Christian', path: '/choose/christian', icon: <Cross className="w-5 h-5" />, subtitle: 'Father Thomas', avatar: AVATARS.catholic },
+    { name: 'Christian', path: '/choose/christian', icon: <Cross className="w-5 h-5" />, subtitle: 'Father Thomas', avatar: AVATARS.minister },
     { name: 'Jewish', path: '/pray?path=jewish', icon: <Star className="w-5 h-5" />, subtitle: 'Rabbi Avram', avatar: AVATARS.jewish },
     { name: 'Muslim', path: '/pray?path=muslim', icon: <Moon className="w-5 h-5" />, subtitle: 'Imam Hassan', avatar: AVATARS.muslim },
     { name: 'Hindu', path: '/pray?path=hindu', icon: <Sun className="w-5 h-5" />, subtitle: 'Universal Soul', avatar: AVATARS.hindu },
