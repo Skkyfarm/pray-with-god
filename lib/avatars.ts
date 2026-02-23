@@ -31,7 +31,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "christian",
     label: "Father Thomas",
     name: "Father Thomas",
-    imagePath: "/avatars/protestant.png",
+    imagePath: "/avatars/minister.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Peace be with you. How can I pray for you today?",
     guidance: "Traditional Christian guidance and intercession."
