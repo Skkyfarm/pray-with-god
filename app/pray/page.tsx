@@ -242,7 +242,7 @@ Please offer a prayer or reflection as ${avatar.label} in the ${path} tradition.
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative overflow-hidden text-gray-900">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative overflow-hidden text-gray-950">
       {/* Readability veil (keeps sunrise but makes text readable) */}
       <div className="absolute inset-0 bg-white/85 backdrop-blur-[1px] pointer-events-none" />
 
