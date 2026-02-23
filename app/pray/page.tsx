@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Mic, Send, RotateCcw, Heart, Wind, Volume2, Square } from 'lucide-react';
 import GuideAvatar from '@/components/GuideAvatar';
@@ -12,7 +11,7 @@ import { GoogleGenAI } from "@google/genai";
 import { AVATARS, Tradition } from '@/lib/avatars';
 
 const FEELINGS = [
-  'anxious', 'grateful', 'lonely', 'overwhelmed', 
+  'anxious', 'grateful', 'lonely', 'overwhelmed',
   'hopeful', 'angry', 'seeking guidance', 'afraid'
 ];
 
@@ -29,24 +28,35 @@ function PrayerContent() {
   const [showDoorway, setShowDoorway] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const prayerRef = useRef<HTMLDivElement>(null);
+
+  // Anchor to scroll to (must be in normal flow for reliable scrollIntoView)
   const outputTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setUserName(localStorage.getItem('pwg_user_name'));
   }, []);
 
+  // Scroll to output top when reflecting starts (prevents footer-pegging)
+  useEffect(() => {
+    if (step === 'reflecting' && path !== 'quiet') {
+      const id = window.setTimeout(() => {
+        outputTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 0);
+      return () => window.clearTimeout(id);
+    }
+  }, [step, path]);
+
   // Scroll to prayer when it appears
   useEffect(() => {
     if (step === 'prayer' && prayerRef.current && path !== 'quiet') {
-      // Wait for layout update
       const handle = requestAnimationFrame(() => {
         if (prayerRef.current) {
           const rect = prayerRef.current.getBoundingClientRect();
-          // Only scroll if the prayer container is not already comfortably in view near the top
           if (rect.top < 0 || rect.top > 200) {
-            const targetY = window.scrollY + rect.top - 80; // 80px offset for header/breathing room
+            const targetY = window.scrollY + rect.top - 80;
             window.scrollTo({
               top: Math.max(0, targetY),
               behavior: 'smooth'
@@ -58,7 +68,7 @@ function PrayerContent() {
     }
   }, [step, path]);
 
-  // Scroll to output top when prayer is ready
+  // Scroll to output top when prayer is ready (guards against layout shift)
   useEffect(() => {
     if (prayer && step === 'prayer') {
       const handle = requestAnimationFrame(() => {
@@ -88,11 +98,11 @@ function PrayerContent() {
     if (step === 'reflecting') {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
+
       const generatePrayer = async () => {
         try {
-          // Lazy initialization of AI client
           const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || "" });
-          
+
           const toneInstructions: Record<string, string> = {
             grace: "simplest, universal language, deeply inclusive, avoiding religious jargon",
             catholic: "slightly traditional phrasing, respectful of liturgy, using terms like 'Lord' or 'Heavenly Father'",
@@ -103,26 +113,26 @@ function PrayerContent() {
             buddhist: "minimal present-focused language, focused on mindfulness, compassion, and equanimity"
           };
 
-          const systemInstruction = `You are a spiritual guide named ${avatar.label}. 
-          Your goal is to provide a calm, tradition-aware prayer or reflection that feels deeply human and personal, not like an AI.
-          ${userName ? `The person's name is ${userName}. Use it gently if it feels natural to the tradition.` : ""}
-          
-          Rules:
-          - Length: 4–7 sentences.
-          - Tone: ${toneInstructions[path] || "calm and universal"}.
-          - Structure:
-            1) Acknowledge the person gently and specifically.
-            2) Name the feeling or situation they shared with empathy.
-            3) Offer a prayer or reflection that addresses their specific words.
-            4) Provide a gentle hope-filled line for their journey ahead.
-            5) End with a quiet tradition-appropriate release (e.g., "Amen", "Shalom", "Peace be with you", "Namaste").
-          
-          Avoid generic AI phrases like "I understand you are feeling..." or "Here is a prayer for you...". 
-          Speak directly and soulfully. Do not use any markdown formatting. Just plain text.`;
+          const systemInstruction = `You are a spiritual guide named ${avatar.label}.
+Your goal is to provide a calm, tradition-aware prayer or reflection that feels deeply human and personal, not like an AI.
+${userName ? `The person's name is ${userName}. Use it gently if it feels natural to the tradition.` : ""}
 
-          const prompt = `The person is feeling: ${selectedFeelings.join(', ')}. 
-          They shared: "${input}". 
-          Please offer a prayer or reflection as ${avatar.label} in the ${path} tradition.`;
+Rules:
+- Length: 4–7 sentences.
+- Tone: ${toneInstructions[path] || "calm and universal"}.
+- Structure:
+  1) Acknowledge the person gently and specifically.
+  2) Name the feeling or situation they shared with empathy.
+  3) Offer a prayer or reflection that addresses their specific words.
+  4) Provide a gentle hope-filled line for their journey ahead.
+  5) End with a quiet tradition-appropriate release (e.g., "Amen", "Shalom", "Peace be with you", "Namaste").
+
+Avoid generic AI phrases like "I understand you are feeling..." or "Here is a prayer for you...".
+Speak directly and soulfully. Do not use any markdown formatting. Just plain text.`;
+
+          const prompt = `The person is feeling: ${selectedFeelings.join(', ')}.
+They shared: "${input}".
+Please offer a prayer or reflection as ${avatar.label} in the ${path} tradition.`;
 
           const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview",
@@ -149,14 +159,14 @@ function PrayerContent() {
 
       generatePrayer();
     }
-  }, [step, path, input, selectedFeelings, avatar.label]);
+  }, [step, path, input, selectedFeelings, avatar.label, userName]);
 
   // Handle post-prayer silence doorway
   useEffect(() => {
     if (step === 'prayer') {
       const timer = setTimeout(() => {
         setShowDoorway(true);
-      }, 15000); // 15 seconds of silence
+      }, 15000);
       return () => clearTimeout(timer);
     }
   }, [step]);
@@ -178,12 +188,12 @@ function PrayerContent() {
     if (!prayer) return;
 
     const utterance = new SpeechSynthesisUtterance(prayer);
-    utterance.rate = 0.9; // Slightly slower for a calmer tone
+    utterance.rate = 0.9;
     utterance.pitch = 1.0;
-    
+
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
-    
+
     setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   };
@@ -192,13 +202,11 @@ function PrayerContent() {
     e?.preventDefault();
     if (!input.trim() && selectedFeelings.length === 0) return;
     setStep('reflecting');
-    requestAnimationFrame(() => {
-      outputTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    // Scroll is handled by the useEffect watching `step === 'reflecting'`
   };
 
   const toggleFeeling = (feeling: string) => {
-    setSelectedFeelings(prev => 
+    setSelectedFeelings(prev =>
       prev.includes(feeling) ? prev.filter(f => f !== feeling) : [...prev, feeling]
     );
   };
@@ -236,7 +244,7 @@ function PrayerContent() {
       protestant: "Amen.",
       grace: "Peace."
     };
-    
+
     return `Divine Presence, we come before you in this sacred moment of connection. ${feelingContext} We lift up the words shared here: "${text.substring(0, 60)}${text.length > 60 ? '...' : ''}". May the light of ${name}'s guidance shine upon this path, bringing clarity where there is doubt and peace where there is unrest. Grant the strength to carry this intention forward with a heart that is open and a spirit that is renewed. Let the stillness of this space remain as a sanctuary throughout the day. ${closings[p] || "Amen."}`;
   };
 
@@ -262,10 +270,12 @@ function PrayerContent() {
       </div>
 
       <div className="max-w-2xl w-full relative z-10 min-h-[50vh]">
-        <div ref={outputTopRef} className="absolute -top-24" />
+        {/* In-flow anchor for stable scroll-to-output (invisible) */}
+        <div ref={outputTopRef} className="h-0 scroll-mt-24" />
+
         <AnimatePresence mode="wait">
           {step === 'input' && (
-            <motion.div 
+            <motion.div
               key="input"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -273,7 +283,7 @@ function PrayerContent() {
               className="space-y-12"
             >
               <div className="flex flex-col items-center text-center space-y-6">
-                <GuideAvatar 
+                <GuideAvatar
                   src={avatar.imagePath}
                   fallbackSrc={avatar.fallbackPath}
                   alt={avatar.label}
@@ -311,11 +321,10 @@ function PrayerContent() {
                       <button
                         key={f}
                         onClick={() => toggleFeeling(f)}
-                        className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest transition-all duration-300 border ${
-                          selectedFeelings.includes(f)
-                            ? 'bg-black/10 border-black/20 text-gray-900'
-                            : 'bg-black/5 border-black/5 text-gray-900/50 hover:border-black/20'
-                        }`}
+                        className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-widest transition-all duration-300 border ${selectedFeelings.includes(f)
+                          ? 'bg-black/10 border-black/20 text-gray-900'
+                          : 'bg-black/5 border-black/5 text-gray-900/50 hover:border-black/20'
+                          }`}
                       >
                         {f}
                       </button>
@@ -346,7 +355,7 @@ function PrayerContent() {
           )}
 
           {step === 'reflecting' && (
-            <motion.div 
+            <motion.div
               key="reflecting"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -354,10 +363,10 @@ function PrayerContent() {
               className="flex flex-col items-center text-center space-y-12 py-20"
             >
               <motion.div
-                animate={{ 
+                animate={{
                   opacity: [0.3, 0.6, 0.3],
                 }}
-                transition={{ 
+                transition={{
                   duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut"
@@ -382,7 +391,7 @@ function PrayerContent() {
           )}
 
           {step === 'silence' && (
-            <motion.div 
+            <motion.div
               key="silence"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -390,7 +399,7 @@ function PrayerContent() {
               className="flex flex-col items-center text-center space-y-12"
             >
               <div className="space-y-6 opacity-40 transition-opacity duration-1000 hover:opacity-100">
-                <GuideAvatar 
+                <GuideAvatar
                   src={AVATARS.grace.imagePath}
                   fallbackSrc={AVATARS.grace.fallbackPath}
                   alt="Grace"
@@ -414,7 +423,7 @@ function PrayerContent() {
           )}
 
           {step === 'prayer' && (
-            <motion.div 
+            <motion.div
               key="prayer"
               ref={prayerRef}
               initial={{ opacity: 0 }}
@@ -433,7 +442,7 @@ function PrayerContent() {
                     <p className="text-xl md:text-2xl font-serif italic text-gray-900 leading-relaxed">
                       {prayer}
                     </p>
-                    
+
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -472,7 +481,7 @@ function PrayerContent() {
 
               <AnimatePresence>
                 {showDoorway && (
-                  <motion.div 
+                  <motion.div
                     key="doorway"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -481,21 +490,21 @@ function PrayerContent() {
                   >
                     <p className="text-xs uppercase tracking-[0.3em] text-gray-900/40">Would you like to share more?</p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                      <button 
+                      <button
                         onClick={handleShareMore}
                         className="text-[10px] uppercase tracking-widest text-gray-900/60 hover:text-gray-900 transition-colors flex items-center gap-2"
                       >
                         <Heart className="w-3 h-3" />
                         Share more
                       </button>
-                      <button 
+                      <button
                         onClick={handleSitQuietly}
                         className="text-[10px] uppercase tracking-widest text-gray-900/60 hover:text-gray-900 transition-colors flex items-center gap-2"
                       >
                         <Wind className="w-3 h-3" />
                         Sit quietly
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           if (path === 'grace') {
                             handleShareMore();
