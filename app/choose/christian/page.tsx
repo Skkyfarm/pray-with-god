@@ -1,7 +1,23 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronLeft, RotateCcw } from 'lucide-react';
+
+function AvatarThumb({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-black/10 border border-black/10 shadow-sm">
+      <Image
+        src={src}
+        alt={alt}
+        width={160}
+        height={160}
+        className="w-full h-full object-cover"
+        priority
+      />
+    </div>
+  );
+}
 
 export default function ChooseChristianPage() {
   return (
@@ -13,13 +29,21 @@ export default function ChooseChristianPage() {
       <div className="absolute inset-0 bg-white/55 backdrop-blur-[1px]" />
 
       {/* Top nav */}
-      <div className="absolute top-8 left-8 z-20">
+      <div className="absolute top-8 left-8 z-20 flex items-center gap-8">
         <Link
           href="/choose"
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
         >
           <ChevronLeft className="w-3 h-3" />
           Back
+        </Link>
+
+        <Link
+          href="/pray?path=grace"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
+        >
+          <RotateCcw className="w-3 h-3" />
+          Return to Grace
         </Link>
       </div>
 
@@ -41,11 +65,7 @@ export default function ChooseChristianPage() {
               className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
             >
               <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
-                <div className="w-16 h-16 rounded-2xl bg-black/10 border border-black/10 flex items-center justify-center">
-                  <span className="text-[10px] uppercase tracking-widest text-gray-950/60">
-                    Priest
-                  </span>
-                </div>
+                <AvatarThumb src="/avatars/priest.png" alt="Priest avatar" />
 
                 <div className="space-y-2">
                   <div className="text-2xl font-serif italic text-gray-950">
@@ -55,6 +75,10 @@ export default function ChooseChristianPage() {
                     Traditional • Liturgy
                   </div>
                 </div>
+
+                <div className="text-[12px] text-gray-950/65 max-w-sm">
+                  A prayer voice with gentle tradition, reverence, and surrender to God’s will.
+                </div>
               </div>
             </Link>
 
@@ -63,11 +87,7 @@ export default function ChooseChristianPage() {
               className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
             >
               <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
-                <div className="w-16 h-16 rounded-2xl bg-black/10 border border-black/10 flex items-center justify-center">
-                  <span className="text-[10px] uppercase tracking-widest text-gray-950/60">
-                    Minister
-                  </span>
-                </div>
+                <AvatarThumb src="/avatars/minister.png" alt="Minister avatar" />
 
                 <div className="space-y-2">
                   <div className="text-2xl font-serif italic text-gray-950">
@@ -77,6 +97,10 @@ export default function ChooseChristianPage() {
                     Scripture • Grace
                   </div>
                 </div>
+
+                <div className="text-[12px] text-gray-950/65 max-w-sm">
+                  A warm pastoral prayer voice — direct, encouraging, grounded in grace.
+                </div>
               </div>
             </Link>
           </div>
@@ -84,11 +108,11 @@ export default function ChooseChristianPage() {
           {/* Bottom helper link */}
           <div className="pt-10">
             <Link
-              href="/pray?path=grace"
+              href="/choose"
               className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gray-950/55 hover:text-gray-950 transition-colors"
             >
-              <RotateCcw className="w-3 h-3" />
-              Return to Grace
+              <ChevronLeft className="w-3 h-3" />
+              Back to traditions
             </Link>
           </div>
         </div>
