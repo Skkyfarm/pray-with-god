@@ -33,7 +33,7 @@ export default function Home() {
   };
 
   const traditions = [
-    { name: 'Christian', path: '/choose/christian', icon: <Cross className="w-5 h-5" />, avatar: AVATARS.priest },
+    { name: 'Christian', path: '/choose/christian', icon: <Cross className="w-5 h-5" />, avatar: AVATARS.catholic },
     { name: 'Jewish', path: '/pray?path=jewish', icon: <Star className="w-5 h-5" />, avatar: AVATARS.jewish },
     { name: 'Muslim', path: '/pray?path=muslim', icon: <Moon className="w-5 h-5" />, avatar: AVATARS.muslim },
     { name: 'Hindu', path: '/pray?path=hindu', icon: <Sun className="w-5 h-5" />, avatar: AVATARS.hindu },
