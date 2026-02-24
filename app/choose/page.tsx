@@ -1,70 +1,106 @@
-import React from 'react';
-import Link from 'next/link';
-import { ChevronLeft, Heart, Cross, Star, Moon, Sun, Flower2 } from 'lucide-react';
-import GuideAvatar from '@/components/GuideAvatar';
-import { AVATARS } from '@/lib/avatars';
+'use client';
 
-export default function ChoosePage() {
-  const traditions = [
-    { name: 'Non-denominational', path: '/pray?path=grace', icon: <Heart className="w-5 h-5" />, subtitle: 'Grace', avatar: AVATARS.grace },
-    { name: 'Christian', path: '/choose/christian', icon: <Cross className="w-5 h-5" />, subtitle: 'Father Thomas', avatar: AVATARS.protestant },
-    { name: 'Jewish', path: '/pray?path=jewish', icon: <Star className="w-5 h-5" />, subtitle: 'Rabbi Avram', avatar: AVATARS.jewish },
-    { name: 'Muslim', path: '/pray?path=muslim', icon: <Moon className="w-5 h-5" />, subtitle: 'Imam Hassan', avatar: AVATARS.muslim },
-    { name: 'Hindu', path: '/pray?path=hindu', icon: <Sun className="w-5 h-5" />, subtitle: 'Universal Soul', avatar: AVATARS.hindu },
-    { name: 'Buddhist', path: '/pray?path=buddhist', icon: <Flower2 className="w-5 h-5" />, subtitle: 'Inner Peace', avatar: AVATARS.buddhist },
-  ];
+import Link from 'next/link';
+import Image from 'next/image';
+import { useMemo } from 'react';
+import { ChevronLeft } from 'lucide-react';
+import { AVATARS, Tradition } from '@/lib/avatars';
+
+type TraditionCard = {
+  name: string;
+  href: string;
+  // IMPORTANT: this must be a valid key in AVATARS
+  avatarKey: Tradition;
+};
+
+function AvatarCircle({ src, alt }: { src?: string; alt: string }) {
+  if (!src) {
+    return (
+      <div className="w-16 h-16 rounded-2xl bg-black/10 border border-black/10 flex items-center justify-center text-gray-900/70 text-xs uppercase tracking-widest">
+        {alt.slice(0, 2)}
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-20 relative overflow-hidden text-gray-900">
-      {/* Background Rays (Standardized) */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-full bg-gradient-to-b from-blue-400/10 via-transparent to-transparent blur-[120px]" />
-      </div>
+    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-black/10 border border-black/10 shadow-sm">
+      <Image
+        src={src}
+        alt={alt}
+        width={128}
+        height={128}
+        className="w-full h-full object-cover"
+        priority
+      />
+    </div>
+  );
+}
 
-      {/* Top Left Back Link */}
-      <div className="absolute top-8 left-8">
-        <Link 
-          href="/" 
-          className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-900/40 hover:text-gray-900 transition-colors"
-        >
-          <ChevronLeft className="w-3 h-3" />
-          Back to Home
-        </Link>
-      </div>
+export default function ChoosePage() {
+  const traditions: TraditionCard[] = useMemo(
+    () => [
+      { name: 'Christian', href: '/choose/christian', avatarKey: 'catholic' }, // preview image = priest
+      { name: 'Jewish', href: '/pray?path=jewish', avatarKey: 'jewish' },
+      { name: 'Muslim', href: '/pray?path=muslim', avatarKey: 'muslim' },
+      { name: 'Hindu', href: '/pray?path=hindu', avatarKey: 'hindu' },
+      { name: 'Buddhist', href: '/pray?path=buddhist', avatarKey: 'buddhist' },
+      { name: 'Grace (Universal)', href: '/pray?path=grace', avatarKey: 'grace' },
+    ],
+    []
+  );
 
-      <div className="max-w-5xl w-full flex flex-col items-center text-center relative z-10">
-        <h1 className="text-3xl font-serif italic text-gray-900 mb-4">Choose a tradition</h1>
-        <p className="text-xs text-gray-900/40 uppercase tracking-widest mb-12">
-          You can return to Grace anytime.
-        </p>
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Sunrise background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-indigo-200 via-pink-200 to-amber-200" />
+      {/* Readability veil */}
+      <div className="absolute inset-0 bg-white/55 backdrop-blur-[1px]" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {traditions.map((t) => (
-            <Link key={t.name} href={t.path} className="group">
-              <div className="glass-panel p-10 rounded-2xl border-black/5 hover:border-black/10 transition-all duration-500 flex flex-col items-center">
-                <div className="w-20 h-20 mb-6">
-                  <GuideAvatar 
-                    src={t.avatar.imagePath}
-                    fallbackSrc={t.avatar.fallbackPath}
-                    alt={t.name}
-                    className="w-full h-full opacity-60 group-hover:opacity-100 transition-opacity"
-                  />
-                </div>
-                <h2 className="text-xl font-serif italic text-gray-900 mb-2">{t.name}</h2>
-                <p className="text-[10px] text-gray-900/30 uppercase tracking-widest">{t.subtitle}</p>
-              </div>
+      <div className="relative z-10 min-h-screen px-6 py-20 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
+            >
+              <ChevronLeft className="w-3 h-3" />
+              Back to Home
             </Link>
-          ))}
-        </div>
+          </div>
 
-        {/* Bottom Return to Grace Link */}
-        <div className="mt-16">
-          <Link 
-            href="/pray?path=grace" 
-            className="text-[10px] uppercase tracking-[0.3em] text-gray-900/20 hover:text-gray-900/60 transition-colors"
-          >
-            Return to Grace
-          </Link>
+          <div className="text-center pt-10 pb-10 space-y-3">
+            <h1 className="text-3xl md:text-4xl font-serif italic text-gray-950">
+              Choose a tradition
+            </h1>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-gray-950/60">
+              Choose a path. You can change this anytime.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {traditions.map((t) => {
+              const avatar = AVATARS[t.avatarKey]; // always safe because avatarKey is typed as Tradition
+              return (
+                <Link
+                  key={t.name}
+                  href={t.href}
+                  className="rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
+                >
+                  <div className="p-8 flex flex-col items-center text-center gap-4">
+                    <AvatarCircle src={avatar?.imagePath} alt={t.name} />
+                    <div className="text-xl font-serif italic text-gray-950">
+                      {t.name}
+                    </div>
+                    <div className="text-[12px] text-gray-950/65">
+                      {t.name === 'Christian'
+                        ? 'Choose Catholic or Protestant.'
+                        : 'Enter prayer and receive a tradition-aware reflection.'}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
