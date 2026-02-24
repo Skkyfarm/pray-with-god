@@ -84,7 +84,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "buddhist",
     label: "Buddhist Tradition",
     name: "Inner Peace",
-    imagePath: "/avatars/monk.png",
+    imagePath: "/avatars/buddhist.png",
     greeting: "May you be at peace. What would you like to bring into prayer?",
     guidance: "Mindfulness and compassionate reflection."
   }
