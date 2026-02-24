@@ -5,7 +5,6 @@ import GuideAvatar from '@/components/GuideAvatar';
 import NameCapture from '@/components/NameCapture';
 import { AVATARS } from '@/lib/avatars';
 import { Compass, Heart, Wind, Cross, Star, Moon, Sun, Flower2 } from 'lucide-react';
-import { buildStructureInstruction } from '@/lib/prayerStructure';
 
 export default function Home() {
   const [userName, setUserName] = useState<string | null>(null);
