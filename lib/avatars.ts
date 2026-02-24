@@ -40,7 +40,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
     id: "catholic",
     label: "Catholic Tradition",
     name: "Father Thomas",
-    imagePath: "/avatars/catholic.png",
+    imagePath: "/avatars/priest.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Peace be with you. What would you like to bring into prayer?",
     guidance: "Traditional Catholic liturgy and intercession."
@@ -48,8 +48,8 @@ export const AVATARS: Record<string, AvatarMetadata> = {
   protestant: {
     id: "protestant",
     label: "Protestant Tradition",
-    name: "Pastor Sarah",
-    imagePath: "/avatars/protestant.png",
+    name: "Pastor Bonner",
+    imagePath: "/avatars/minister.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Welcome. What would you like to bring into prayer?",
     guidance: "Scripture-focused prayer and grace."
