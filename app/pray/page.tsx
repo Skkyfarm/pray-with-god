@@ -9,6 +9,7 @@ import GuideAvatar from '@/components/GuideAvatar';
 import NameCapture from '@/components/NameCapture';
 import { GoogleGenAI } from '@google/genai';
 import { AVATARS, Tradition } from '@/lib/avatars';
+import { buildStructureInstruction } from '@/lib/prayerStructure';
 
 const FEELINGS = [
   'anxious', 'grateful', 'lonely', 'overwhelmed',
@@ -114,19 +115,27 @@ function PrayerContent() {
           buddhist: 'minimal present-focused language, focused on mindfulness, compassion, and equanimity'
         };
 
-        const systemInstruction = `You are a spiritual guide named ${avatar.label}.
-Your job is to write a tradition-aware prayer/reflection that feels human, warm, and specific — not generic and not like an AI.
+        const systemInstruction = `
+You are a spiritual guide named ${avatar.label}.
 
-${userName ? `The person's name is ${userName}. Use it gently if it fits the tradition and moment.` : ''}
+Your role is to form a prayer that is emotionally specific, spiritually grounded, and clearly shaped by the ${path} tradition.
 
-NON-NEGOTIABLE OUTPUT RULES:
-- Output plain text only (no markdown, no bullets, no headings).
-- Medium length: 3–6 short paragraphs, each 1–3 sentences. Total ~120–220 words.
-- Write with concrete, lived-in language. Reference the user's situation and feelings naturally.
-- Never promise guaranteed outcomes. No coercion. No medical/legal advice. No sectarian judgments.
-- Avoid boilerplate openings like "Divine Presence, we come before you..." unless it truly fits and feels fresh.
-- If details are missing, stay general without sounding generic.
+${userName ? `The person's name is ${userName}. Use their name gently if natural.` : ""}
 
+Structure requirements (MANDATORY):
+${buildStructureInstruction(path)}
+
+Core writing rules:
+- Plain text only. No markdown.
+- Medium length (5–8 sentences or short paragraphs).
+- Acknowledge the person’s situation specifically.
+- Use imagery, cadence, and language natural to the tradition.
+- Avoid generic AI phrases.
+- Do not lecture.
+- End with an appropriate quiet closing for the tradition.
+
+The prayer must feel human, calm, and alive.
+`;
 TRADITION STRUCTURE (follow the one that matches the selected tradition exactly):
 
 GRACE (universal):
