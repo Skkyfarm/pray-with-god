@@ -204,7 +204,7 @@ User wrote: "${input}"
 Write the prayer/reflection in the selected tradition. Make it specific to the user's words and feelings.`;
 
         const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
+          model: 'gemini-2.0-flash',
           contents: prompt,
           config: {
             systemInstruction,
