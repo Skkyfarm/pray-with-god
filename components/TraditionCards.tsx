@@ -24,8 +24,8 @@ const TraditionCards: React.FC<TraditionCardsProps> = ({ selected, onSelect }) =
           onClick={() => onSelect(t.id)}
           className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-300 ${
             selected === t.id
-              ? 'bg-white/10 border-spiritual-gold text-white shadow-[0_0_15px_rgba(212,175,55,0.2)]'
-              : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:border-white/20'
+              ? 'bg-white/10 border-spiritual-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.2)]'
+              : 'bg-white/5 border-white/10 text-black/60 hover:bg-white/10 hover:border-white/20'
           }`}
         >
           <div className={`mb-2 ${selected === t.id ? 'text-spiritual-gold' : ''}`}>

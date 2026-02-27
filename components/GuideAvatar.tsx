@@ -40,7 +40,7 @@ export default function GuideAvatar({ src, fallbackSrc, alt, className = "" }: G
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-white/10">
+          <div className="flex flex-col items-center justify-center h-full text-black/20">
             <User className="w-1/2 h-1/2" />
           </div>
         )}

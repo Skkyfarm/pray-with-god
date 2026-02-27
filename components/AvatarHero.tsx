@@ -19,7 +19,7 @@ const AvatarHero: React.FC<AvatarHeroProps> = ({ avatar, size = 'lg' }) => {
         <div className={`${sizeClasses} rounded-full overflow-hidden border border-white/10 relative z-10 glass-panel flex items-center justify-center`}>
            {/* Placeholder UI since local assets aren't uploaded yet */}
            <div className="w-full h-full bg-gradient-to-b from-gray-900 to-black flex items-center justify-center">
-             <div className="text-white/10 text-6xl font-serif italic select-none">
+             <div className="text-black/10 text-6xl font-serif italic select-none">
                {avatar.name[0]}
              </div>
            </div>
@@ -35,7 +35,7 @@ const AvatarHero: React.FC<AvatarHeroProps> = ({ avatar, size = 'lg' }) => {
           {avatar.label}
         </h2>
         <div className="h-px w-12 bg-spiritual-gold/30 mx-auto my-2" />
-        <p className="text-[10px] text-white/40 uppercase tracking-[0.3em]">
+        <p className="text-[10px] text-black/60 uppercase tracking-[0.3em]">
           {avatar.guidance}
         </p>
       </div>
