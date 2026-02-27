@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col text-white antialiased`}>
+      <body className={`${inter.className} min-h-screen flex flex-col text-black antialiased`}>
         <div className="bg-rays" />
         <main className="flex-grow relative z-10">
           {children}
