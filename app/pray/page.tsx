@@ -7,9 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Mic, Send, RotateCcw, Heart, Wind, Volume2, Square } from 'lucide-react';
 import GuideAvatar from '@/components/GuideAvatar';
 import NameCapture from '@/components/NameCapture';
-import { GoogleGenAI } from '@google/genai';
 import { AVATARS, Tradition } from '@/lib/avatars';
-import { buildStructureInstruction } from '@/lib/prayerStructure';
 
 const FEELINGS = [
   'anxious',
@@ -19,8 +17,10 @@ const FEELINGS = [
   'hopeful',
   'angry',
   'seeking guidance',
-  'afraid'
+  'afraid',
 ];
+
+type Step = 'input' | 'reflecting' | 'prayer' | 'silence';
 
 function PrayerContent() {
   const searchParams = useSearchParams();
@@ -31,14 +31,8 @@ function PrayerContent() {
 
   const [input, setInput] = useState('');
   const [selectedFeelings, setSelectedFeelings] = useState<string[]>([]);
-  const [step, setStep] = useState<'input' | 'reflecting' | 'prayer' | 'silence'>('input');
+  const [step, setStep] = useState<Step>('input');
   const [prayer, setPrayer] = useState('');
-
-  // Guided pacing mode (line-by-line)
-  const [viewMode, setViewMode] = useState<'full' | 'guided'>('full');
-  const [guidedLines, setGuidedLines] = useState<string[]>([]);
-  const [guidedIndex, setGuidedIndex] = useState(0);
-
   const [showDoorway, setShowDoorway] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
@@ -48,49 +42,6 @@ function PrayerContent() {
 
   // In-flow anchor (stable scroll target)
   const outputTopRef = useRef<HTMLDivElement>(null);
-
-  const splitPrayerIntoLines = (text: string) => {
-    const clean = (text || '')
-      .replace(/\r\n/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
-
-    if (!clean) return [];
-
-    // Prefer paragraph splits if present
-    const paras = clean
-      .split(/\n\s*\n/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    if (paras.length >= 3) return paras.slice(0, 10);
-
-    // Otherwise split into sentences and re-wrap into “breathable” lines
-    const sentences = clean
-      .split(/(?<=[.!?])\s+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    const lines: string[] = [];
-    let buf = '';
-    const maxLen = 140;
-
-    for (const s of sentences) {
-      if (!buf) {
-        buf = s;
-        continue;
-      }
-      if ((buf + ' ' + s).length <= maxLen) {
-        buf = buf + ' ' + s;
-      } else {
-        lines.push(buf);
-        buf = s;
-      }
-    }
-    if (buf) lines.push(buf);
-
-    return lines.slice(0, 10);
-  };
 
   useEffect(() => {
     setUserName(localStorage.getItem('pwg_user_name'));
@@ -138,21 +89,15 @@ function PrayerContent() {
     } else {
       setStep('input');
     }
-
     setInput('');
     setSelectedFeelings([]);
     setPrayer('');
     setShowDoorway(false);
-
-    setViewMode('full');
-    setGuidedLines([]);
-    setGuidedIndex(0);
-
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
   }, [path]);
 
-  // Prayer generation when reflecting
+  // Prayer generation when reflecting (SERVER API)
   useEffect(() => {
     if (step !== 'reflecting') return;
 
@@ -161,79 +106,33 @@ function PrayerContent() {
 
     const generatePrayer = async () => {
       try {
-        const ai = new GoogleGenAI({
-          apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || ''
+        const res = await fetch('/api/pray', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tradition: path,
+            avatarLabel: avatar.label,
+            userName,
+            feelings: selectedFeelings,
+            input,
+          }),
         });
 
-        // Keep this mapping (harmless + useful for future tuning)
-        const toneInstructions: Record<string, string> = {
-          grace: 'simplest, universal language, deeply inclusive, avoiding religious jargon',
-          catholic: "slightly traditional phrasing, respectful of liturgy, using terms like 'Lord' or 'Heavenly Father'",
-          protestant: 'pastoral conversational tone, focused on grace and personal relationship',
-          jewish: "reflective wisdom tone, grounded in tradition, using terms like 'Hashem' or 'Eternal One'",
-          muslim: "grounded trust language, focused on submission and mercy, using terms like 'Allah' or 'Most Merciful'",
-          hindu: 'gentle poetic imagery, focused on the divine within and universal connection',
-          buddhist: 'minimal present-focused language, focused on mindfulness, compassion, and equanimity'
-        };
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data?.error || 'Prayer API error');
+        }
 
-        const systemInstruction = `You are a spiritual guide named ${avatar.label}.
+        const data = await res.json().catch(() => ({}));
+        const text = String(data?.prayer || '').trim();
 
-Your role is to form a prayer that is emotionally specific, spiritually grounded, and clearly shaped by the ${path} tradition.
-${userName ? `The person's name is ${userName}. Use their name gently if natural.` : ''}
-
-Structure requirements (MANDATORY):
-${buildStructureInstruction(path)}
-
-Core writing rules:
-- Plain text only. No markdown.
-- Medium length (5–8 sentences or short paragraphs).
-- Acknowledge the person’s situation specifically.
-- Use imagery, cadence, and language natural to the tradition.
-- Avoid generic AI phrases.
-- Do not lecture.
-- End with an appropriate quiet closing for the tradition.
-
-Tone hint (optional):
-${toneInstructions[path] || 'calm and universal'}
-
-The prayer must feel human, calm, and alive.`;
-
-        const prompt = `User feelings: ${selectedFeelings.join(', ') || '(not specified)'}
-User wrote: "${input}"
-
-Write the prayer/reflection in the selected tradition. Make it specific to the user's words and feelings.`;
-
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.0-flash',
-          contents: prompt,
-          config: {
-            systemInstruction,
-            temperature: 0.85
-          }
-        });
-
-        const text = response.text?.trim();
-        if (!text) throw new Error('Empty response from AI');
+        if (!text) throw new Error('Empty prayer returned from API');
 
         setPrayer(text);
-
-        const lines = splitPrayerIntoLines(text);
-        setGuidedLines(lines.length ? lines : [text]);
-        setGuidedIndex(0);
-        setViewMode('full');
-
         setStep('prayer');
       } catch (error) {
         console.error('Prayer generation failed:', error);
-
-        const fb = generateFallbackPrayer(path, input, selectedFeelings);
-        setPrayer(fb);
-
-        const lines = splitPrayerIntoLines(fb);
-        setGuidedLines(lines.length ? lines : [fb]);
-        setGuidedIndex(0);
-        setViewMode('full');
-
+        setPrayer(generateFallbackPrayer(path, input, selectedFeelings));
         setStep('prayer');
       }
     };
@@ -262,13 +161,9 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
       setIsSpeaking(false);
       return;
     }
+    if (!prayer) return;
 
-    const textToSpeak =
-      viewMode === 'guided' ? (guidedLines[guidedIndex] || prayer) : prayer;
-
-    if (!textToSpeak) return;
-
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    const utterance = new SpeechSynthesisUtterance(prayer);
     utterance.rate = 0.9;
     utterance.pitch = 1.0;
     utterance.onend = () => setIsSpeaking(false);
@@ -281,7 +176,7 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() && selectedFeelings.length === 0) return;
-    setStep('reflecting'); // scrolling handled by effect
+    setStep('reflecting');
   };
 
   const toggleFeeling = (feeling: string) => {
@@ -293,15 +188,9 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
   const handleShareMore = () => {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
-
     setStep('input');
     setPrayer('');
     setShowDoorway(false);
-
-    setViewMode('full');
-    setGuidedLines([]);
-    setGuidedIndex(0);
-
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
@@ -318,9 +207,9 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
   };
 
   const generateFallbackPrayer = (p: string, text: string, feelings: string[]) => {
-    const name = AVATARS[p]?.label || 'Grace';
     const feelingContext =
       feelings.length > 0 ? `We acknowledge the ${feelings.join(' and ')} within.` : '';
+
     const closings: Record<string, string> = {
       jewish: 'Shalom.',
       muslim: 'Peace be with you.',
@@ -328,10 +217,16 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
       buddhist: 'May you be at peace.',
       catholic: 'Amen.',
       protestant: 'Amen.',
-      grace: 'Peace.'
+      grace: 'Peace.',
     };
 
-    return `Divine Presence, we come before you in this sacred moment of connection. ${feelingContext} We lift up the words shared here: "${text.substring(0, 60)}${text.length > 60 ? '...' : ''}". May the light of ${name}'s guidance shine upon this path, bringing clarity where there is doubt and peace where there is unrest. Grant the strength to carry this intention forward with a heart that is open and a spirit that is renewed. Let the stillness of this space remain as a sanctuary throughout the day. ${closings[p] || 'Amen.'}`;
+    const snippet = text ? `${text.substring(0, 120)}${text.length > 120 ? '…' : ''}` : '';
+
+    return `Divine Presence, we come before you in this sacred moment of connection. ${feelingContext} ${
+      snippet ? `We lift up the words shared here: "${snippet}".` : ''
+    } May comfort and clarity meet this moment, and may strength rise gently for the next step. Let peace settle where there is fear, and steadiness return where there is strain. ${
+      closings[p] || 'Peace.'
+    }`;
   };
 
   return (
@@ -389,9 +284,7 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                   className="w-24 h-24 animate-float"
                 />
                 <div className="space-y-2">
-                  <h1 className="text-xl font-serif italic text-gray-900/80">
-                    {avatar.label}
-                  </h1>
+                  <h1 className="text-xl font-serif italic text-gray-900/80">{avatar.label}</h1>
                   <p className="text-2xl md:text-3xl font-serif text-gray-900">
                     {userName ? (
                       <>
@@ -452,7 +345,6 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                     Speak instead (Coming soon)
                   </button>
 
-                  {/* Keep Form Prayer button dark with white text */}
                   <button
                     onClick={handleSubmit}
                     disabled={!input.trim() && selectedFeelings.length === 0}
@@ -512,9 +404,7 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                   alt="Grace"
                   className="w-24 h-24 grayscale opacity-70"
                 />
-                <p className="text-xl font-serif italic text-gray-900/70">
-                  We can sit together.
-                </p>
+                <p className="text-xl font-serif italic text-gray-900/70">We can sit together.</p>
               </div>
 
               <motion.button
@@ -546,96 +436,9 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                     transition={{ duration: 2, ease: 'easeOut' }}
                     className="space-y-8"
                   >
-                    {/* Mode toggle */}
-                    <div className="flex justify-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.speechSynthesis.cancel();
-                          setIsSpeaking(false);
-                          setViewMode('full');
-                        }}
-                        className={`px-5 py-2 rounded-full text-[10px] uppercase tracking-widest border transition-all ${
-                          viewMode === 'full'
-                            ? 'bg-black/10 border-black/20 text-black'
-                            : 'bg-black/5 border-black/10 text-black/70 hover:bg-black/10'
-                        }`}
-                      >
-                        Full prayer
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.speechSynthesis.cancel();
-                          setIsSpeaking(false);
-                          setViewMode('guided');
-                          setGuidedIndex(0);
-                        }}
-                        className={`px-5 py-2 rounded-full text-[10px] uppercase tracking-widest border transition-all ${
-                          viewMode === 'guided'
-                            ? 'bg-black/10 border-black/20 text-black'
-                            : 'bg-black/5 border-black/10 text-black/70 hover:bg-black/10'
-                        }`}
-                      >
-                        Guided pace
-                      </button>
-                    </div>
-
-                    {/* Content */}
-                    {viewMode === 'full' ? (
-                      <p className="text-xl md:text-2xl font-serif italic text-gray-900 leading-relaxed">
-                        {prayer}
-                      </p>
-                    ) : (
-                      <div className="space-y-6">
-                        <p className="text-xl md:text-2xl font-serif italic text-gray-900 leading-relaxed">
-                          {guidedLines[guidedIndex] || prayer}
-                        </p>
-
-                        <p className="text-[10px] uppercase tracking-[0.3em] text-black/50">
-                          Breathe in… hold… breathe out…
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              window.speechSynthesis.cancel();
-                              setIsSpeaking(false);
-                              setGuidedIndex(0);
-                            }}
-                            className="px-6 py-3 rounded-full bg-black/5 border border-black/10 text-[10px] uppercase tracking-widest text-black/80 hover:bg-black/10 transition-all"
-                          >
-                            Restart
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              window.speechSynthesis.cancel();
-                              setIsSpeaking(false);
-                              const last = guidedIndex >= guidedLines.length - 1;
-                              if (!last) {
-                                setGuidedIndex((i) =>
-                                  Math.min(i + 1, guidedLines.length - 1)
-                                );
-                              } else {
-                                setViewMode('full');
-                              }
-                            }}
-                            className="px-6 py-3 rounded-full bg-gray-900 text-white text-[10px] uppercase tracking-widest hover:bg-spiritual-gold transition-all"
-                          >
-                            {guidedIndex >= guidedLines.length - 1 ? 'Amen' : 'Continue'}
-                          </button>
-                        </div>
-
-                        <p className="text-[10px] uppercase tracking-widest text-black/40">
-                          Step {Math.min(guidedIndex + 1, guidedLines.length)} of{' '}
-                          {Math.max(guidedLines.length, 1)}
-                        </p>
-                      </div>
-                    )}
+                    <p className="text-xl md:text-2xl font-serif italic text-gray-900 leading-relaxed">
+                      {prayer}
+                    </p>
 
                     <motion.div
                       initial={{ opacity: 0 }}
@@ -693,6 +496,7 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                         <Heart className="w-3 h-3" />
                         Share more
                       </button>
+
                       <button
                         onClick={handleSitQuietly}
                         className="text-[10px] uppercase tracking-widest text-gray-900/70 hover:text-gray-900 transition-colors flex items-center gap-2"
@@ -700,6 +504,7 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
                         <Wind className="w-3 h-3" />
                         Sit quietly
                       </button>
+
                       <button
                         onClick={() => {
                           if (path === 'grace') handleShareMore();

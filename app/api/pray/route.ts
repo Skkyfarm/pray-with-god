@@ -5,94 +5,130 @@ import type { Tradition } from "@/lib/avatars";
 
 type PrayBody = {
   tradition: Tradition;
-  avatarLabel: string;
+  avatarLabel?: string;
   userName?: string | null;
   feelings?: string[];
-  input: string;
+  input?: string;
 };
+
+function traditionGuards(tradition: Tradition) {
+  // Strong “don’t do” rules that create real separation between traditions.
+  switch (tradition) {
+    case "buddhist":
+      return `
+BUDDHIST HARD RULES:
+- Do NOT address God, Lord, Heavenly Father, Divine Presence, Hashem, Allah, or any deity.
+- Do NOT use "Amen", "Shalom", "In Jesus' name", or similar religious closings.
+- Start with present-moment awareness (breath, body, this moment).
+- Language should be calm, grounded, non-theistic, compassionate.
+- Closing should be: "May you be at peace." or "Peace, peace, peace."`;
+    case "hindu":
+      return `
+HINDU HARD RULES:
+- Prefer imagery (light, dawn, river, inner flame) but keep it specific (one vivid image max).
+- It can be devotional, but avoid Christian/Jewish/Islamic phrasing (no "Heavenly Father", no "Amen", no "Shalom").
+- Closing: "Namaste." or "Om Shanti."`;
+    case "muslim":
+      return `
+MUSLIM HARD RULES:
+- You may use "Allah", "Most Merciful", "Most Compassionate".
+- Avoid Christian phrasing ("Through Christ", "Heavenly Father").
+- Closing should be peace-toned (e.g., "Ameen." or "Peace be with you.")`;
+    case "jewish":
+      return `
+JEWISH HARD RULES:
+- Prefer "Eternal One" / "Source of Peace" / "Holy One" / "Hashem" (tasteful, not excessive).
+- Avoid Christian closings and "Amen" is okay but do NOT sound Christian.
+- Close with "Shalom."`;
+    case "catholic":
+      return `
+CATHOLIC HARD RULES:
+- Reverent address (Lord / Heavenly Father).
+- You may include a gentle saint-like cadence, but do NOT quote long scripture.
+- Closing: "Amen." (or "Through Christ our Lord. Amen.")`;
+    case "protestant":
+      return `
+PROTESTANT HARD RULES:
+- Conversational pastoral address to God.
+- Scripture-flavored language is fine, but avoid long direct quotes.
+- Closing: "Amen."`;
+    case "grace":
+    case "quiet":
+    default:
+      return `
+UNIVERSAL HARD RULES:
+- Inclusive language, non-judgmental, emotionally specific.
+- Avoid denominational markers unless tradition requires them.
+- Close softly (e.g., "Peace.")`;
+  }
+}
 
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as PrayBody;
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const tradition = (body.tradition || "grace") as Tradition;
+    const avatarLabel = body.avatarLabel || "Grace";
+    const userName = body.userName || null;
+    const feelings = Array.isArray(body.feelings) ? body.feelings : [];
+    const input = String(body.input || "").trim();
+
+    if (!input && feelings.length === 0) {
+      return NextResponse.json(
+        { error: "Missing input (or feelings)." },
+        { status: 400 }
+      );
+    }
+
+    // IMPORTANT:
+    // Prefer a SERVER-ONLY key: GEMINI_API_KEY (do NOT commit .env.local)
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
+      "";
+
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Missing GEMINI_API_KEY on server (.env.local)" },
+        { error: "Missing GEMINI_API_KEY (or NEXT_PUBLIC_GEMINI_API_KEY)." },
         { status: 500 }
       );
     }
 
     const ai = new GoogleGenAI({ apiKey });
 
-   const systemInstruction = `
-You are a spiritual guide named ${body.avatarLabel}.
+    const systemInstruction = `
+You are a spiritual guide named ${avatarLabel}.
 
-Your role is to form a prayer (or reflection, where appropriate) that is emotionally specific, spiritually grounded, and clearly shaped by the ${body.tradition} tradition.
+Your role: write a prayer or reflection that is emotionally specific and distinctly shaped by the ${tradition} tradition.
 
-${body.userName ? `The person's name is ${body.userName}. Use their name gently if natural.` : ""}
+${userName ? `The person's name is ${userName}. Use their name gently only if natural.` : ""}
 
-STRUCTURE REQUIREMENTS (MANDATORY):
-${buildStructureInstruction(body.tradition)}
+MANDATORY TRADITION STRUCTURE:
+${buildStructureInstruction(tradition)}
 
-STRICT TRADITION VOICE (MANDATORY — do NOT mix traditions):
-- Use ONLY language appropriate to the selected tradition.
-- Do NOT borrow phrasing, theology, or closings from other traditions.
+${traditionGuards(tradition)}
 
-TRADITION-SPECIFIC BANS / REQUIREMENTS:
-- buddhist:
-  - This must be NON-THEISTIC.
-  - Do NOT address God, a deity, or "Divine Presence".
-  - Avoid: "Lord", "Heavenly Father", "God", "Divine Presence", "through Christ", "Amen".
-  - Prefer: breath/awareness, compassion, impermanence, easing suffering, release/letting go.
-  - Closing should be peaceful and non-theistic (e.g., "May you be at peace.").
-
-- hindu:
-  - May use poetic devotion and inner transformation language.
-  - Avoid Abrahamic closings ("Amen", "through Christ").
-  - Closing: "Namaste" or "Om Shanti" tone.
-
-- jewish:
-  - Use reflective naming (Eternal One / Source of Peace) and continuity/wisdom framing.
-  - Avoid Christian/Muslim phrasing.
-  - Closing: "Shalom."
-
-- muslim:
-  - Use mercy attributes (Most Merciful / Most Compassionate) and trust/submission framing.
-  - Avoid Christian/Jewish closings.
-  - Closing should carry peace tone.
-
-- catholic:
-  - Reverent petition, surrender to God’s will, traditional cadence.
-  - Closing: "Amen."
-
-- protestant:
-  - Conversational pastoral address to God, scripture-flavored encouragement (no long quotes).
-  - Closing: "Amen."
-
-- grace:
-  - Universal, gentle, inclusive, minimal religious jargon.
-  - Closing: "Peace."
-
-CORE WRITING RULES:
-- Output plain text only (no markdown, no bullets).
-- Medium length (5–8 sentences OR 3–6 short paragraphs).
-- Reference the person's actual words (be specific).
-- Use at most ONE vivid image total (do not get flowery everywhere).
-- Avoid generic AI phrases ("I understand you are feeling...", "Here is a prayer for you...").
-- Do not lecture, do not promise guaranteed outcomes.
-- End with the tradition-appropriate closing.
-
-The result must feel human, calm, and distinct for the chosen tradition.
+OUTPUT RULES (MANDATORY):
+- Plain text only. No markdown. No bullets.
+- 6–10 sentences max. (Not short. Not rambly.)
+- You MUST include at least ONE short exact phrase (3–10 words) copied from the user's message verbatim.
+- Be specific to what they wrote (no generic filler).
+- Avoid these phrases completely: "Divine Presence", "I understand you are feeling", "Here is a prayer for you".
+- End with the correct tradition closing (per rules above).
 `.trim();
 
-    const prompt = `User feelings: ${(body.feelings || []).join(", ") || "(not specified)"}
-User wrote: "${body.input}"
+    const prompt = `
+User feelings: ${feelings.join(", ") || "(not specified)"}
+User message:
+"${input}"
 
-Write the prayer/reflection in the selected tradition. Make it specific to the user's words and feelings.`;
+Write the prayer/reflection now.
+`.trim();
 
+    // Use a model name that Google shows in current examples.
+    // (This avoids the "gemini-2.0-flash no longer available to new users" error.)
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         systemInstruction,
@@ -102,11 +138,15 @@ Write the prayer/reflection in the selected tradition. Make it specific to the u
 
     const text = postProcessPrayer(response.text?.trim() || "");
     if (!text) {
-      return NextResponse.json({ error: "Empty response from model" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Empty response from model" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ prayer: text });
   } catch (err: any) {
+    console.error("API /api/pray error:", err);
     return NextResponse.json(
       { error: err?.message || "Prayer generation failed" },
       { status: 500 }

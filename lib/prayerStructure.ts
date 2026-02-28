@@ -1,155 +1,135 @@
 import { Tradition } from "./avatars";
 
 /**
- * Returns a STRICT instruction block to inject into systemInstruction.
- * This is designed to produce *distinct* prayers per tradition — not just different openings/closings.
- *
- * IMPORTANT:
- * - Keep it plain text.
- * - Keep it firm ("MUST", "MUST NOT").
- * - Limit imagery to prevent "flowery sameness".
+ * Returns a strict, tradition-specific structure instruction for the model.
+ * This is intentionally detailed to reduce “same-y” outputs.
  */
 export function buildStructureInstruction(tradition: Tradition) {
   switch (tradition) {
     case "grace":
       return `
-STRUCTURE (GRACE — universal):
-1) Gentle acknowledgment of the person (soft, present).
-2) Name what they’re carrying in everyday language.
-3) Simple prayer for help/comfort tied to their specific words + ONE hopeful line.
-4) Quiet release (close with: "Peace.").
+STRUCTURE (GRACE — universal, compassionate):
+1) Soft opening directly to the person (present + human). (1 sentence)
+2) Name what they are carrying using everyday language. (1–2 sentences)
+3) Ask for help/comfort in a universal way (no heavy religious jargon). (2–3 sentences)
+4) One concrete hope line for the next hour/day (practical + gentle). (1 sentence)
+5) Quiet release: "Peace." (1 short sentence)
 
-STYLE CONTRACT (GRACE — universal):
-- Voice: warm, motherly, inclusive, non-denominational.
-- MUST include: one specific detail from the user's words; one grounded comfort line.
-- MUST avoid: religious jargon; preaching; certainty/guarantees; "as an AI" language.
-- Imagery: at most ONE gentle image (light, shelter, breath) — optional.
-- Closing: MUST end with "Peace." (exact).
-`;
+STYLE:
+- Use simple words. No big theological concepts.
+- Prefer one vivid, ordinary image (lamp, warm hand, morning light) max.
+- Avoid: "Divine Presence", "soothe", "uplift", "grant" unless it sounds natural.
+`.trim();
 
     case "catholic":
       return `
-STRUCTURE (CATHOLIC):
-1) Invocation (Lord / Heavenly Father / God of mercy).
-2) Petition: ask for specific help tied to their exact situation.
-3) Surrender: trust in God’s will (gentle, not fatalistic).
-4) Traditional closing (end with: "Amen.").
+STRUCTURE (CATHOLIC — reverent + surrender):
+1) Invocation: "Heavenly Father" or "Lord" (reverent, not casual). (1 sentence)
+2) Specific petition: name their situation using at least one of their exact phrases. (2–3 sentences)
+3) Interior grace: ask for virtues (peace, patience, courage, consolation). (1–2 sentences)
+4) Surrender: place the outcome into God's will (trustful, not fatalistic). (1–2 sentences)
+5) Close: "Through Christ our Lord. Amen." OR "Amen." (1 sentence)
 
-STYLE CONTRACT (CATHOLIC):
-- Voice: reverent, liturgical-leaning but still human.
-- MUST include: (a) reverent invocation; (b) at least one "grant/give/strengthen" petition; (c) surrender line ("according to Your will" / "we entrust…").
-- MUST avoid: casual slang; prosperity/guaranteed outcomes; sectarian judgments.
-- Names allowed: Lord, Heavenly Father, God of mercy, Holy Spirit (use sparingly).
-- Imagery: at most ONE gentle sacred image (light, sanctuary, mercy like rain) — optional.
-- Closing: MUST end with "Amen." (exact).
-`;
+STYLE:
+- Slightly formal cadence; gentle, not theatrical.
+- May include ONE short liturgical-flavored line (e.g., “be near…”), no long quotes.
+`.trim();
 
     case "protestant":
       return `
-STRUCTURE (PROTESTANT):
-1) Direct address to God (conversational, pastoral).
-2) Scripture-flavored encouragement (NO direct quotes required).
-3) Ask for guidance/peace/strength tied to their situation (specific, practical).
-4) Simple confident close (end with: "Amen.").
+STRUCTURE (PROTESTANT — pastoral + direct prayer):
+1) Direct address to God in a warm, conversational voice. (1 sentence)
+2) Speak the situation plainly and specifically (include one exact phrase). (2–3 sentences)
+3) Ask for guidance/strength/peace tied to their real-life next steps. (2–3 sentences)
+4) Scripture-flavored encouragement WITHOUT quoting verses (e.g., “light for the next step”). (1–2 sentences)
+5) Close simply: "Amen." (1 sentence)
 
-STYLE CONTRACT (PROTESTANT):
-- Voice: pastoral, present, encouraging; second-person address to God ("You").
-- MUST include: a "we ask" / "please" petition + one encouragement line that *sounds* scripture-shaped without quoting.
-- MUST avoid: formal liturgy cadence; heavy ritual language; lecturing.
-- Names allowed: God, Lord, Father (choose one or two; do not rotate excessively).
-- Imagery: optional, at most ONE grounded image (steady hands, a path, a shelter).
-- Closing: MUST end with "Amen." (exact).
-`;
+STYLE:
+- Plainspoken, encouraging, confident, not formal.
+- Avoid Catholic-style phrasing (“Through Christ our Lord”).
+`.trim();
 
     case "jewish":
       return `
-STRUCTURE (JEWISH):
-1) Reflective naming (Eternal One / Source of Peace / Holy One).
-2) Wisdom framing (steadiness, courage, remembrance, clarity).
-3) Hope rooted in continuity/community (gentle, not preachy).
-4) Close with Shalom (end with: "Shalom.").
+STRUCTURE (JEWISH — reflective + wisdom + continuity):
+1) Address: "Eternal One" / "Source of Peace" / "Holy One" (choose ONE). (1 sentence)
+2) Name their burden with dignity and clarity (include one exact phrase). (2–3 sentences)
+3) Wisdom framing: steadiness, courage, remembrance, truth, community. (2–3 sentences)
+4) A hopeful line connected to continuity (today, family, community, tomorrow). (1–2 sentences)
+5) Close: "Shalom." (1 sentence)
 
-STYLE CONTRACT (JEWISH):
-- Voice: reflective, wise, steady; avoids Christian phrasing.
-- MUST include: one reflective divine name + one line about steadiness/continuity.
-- MUST avoid: "Jesus/Christ", "Heavenly Father", "Amen"; overt evangelizing language.
-- Names allowed: Eternal One, Source of Peace, Holy One, God of our ancestors (use at most 1–2).
-- Imagery: optional, at most ONE simple image (lamp, doorway, thread of generations).
-- Closing: MUST end with "Shalom." (exact).
-`;
+STYLE:
+- Reflective, grounded, gently poetic, not preachy.
+- Avoid Christian/Islamic names/titles for God.
+`.trim();
 
     case "muslim":
       return `
-STRUCTURE (MUSLIM):
-1) Begin with mercy attributes (Most Merciful / Most Compassionate).
-2) Trust language + ask for ease and guidance tied to their words.
-3) Submission framing (acceptance + seeking what is best).
-4) Peace closing (end with: "Peace be with you.").
+STRUCTURE (MUSLIM — mercy + trust + guidance):
+1) Begin with mercy attributes: "Most Merciful, Most Compassionate" (or similar). (1 sentence)
+2) Name their situation clearly (include one exact phrase). (2–3 sentences)
+3) Ask for ease, guidance, patience, and what is best (khayr) for them. (2–3 sentences)
+4) Trust/submission: place the matter in God's care with calm confidence. (1–2 sentences)
+5) Close with peace tone: "Ameen." OR "Peace be with you." (1 sentence)
 
-STYLE CONTRACT (MUSLIM):
-- Voice: humble, trusting, centered on mercy and guidance.
-- MUST include: one mercy attribute + one "grant ease/guide/relieve" petition + one submission line ("what is best" / "Your wisdom").
-- MUST avoid: casual slang; "Amen"; sectarian judgments; guaranteed outcomes.
-- Names allowed: Allah, Most Merciful, Most Compassionate (choose 1–2; do not overuse).
-- Imagery: optional, at most ONE image (ease after hardship, a calm shore).
-- Closing: MUST end with "Peace be with you." (exact).
-`;
+STYLE:
+- Calm, humble, trusting.
+- Avoid Christian phrasing and avoid “Shalom/Amen” unless using “Ameen.”
+`.trim();
 
     case "hindu":
       return `
-STRUCTURE (HINDU):
-1) Poetic imagery (light, river, dawn, inner flame) — specific, not vague.
-2) Devotion language (Sacred Presence / Divine within / Beloved).
-3) Inner transformation theme (clarity, courage, compassion, steadiness).
-4) Reverent closing (end with: "Om Shanti." OR "Namaste.").
+STRUCTURE (HINDU — devotional + inner divinity + imagery):
+1) Open with one vivid image (dawn/light/river/flame) tied to their situation. (1–2 sentences)
+2) Address the Sacred: "Beloved", "Sacred Presence", "Divine within" (choose ONE). (1 sentence)
+3) Name what they carry specifically (include one exact phrase). (2–3 sentences)
+4) Inner transformation: ask for clarity, courage, compassion, steadiness. (2–3 sentences)
+5) Close: "Namaste." OR "Om Shanti." (1 sentence)
 
-STYLE CONTRACT (HINDU):
-- Voice: devotional, poetic, inwardly focused; honors the divine within without being abstract.
-- MUST include: one concrete image + one inner-transformation line ("may the heart become steady", "may clarity arise").
-- MUST avoid: Christian/Muslim specific names; preaching; karma/afterlife claims unless user asked.
-- Names allowed: Sacred Presence, Divine within, Beloved, Supreme (use at most 1–2).
-- Imagery: MUST use exactly ONE image (choose ONE: river OR dawn OR inner flame OR lotus).
-- Closing: MUST end with either "Om Shanti." or "Namaste." (choose one; exact punctuation).
-`;
+STYLE:
+- Poetic but concrete; do not drift into vague mysticism.
+- No Abrahamic closings (“Amen/Shalom”).
+`.trim();
 
     case "buddhist":
       return `
-STRUCTURE (BUDDHIST):
-1) Present awareness (breath / this moment / gentle attention).
-2) Compassion inward and outward.
-3) Release of suffering / letting go (non-clinging language).
-4) Peaceful dedication (end with: "May you be at peace.").
+STRUCTURE (BUDDHIST — present-moment + compassion + non-theistic):
+1) Begin with the breath / this moment / gentle attention. (1–2 sentences)
+2) Name the feelings/suffering clearly (include one exact phrase). (2–3 sentences)
+3) Compassion outward + inward (metta tone): kindness toward self and others. (2–3 sentences)
+4) Letting go: soften grip of fear/anxiety; invite ease in the body. (1–2 sentences)
+5) Close: "May you be at peace." OR "Peace, peace, peace." (1 sentence)
 
-STYLE CONTRACT (BUDDHIST):
-- Voice: grounded, mindful, non-theistic; gentle guidance without deity language.
-- MUST include: one present-moment anchor (breath/body/this moment) + one compassion line + one release line.
-- MUST avoid: God/Allah/Lord/Heavenly Father; salvation claims; guarantees.
-- Imagery: optional, at most ONE grounded image (mountain in storm OR river-stone) — not both.
-- Closing: MUST end with "May you be at peace." (exact).
-`;
+STYLE:
+- Absolutely no deity language (no “Divine Presence”, no “Lord”, no “Amen”).
+- Calm, grounded, embodied.
+`.trim();
 
     default:
       return `
-STRUCTURE (DEFAULT):
-1) Gentle acknowledgment.
-2) Specific empathy tied to their words.
-3) Supportive prayer/reflection.
-4) Calm closing.
-
-STYLE CONTRACT (DEFAULT):
-- Plain text only. No markdown.
-- Must be specific. Avoid generic filler.
-- No guarantees. No preaching.
-`;
+STRUCTURE:
+- Acknowledge the person.
+- Speak specifically to their situation.
+- Offer comfort + next-step hope.
+- Calm closing.
+`.trim();
   }
 }
 
+/**
+ * Optional: clean up model output.
+ * - Collapses excessive blank lines
+ * - Trims whitespace
+ * - Removes common AI boilerplate if it sneaks in
+ */
 export function postProcessPrayer(text: string) {
   if (!text) return "";
 
-  return text
-    // normalize excessive blank lines
-    .replace(/\n{3,}/g, "\n\n")
-    // trim whitespace
-    .trim();
+  let t = text.replace(/\n{3,}/g, "\n\n").trim();
+
+  // Soft cleanup of common filler phrases (won't harm good prayers)
+  t = t.replace(/^Here is (a|the) (prayer|reflection)[^.\n]*\.\s*/i, "");
+  t = t.replace(/^Certainly[^.\n]*\.\s*/i, "");
+
+  return t.trim();
 }
