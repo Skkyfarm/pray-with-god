@@ -84,7 +84,6 @@ export async function POST(req: Request) {
     // Prefer a SERVER-ONLY key: GEMINI_API_KEY (do NOT commit .env.local)
     const apiKey =
       process.env.GEMINI_API_KEY ||
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
       "";
 
     if (!apiKey) {
