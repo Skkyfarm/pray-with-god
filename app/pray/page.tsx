@@ -419,109 +419,42 @@ function PrayerContent() {
             </motion.div>
           )}
 
-          {step === 'prayer' && (
-            <motion.div
-              key="prayer"
-              ref={prayerRef}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="max-w-xl mx-auto text-center space-y-12"
-            >
-              <div className="space-y-8">
-                <AnimatePresence>
-                  <motion.div
-                    key="prayer-text"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 2, ease: 'easeOut' }}
-                    className="space-y-8"
-                  >
-                    <p className="text-xl md:text-2xl font-serif italic text-gray-900 leading-relaxed">
-                      {prayer}
-                    </p>
+{step === 'prayer' && (
+  <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center space-y-8">
 
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 1, duration: 1 }}
-                      className="flex justify-center"
-                    >
-                      <button
-                        onClick={handleListen}
-                        className="flex items-center gap-2 px-6 py-3 rounded-full bg-black/5 border border-black/10 text-[10px] uppercase tracking-widest text-gray-900/80 hover:text-gray-900 hover:bg-black/10 transition-all"
-                      >
-                        {isSpeaking ? (
-                          <>
-                            <Square className="w-3 h-3 fill-current" />
-                            Stop
-                          </>
-                        ) : (
-                          <>
-                            <Volume2 className="w-3 h-3" />
-                            Listen
-                          </>
-                        )}
-                      </button>
-                    </motion.div>
+    {/* Avatar */}
+    <div className="flex flex-col items-center space-y-4">
+      <GuideAvatar avatar={avatar} size="xl" />
 
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 3, duration: 2 }}
-                      className="text-[12px] uppercase tracking-[0.2em] text-gray-900/50 pt-4"
-                    >
-                      You can return whenever you need.
-                    </motion.p>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+      {/* Listen Button */}
+      <button
+        onClick={handleListen}
+        className="px-6 py-3 bg-gray-900 text-white rounded-full text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center gap-2"
+      >
+        {isSpeaking ? (
+          <>
+            <Square className="w-4 h-4" />
+            Stop
+          </>
+        ) : (
+          <>
+            <Volume2 className="w-4 h-4" />
+            Listen
+          </>
+        )}
+      </button>
+    </div>
 
-              <AnimatePresence>
-                {showDoorway && (
-                  <motion.div
-                    key="doorway"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5 }}
-                    className="pt-12 space-y-8"
-                  >
-                    <p className="text-xs uppercase tracking-[0.3em] text-gray-900/60">
-                      Would you like to share more?
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                      <button
-                        onClick={handleShareMore}
-                        className="text-[10px] uppercase tracking-widest text-gray-900/70 hover:text-gray-900 transition-colors flex items-center gap-2"
-                      >
-                        <Heart className="w-3 h-3" />
-                        Share more
-                      </button>
+    {/* Prayer Text */}
+    <div
+      ref={prayerRef}
+      className="text-base md:text-lg leading-relaxed whitespace-pre-wrap text-black"
+    >
+      {prayer}
+    </div>
 
-                      <button
-                        onClick={handleSitQuietly}
-                        className="text-[10px] uppercase tracking-widest text-gray-900/70 hover:text-gray-900 transition-colors flex items-center gap-2"
-                      >
-                        <Wind className="w-3 h-3" />
-                        Sit quietly
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          if (path === 'grace') handleShareMore();
-                          else router.push('/pray?path=grace');
-                        }}
-                        className="text-[10px] uppercase tracking-widest text-gray-900/70 hover:text-gray-900 transition-colors flex items-center gap-2"
-                      >
-                        <RotateCcw className="w-3 h-3" />
-                        Return to Grace
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>
+  </div>
+)}        </AnimatePresence>
       </div>
     </div>
   );
