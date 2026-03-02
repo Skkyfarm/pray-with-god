@@ -1,56 +1,71 @@
 'use client';
 
-import React, { useState } from 'react';
 import Image from 'next/image';
-import { User } from 'lucide-react';
+import type { AvatarMetadata } from '@/lib/avatars';
 
-interface GuideAvatarProps {
-  src: string;
-  fallbackSrc?: string;
-  alt: string;
-  className?: string;
-}
+type Size = 'sm' | 'md' | 'lg' | 'xl';
 
-export default function GuideAvatar({ src, fallbackSrc, alt, className = "" }: GuideAvatarProps) {
-  const [currentSrc, setCurrentSrc] = useState(src);
-  const [isFinalFallback, setIsFinalFallback] = useState(false);
-
-  const handleError = () => {
-    if (currentSrc === src && fallbackSrc) {
-      setCurrentSrc(fallbackSrc);
-    } else {
-      setIsFinalFallback(true);
+type GuideAvatarProps =
+  | {
+      // New, clean API:
+      avatar: AvatarMetadata;
+      size?: Size;
+      className?: string;
+      alt?: string; // optional override
     }
-  };
+  | {
+      // Backward compatible API:
+      src: string;
+      fallbackSrc?: string;
+      alt: string;
+      size?: Size;
+      className?: string;
+    };
 
+const sizeToClass: Record<Size, string> = {
+  sm: 'w-14 h-14',
+  md: 'w-24 h-24',
+  lg: 'w-28 h-28',
+  xl: 'w-36 h-36',
+};
+
+export default function GuideAvatar(props: GuideAvatarProps) {
+  const size = props.size ?? 'md';
+  const sizeClass = sizeToClass[size];
+
+  const src =
+    'avatar' in props ? props.avatar.imagePath : props.src;
+
+  const fallbackSrc =
+    'avatar' in props ? props.avatar.fallbackPath : props.fallbackSrc;
+
+  const alt =
+    'avatar' in props
+      ? props.alt ?? props.avatar.label
+      : props.alt;
+
+  const className = `${sizeClass} rounded-full overflow-hidden relative ${props.className ?? ''}`;
+
+  // If image fails, we swap to fallback (or show a simple placeholder).
+  // Note: next/image doesn't have native onError for src swap without state.
+  // We'll use plain <img> inside for reliability.
+  // (This avoids the “gray ovoid with X” getting stuck.)
   return (
-    <div className={`relative group ${className}`}>
-      {/* Soft Glow */}
-      <div className="absolute -inset-2 bg-orange-500/10 blur-2xl rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-      
-      {/* Frame Container */}
-      <div className="relative w-full h-full rounded-[2rem] overflow-hidden border border-white/10 glass-panel bg-white/5">
-        {!isFinalFallback ? (
-          <Image
-            src={currentSrc}
-            alt={alt}
-            fill
-            className="object-cover transition-all duration-700 group-hover:scale-105"
-            onError={handleError}
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-black/20">
-            <User className="w-1/2 h-1/2" />
-          </div>
-        )}
-        
-        {/* Sunrise Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 via-transparent to-white/10 pointer-events-none mix-blend-overlay" />
-        
-        {/* Subtle Vignette */}
-        <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.4)] pointer-events-none" />
-      </div>
+    <div className={className}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover"
+        onError={(e) => {
+          if (fallbackSrc && (e.currentTarget.src.endsWith(src) || e.currentTarget.src.includes(src))) {
+            e.currentTarget.src = fallbackSrc;
+            return;
+          }
+          // last resort: hide broken img
+          e.currentTarget.style.display = 'none';
+        }}
+      />
     </div>
   );
 }
