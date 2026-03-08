@@ -69,7 +69,7 @@ function normalizePrayerKind(value: string | null): PrayerKind {
 function normalizeCatalogKey(path: string | null): TraditionKey | null {
   switch ((path || '').toLowerCase()) {
     case 'christian':
-      return 'christian';
+      return 'protestant' as TraditionKey;
     case 'protestant':
       return 'protestant' as TraditionKey;
     case 'catholic':
@@ -479,7 +479,7 @@ export default function PrayPage() {
               prayerType: selectedPrayerType,
               userName,
               feelings: selectedFeelings,
-              input: input.trim() || 'Peace on Earth',
+              input: input.trim() || 'an understanding heart',
             };
 
       const res = await fetch('/api/pray', {
@@ -1048,7 +1048,7 @@ export default function PrayPage() {
                       id="prayer-input"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. If left blank, we’ll begin with “Peace on Earth.”"
+                      placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. If left blank, we’ll begin with “an understanding heart.”"
                       className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
                     />
                   </div>
