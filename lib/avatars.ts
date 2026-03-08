@@ -11,7 +11,7 @@ export interface AvatarMetadata {
 export const AVATARS: Record<string, AvatarMetadata> = {
   grace: {
     id: "grace",
-    label: "Grace",
+    label: "Non-Denominational",
     name: "Grace",
     imagePath: "/avatars/grace.png",
     fallbackPath: "/avatars/grace.svg",
@@ -38,7 +38,7 @@ export const AVATARS: Record<string, AvatarMetadata> = {
   },
   catholic: {
     id: "catholic",
-    label: "Catholic Tradition",
+    label: "Father Thomas",
     name: "Father Thomas",
     imagePath: "/avatars/priest.png",
     fallbackPath: "/avatars/priest.svg",
@@ -47,8 +47,8 @@ export const AVATARS: Record<string, AvatarMetadata> = {
   },
   protestant: {
     id: "protestant",
-    label: "Protestant Tradition",
-    name: "Pastor Bonner",
+    label: "Pastor Blumenthal",
+    name: "Pastor Blumenthal",
     imagePath: "/avatars/minister.png",
     fallbackPath: "/avatars/priest.svg",
     greeting: "Welcome. What would you like to bring into prayer?",

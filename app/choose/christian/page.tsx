@@ -39,7 +39,7 @@ export default function ChooseChristianPage() {
         </Link>
 
         <Link
-          href="/pray?path=grace"
+          href="/pray?path=grace&mode=free"
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
@@ -61,16 +61,14 @@ export default function ChooseChristianPage() {
           {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 pt-4">
             <Link
-              href="/pray?path=catholic"
+              href="/choose/catholic"
               className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
             >
               <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
                 <AvatarThumb src="/avatars/priest.png" alt="Priest avatar" />
 
                 <div className="space-y-2">
-                  <div className="text-2xl font-serif italic text-gray-950">
-                    Catholic
-                  </div>
+                  <div className="text-2xl font-serif italic text-gray-950">Catholic</div>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-gray-950/60">
                     Traditional • Liturgy
                   </div>
@@ -83,16 +81,14 @@ export default function ChooseChristianPage() {
             </Link>
 
             <Link
-              href="/pray?path=protestant"
+              href="/choose/protestant"
               className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
             >
               <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
                 <AvatarThumb src="/avatars/minister.png" alt="Minister avatar" />
 
                 <div className="space-y-2">
-                  <div className="text-2xl font-serif italic text-gray-950">
-                    Protestant
-                  </div>
+                  <div className="text-2xl font-serif italic text-gray-950">Protestant</div>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-gray-950/60">
                     Scripture • Grace
                   </div>

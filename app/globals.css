@@ -3,52 +3,64 @@
 @tailwind utilities;
 
 :root {
-  --glow-color: rgba(255, 255, 255, 0.2);
+  --glow-color: rgba(255, 255, 255, 0.28);
 }
 
 body {
-  background: linear-gradient(to bottom, #a5b4fc 0%, #fbcfe8 30%, #fef3c7 60%, #fdba74 100%);
+  background: linear-gradient(
+    to bottom,
+    #f8fafc 0%,
+    #fef3c7 18%,
+    #fde68a 34%,
+    #fde2e8 55%,
+    #e0f2fe 78%,
+    #ffffff 100%
+  );
   background-attachment: fixed;
   color: #1a1a1a;
   position: relative;
   overflow-x: hidden;
 }
 
+/* soft top light wash */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.18) 28%,
+    transparent 68%
+  );
   pointer-events: none;
   z-index: -2;
 }
 
-/* Crepuscular Rays Effect - Softened and pattern-free */
+/* Global sunrise / aura background */
 .bg-rays {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: -1;
-  background: 
-    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.05) 55%, transparent 60%),
-    linear-gradient(245deg, transparent 40%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.05) 55%, transparent 60%);
-  background-size: 200% 200%;
   pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.4;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% -6%, rgba(251, 191, 36, 0.32) 0%, transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(125, 211, 252, 0.22) 0%, transparent 22%),
+    radial-gradient(circle at 10% 38%, rgba(251, 113, 133, 0.18) 0%, transparent 18%),
+    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 47%, rgba(255, 255, 255, 0.08) 53%, transparent 60%),
+    linear-gradient(245deg, transparent 40%, rgba(255, 255, 255, 0.08) 47%, rgba(255, 255, 255, 0.08) 53%, transparent 60%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 200% 200%, 200% 200%;
+  filter: blur(42px);
+  opacity: 0.9;
 }
 
-/* Glassmorphism - Refined for light background */
+/* Glassmorphism - refined for sunrise background */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Float Animation */

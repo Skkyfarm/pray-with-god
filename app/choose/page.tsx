@@ -40,10 +40,20 @@ export default function ChoosePage() {
   const traditions: TraditionCard[] = useMemo(
     () => [
       { name: 'Christian', href: '/choose/christian', avatarKey: 'catholic' }, // preview image = priest
-      { name: 'Jewish', href: '/pray?path=jewish', avatarKey: 'jewish' },
-      { name: 'Muslim', href: '/pray?path=muslim', avatarKey: 'muslim' },
-      { name: 'Hindu', href: '/pray?path=hindu', avatarKey: 'hindu' },
-      { name: 'Buddhist', href: '/pray?path=buddhist', avatarKey: 'buddhist' },
+      {
+        name: 'Jewish',
+        href: '/choose/jewish',
+        avatarKey: 'jewish',
+        description: 'Pray freely, or choose a traditional prayer path.',
+      },
+      {
+        name: 'Muslim',
+        href: '/choose/muslim',
+        avatarKey: 'muslim',
+        description: 'Pray freely, or choose a traditional prayer path.',
+      },
+      { name: 'Hindu', href: '/choose/hindu', avatarKey: 'hindu' },
+      { name: 'Buddhist', href: '/choose/buddhist', avatarKey: 'buddhist' },
       { name: 'Grace (Universal)', href: '/pray?path=grace', avatarKey: 'grace' },
     ],
     []
