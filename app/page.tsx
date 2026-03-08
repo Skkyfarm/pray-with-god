@@ -63,46 +63,14 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen flex flex-col text-black">
-      <nav className="absolute top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6">
-        <div className="text-lg font-serif italic tracking-wider text-black">
-          PrayWithGod.ai
-        </div>
-        <div className="flex gap-8 text-xs uppercase tracking-[0.2em] text-black">
-          <Link href="/" className="hover:opacity-70 transition-opacity">
-            Home
-          </Link>
-          <Link href="/about" className="hover:opacity-70 transition-opacity">
-            About
-          </Link>
-          <Link href="/support" className="hover:opacity-70 transition-opacity">
-            Support
-          </Link>
-        </div>
-      </nav>
-
-      <section className="relative flex-grow flex flex-col items-center justify-center px-6 pt-32 pb-20 overflow-hidden">
+      <section className="relative flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-20 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(254,243,199,0.8)_0%,rgba(253,186,116,0.3)_40%,transparent_70%)] blur-[120px] opacity-80" />
           <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-blue-400/10 via-transparent to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-4xl w-full flex flex-col items-center text-center">
-          <div className="relative mb-10 animate-float">
-            <div className="absolute inset-0 rounded-[3rem] bg-white/20 blur-3xl scale-150" />
-            <GuideAvatar
-              src={AVATARS.grace.imagePath}
-              fallbackSrc={AVATARS.grace.fallbackPath}
-              alt="Grace"
-              className="w-48 h-48 relative z-10"
-            />
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 glass-panel px-4 py-1 rounded-full border border-black/10 z-20">
-              <span className="text-[10px] uppercase tracking-widest text-black">
-                Grace
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-4 mb-8 max-w-2xl">
+          <div className="space-y-4 mb-10 max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.35em] text-black">
               Welcome to PrayWithGod.ai
             </p>
@@ -120,6 +88,21 @@ export default function Home() {
               Pray freely without an account. Add your name only if you’d like
               your prayer experience to feel more personal.
             </p>
+          </div>
+
+          <div className="relative mb-10 animate-float">
+            <div className="absolute inset-0 rounded-[3rem] bg-white/20 blur-3xl scale-150" />
+            <GuideAvatar
+              src={AVATARS.grace.imagePath}
+              fallbackSrc={AVATARS.grace.fallbackPath}
+              alt="Grace"
+              className="w-48 h-48 relative z-10"
+            />
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 glass-panel px-4 py-1 rounded-full border border-black/10 z-20">
+              <span className="text-[10px] uppercase tracking-widest text-black">
+                Grace
+              </span>
+            </div>
           </div>
 
           {(userName || !hasSkippedName) && (

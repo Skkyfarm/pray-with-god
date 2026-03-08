@@ -1,37 +1,88 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { headerLinks, supportLinks } from "@/lib/siteLinks";
 
 export default function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState("");
   const supportRef = useRef<HTMLDivElement | null>(null);
 
-  // Close Support dropdown when clicking outside
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
       if (!supportRef.current) return;
-      if (!supportRef.current.contains(e.target as Node)) setSupportOpen(false);
+      if (!supportRef.current.contains(e.target as Node)) {
+        setSupportOpen(false);
+      }
     }
+
     document.addEventListener("mousedown", onDocMouseDown);
     return () => document.removeEventListener("mousedown", onDocMouseDown);
   }, []);
 
-  // Close dropdown with Escape
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setSupportOpen(false);
+      if (e.key === "Escape") {
+        setSupportOpen(false);
+        setMobileOpen(false);
+      }
     }
+
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (!shareFeedback) return;
+    const timer = setTimeout(() => setShareFeedback(""), 2200);
+    return () => clearTimeout(timer);
+  }, [shareFeedback]);
+
+  const siteUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "https://praywithgod.ai";
+
+  const emailHref = useMemo(() => {
+    const subject = encodeURIComponent("PrayWithGod.ai");
+    const body = encodeURIComponent(
+      `I wanted to share PrayWithGod.ai with you.\n\nThoughtful, personalized prayer across spiritual traditions.\n\n${siteUrl}`
+    );
+
+    return `mailto:?subject=${subject}&body=${body}`;
+  }, [siteUrl]);
+
+  async function handleShareSite() {
+    const shareData = {
+      title: "PrayWithGod.ai",
+      text: `PrayWithGod.ai — thoughtful, personalized prayer across spiritual traditions.\n\n${siteUrl}`,
+      url: siteUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setShareFeedback("Shared");
+        return;
+      }
+
+      await navigator.clipboard.writeText(siteUrl);
+      setShareFeedback("Link copied");
+    } catch {
+      try {
+        await navigator.clipboard.writeText(siteUrl);
+        setShareFeedback("Link copied");
+      } catch {
+        setShareFeedback("Unable to share");
+      }
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/40 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        {/* Logo/Home */}
         <Link
           href="/"
           className="text-sm font-semibold tracking-wide text-white/90 hover:text-white"
@@ -40,7 +91,6 @@ export default function SiteHeader() {
           PWG
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
           {headerLinks.map((item) => (
             <Link
@@ -52,7 +102,21 @@ export default function SiteHeader() {
             </Link>
           ))}
 
-          {/* SUPPORT dropdown */}
+          <button
+            type="button"
+            onClick={handleShareSite}
+            className="text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+          >
+            SHARE
+          </button>
+
+          <a
+            href={emailHref}
+            className="text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+          >
+            EMAIL LINK
+          </a>
+
           <div className="relative" ref={supportRef}>
             <button
               type="button"
@@ -85,8 +149,13 @@ export default function SiteHeader() {
           </div>
         </nav>
 
-        {/* Right actions */}
         <div className="flex items-center gap-3">
+          {shareFeedback ? (
+            <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-white/70 md:inline">
+              {shareFeedback}
+            </span>
+          ) : null}
+
           <Link
             href="/signin"
             className="hidden text-xs font-semibold tracking-widest text-white/70 hover:text-white md:inline"
@@ -101,7 +170,6 @@ export default function SiteHeader() {
             JOIN FREE
           </Link>
 
-          {/* Mobile menu button */}
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
@@ -114,7 +182,6 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {mobileOpen ? (
         <div className="border-t border-white/10 bg-black/60 md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-3">
@@ -129,6 +196,25 @@ export default function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
+
+              <button
+                type="button"
+                onClick={async () => {
+                  await handleShareSite();
+                  setMobileOpen(false);
+                }}
+                className="py-3 text-left text-xs font-semibold tracking-widest text-white/80 hover:text-white"
+              >
+                SHARE
+              </button>
+
+              <a
+                href={emailHref}
+                onClick={() => setMobileOpen(false)}
+                className="py-3 text-left text-xs font-semibold tracking-widest text-white/80 hover:text-white"
+              >
+                EMAIL LINK
+              </a>
 
               <div className="py-2 text-[10px] font-semibold tracking-widest text-white/40">
                 SUPPORT
@@ -152,6 +238,12 @@ export default function SiteHeader() {
               >
                 Sign In
               </Link>
+
+              {shareFeedback ? (
+                <div className="pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                  {shareFeedback}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
