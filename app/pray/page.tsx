@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import GuideAvatar from '@/components/GuideAvatar';
@@ -181,7 +181,7 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#039;');
 }
 
-export default function PrayPage() {
+function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const abortRef = useRef<AbortController | null>(null);
@@ -229,7 +229,6 @@ export default function PrayPage() {
       return;
     }
 
-    // Reset any finished/generated state when route/search changes.
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
@@ -446,11 +445,9 @@ export default function PrayPage() {
     setError('');
     setPrayer('');
 
-    if (mode === 'classic') {
-      if (!selectedPrayerLabel.trim()) {
-        setError('Please choose a traditional prayer first.');
-        return;
-      }
+    if (mode === 'classic' && !selectedPrayerLabel.trim()) {
+      setError('Please choose a traditional prayer first.');
+      return;
     }
 
     abortRef.current?.abort();
@@ -886,7 +883,7 @@ export default function PrayPage() {
               </div>
 
               <div className="mb-6">
-                <NameCapture onComplete={(name) => setUserName(name || '')} />
+                <NameCapture onComplete={setUserName} />
               </div>
 
               <div>
@@ -1048,7 +1045,7 @@ export default function PrayPage() {
                       id="prayer-input"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. If left blank, we’ll begin with “an understanding heart.”"
+                      placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. This field is optional."
                       className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
                     />
                   </div>
@@ -1157,5 +1154,25 @@ export default function PrayPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function PrayPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
+          <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+            <div className="rounded-[2rem] border border-white/70 bg-white/75 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl">
+              <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+                Loading prayer page...
+              </h1>
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <PrayPageInner />
+    </Suspense>
   );
 }
