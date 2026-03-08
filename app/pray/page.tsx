@@ -886,7 +886,7 @@ export default function PrayPage() {
               </div>
 
               <div className="mb-6">
-                <NameCapture onComplete={handleNameComplete} />
+                <NameCapture onComplete={(name) => setUserName(name || '')} />
               </div>
 
               <div>
