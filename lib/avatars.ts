@@ -74,19 +74,19 @@ export const AVATARS: Record<string, AvatarMetadata> = {
   },
   hindu: {
     id: "hindu",
-    label: "Hindu Tradition",
-    name: "Universal Soul",
+    label: "Anjali",
+    name: "Anjali",
     imagePath: "/avatars/hindu.png",
     greeting: "Namaste. What would you like to bring into prayer?",
-    guidance: "Seeking connection with the divine within."
+    guidance: "Hindu prayer, devotion, and spiritual reflection."
   },
   buddhist: {
     id: "buddhist",
-    label: "Buddhist Tradition",
-    name: "Inner Peace",
+    label: "Tenzin",
+    name: "Tenzin",
     imagePath: "/avatars/buddhist.png",
     greeting: "May you be at peace. What would you like to bring into prayer?",
-    guidance: "Mindfulness and compassionate reflection."
+    guidance: "Mindfulness, compassion, and contemplative reflection."
   }
 };
 

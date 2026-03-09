@@ -6,14 +6,13 @@ import { footerColumns } from "@/lib/siteLinks";
 const columnHeaderHref: Record<string, string> = {
   Spiritual: "/pray",
   Community: "/community",
-  Resources: "/library", // ✅ changed
+  Resources: "/library",
   About: "/about",
 };
 
 export default function FooterLinkArray() {
   return (
     <footer className="w-full bg-[#6b553b] relative overflow-hidden">
-      {/* Inner readability veil */}
       <div className="absolute inset-0 bg-white/70 pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-14">
@@ -61,7 +60,7 @@ export default function FooterLinkArray() {
             PrayWithGod.ai
           </div>
           <div className="text-[12px] text-gray-950/60">
-            © {new Date().getFullYear()} • Calm, respectful, non-coercive support.
+            © {new Date().getFullYear()} PrayWithGod.ai
           </div>
         </div>
       </div>

@@ -181,6 +181,45 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#039;');
 }
 
+function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
+  const key = String(tradition).toLowerCase();
+
+  switch (key) {
+    case 'muslim':
+      return isClassic
+        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.'
+        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.';
+
+    case 'hindu':
+      return isClassic
+        ? 'This is a tradition-faithful devotional rendering inspired by Hindu tradition. It is not a mantra, scripture, or authoritative translation of sacred text.'
+        : 'This is a newly formed devotional prayer inspired by Hindu tradition. It is not a mantra, scripture, or authoritative translation of sacred text.';
+
+    case 'buddhist':
+      return isClassic
+        ? 'This is a tradition-faithful contemplative rendering inspired by Buddhist tradition. It is not a sutra, chant, or canonical sacred text.'
+        : 'This is a newly formed contemplative prayer inspired by Buddhist tradition. It is not a sutra, chant, or canonical sacred text.';
+
+    case 'jewish':
+      return isClassic
+        ? 'This is a tradition-faithful rendering inspired by Jewish tradition. It is not presented as scripture, formal liturgy, or an authoritative translation.'
+        : 'This is a newly formed prayer inspired by Jewish tradition. It is not presented as scripture, formal liturgy, or an authoritative translation.';
+
+    case 'catholic':
+    case 'protestant':
+    case 'christian':
+      return isClassic
+        ? 'This is a tradition-faithful rendering inspired by the selected Christian prayer or prayer type. It is not a verbatim sacred text or official published liturgical form.'
+        : 'This is a newly formed prayer inspired by Christian tradition. It is not an official liturgical text or authoritative translation of sacred scripture.';
+
+    case 'grace':
+    default:
+      return isClassic
+        ? 'This is a tradition-faithful rendering inspired by the selected tradition. It is not a verbatim sacred text or official published liturgical form.'
+        : 'This is a newly formed prayer inspired by the selected tradition, offered with reverence and not presented as an official sacred text.';
+  }
+}
+
 function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -648,6 +687,7 @@ function PrayPageInner() {
     const preparedFor = effectivePrayerForName
       ? escapeHtml(`Prepared for ${effectivePrayerForName}.`)
       : '';
+    const disclosure = escapeHtml(disclosureNote);
 
     const printHtml = `
       <!DOCTYPE html>
@@ -693,7 +733,26 @@ function PrayPageInner() {
             .prepared {
               font-size: 14px;
               color: #52525b;
+              margin-bottom: 20px;
+            }
+            .note {
               margin-bottom: 28px;
+              padding: 16px 18px;
+              border: 1px solid #e5e7eb;
+              border-radius: 16px;
+              background: #fafaf9;
+              font-size: 14px;
+              line-height: 1.7;
+              color: #52525b;
+            }
+            .note-title {
+              display: block;
+              margin-bottom: 6px;
+              font-size: 11px;
+              letter-spacing: 0.16em;
+              text-transform: uppercase;
+              color: #92400e;
+              font-weight: 700;
             }
             .prayer {
               font-size: 22px;
@@ -713,6 +772,10 @@ function PrayPageInner() {
             <h1>${title}</h1>
             <div class="subtitle">${subtitle}</div>
             ${preparedFor ? `<div class="prepared">${preparedFor}</div>` : ''}
+            <div class="note">
+              <span class="note-title">About this prayer</span>
+              ${disclosure}
+            </div>
             <div class="prayer">${body}</div>
           </div>
         </body>
@@ -755,6 +818,8 @@ function PrayPageInner() {
   const resultSubtitle = isClassic
     ? `${pathDisplayLabel} • ${selectedPrayerKind === 'named' ? 'Named prayer' : 'Prayer type'}`
     : `${pathDisplayLabel} • ${selectedPrayerType || 'Free prayer'}`;
+
+  const disclosureNote = getPrayerDisclosure(selectedTradition, isClassic);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
@@ -805,6 +870,15 @@ function PrayPageInner() {
                     Prepared for {effectivePrayerForName}.
                   </p>
                 )}
+
+                <div className="mt-5 max-w-2xl rounded-[1.25rem] border border-amber-100 bg-white/75 px-5 py-4 text-left shadow-sm">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700">
+                    About this prayer
+                  </div>
+                  <p className="mt-2 text-sm leading-7 text-zinc-600">
+                    {disclosureNote}
+                  </p>
+                </div>
               </div>
 
               <div className="rounded-[1.75rem] border border-amber-100 bg-gradient-to-b from-white to-amber-50/60 px-6 py-8 shadow-sm sm:px-8 sm:py-10">

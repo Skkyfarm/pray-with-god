@@ -1,5 +1,5 @@
-import TraditionLanding from '@/components/TraditionLanding';
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <TraditionLanding trad="muslim" title="Muslim Tradition" />;
+  redirect("/pray?path=muslim");
 }
