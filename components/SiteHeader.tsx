@@ -49,10 +49,7 @@ export default function SiteHeader() {
     return () => clearTimeout(timer);
   }, [shareFeedback]);
 
-  const siteUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://praywithgod.ai";
+  const siteUrl = "https://pray-with-god.vercel.app";
 
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("PrayWithGod.ai");
@@ -96,11 +93,11 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/40 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-black/10 bg-sky-200/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-wide text-white/90 hover:text-white"
+          className="text-sm font-semibold tracking-wide text-black/90 hover:text-black"
           aria-label="Go to home"
         >
           PWG
@@ -111,7 +108,7 @@ export default function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+              className="text-xs font-semibold tracking-widest text-black/70 hover:text-black"
             >
               {item.label}
             </Link>
@@ -124,7 +121,7 @@ export default function SiteHeader() {
                 setShareOpen((v) => !v);
                 setSupportOpen(false);
               }}
-              className="text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+              className="text-xs font-semibold tracking-widest text-black/70 hover:text-black"
               aria-haspopup="menu"
               aria-expanded={shareOpen}
             >
@@ -134,7 +131,7 @@ export default function SiteHeader() {
             {shareOpen ? (
               <div
                 role="menu"
-                className="absolute right-0 mt-3 w-52 overflow-hidden rounded-2xl border border-white/10 bg-black/80 shadow-xl backdrop-blur"
+                className="absolute right-0 mt-3 w-52 overflow-hidden rounded-2xl border border-black/10 bg-sky-50/95 shadow-xl backdrop-blur"
               >
                 <button
                   type="button"
@@ -143,7 +140,7 @@ export default function SiteHeader() {
                     await handleShareSite();
                     setShareOpen(false);
                   }}
-                  className="block w-full px-4 py-3 text-left text-xs font-semibold tracking-widest text-white/80 hover:bg-white/5 hover:text-white"
+                  className="block w-full px-4 py-3 text-left text-xs font-semibold tracking-widest text-black/80 hover:bg-black/5 hover:text-black"
                 >
                   SHARE LINK
                 </button>
@@ -152,7 +149,7 @@ export default function SiteHeader() {
                   href={emailHref}
                   role="menuitem"
                   onClick={() => setShareOpen(false)}
-                  className="block px-4 py-3 text-xs font-semibold tracking-widest text-white/80 hover:bg-white/5 hover:text-white"
+                  className="block px-4 py-3 text-xs font-semibold tracking-widest text-black/80 hover:bg-black/5 hover:text-black"
                 >
                   EMAIL LINK
                 </a>
@@ -167,7 +164,7 @@ export default function SiteHeader() {
                 setSupportOpen((v) => !v);
                 setShareOpen(false);
               }}
-              className="text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+              className="text-xs font-semibold tracking-widest text-black/70 hover:text-black"
               aria-haspopup="menu"
               aria-expanded={supportOpen}
             >
@@ -177,7 +174,7 @@ export default function SiteHeader() {
             {supportOpen ? (
               <div
                 role="menu"
-                className="absolute right-0 mt-3 w-48 overflow-hidden rounded-2xl border border-white/10 bg-black/80 shadow-xl backdrop-blur"
+                className="absolute right-0 mt-3 w-48 overflow-hidden rounded-2xl border border-black/10 bg-sky-50/95 shadow-xl backdrop-blur"
               >
                 {supportLinks.map((it) => (
                   <Link
@@ -185,7 +182,7 @@ export default function SiteHeader() {
                     href={it.href}
                     role="menuitem"
                     onClick={() => setSupportOpen(false)}
-                    className="block px-4 py-3 text-xs font-semibold tracking-widest text-white/80 uppercase hover:bg-white/5 hover:text-white"
+                    className="block px-4 py-3 text-xs font-semibold tracking-widest text-black/80 uppercase hover:bg-black/5 hover:text-black"
                   >
                     {it.label}
                   </Link>
@@ -197,21 +194,21 @@ export default function SiteHeader() {
 
         <div className="flex items-center gap-3">
           {shareFeedback ? (
-            <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-white/70 md:inline">
+            <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-black/60 md:inline">
               {shareFeedback}
             </span>
           ) : null}
 
           <Link
             href="/signin"
-            className="hidden text-xs font-semibold tracking-widest text-white/70 hover:text-white md:inline"
+            className="hidden text-xs font-semibold tracking-widest text-black/70 hover:text-black md:inline"
           >
             Sign In
           </Link>
 
           <Link
             href="/join"
-            className="rounded-xl bg-white/90 px-4 py-2 text-xs font-semibold tracking-widest text-black hover:bg-white"
+            className="rounded-xl bg-black px-4 py-2 text-xs font-semibold tracking-widest text-white hover:bg-black/90"
           >
             JOIN FREE
           </Link>
@@ -228,7 +225,7 @@ export default function SiteHeader() {
                 return next;
               });
             }}
-            className="ml-1 rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold tracking-widest text-white/80 hover:text-white md:hidden"
+            className="ml-1 rounded-lg border border-black/15 px-3 py-2 text-xs font-semibold tracking-widest text-black/80 hover:text-black md:hidden"
             aria-expanded={mobileOpen}
             aria-label="Open menu"
           >
@@ -238,7 +235,7 @@ export default function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-white/10 bg-black/60 md:hidden">
+        <div className="border-t border-black/10 bg-sky-100/95 md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex flex-col">
               {headerLinks.map((item) => (
@@ -246,7 +243,7 @@ export default function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={closeAllMenus}
-                  className="py-3 text-xs font-semibold tracking-widest text-white/80 hover:text-white"
+                  className="py-3 text-xs font-semibold tracking-widest text-black/80 hover:text-black"
                 >
                   {item.label}
                 </Link>
@@ -258,7 +255,7 @@ export default function SiteHeader() {
                   setShareOpen((v) => !v);
                   setSupportOpen(false);
                 }}
-                className="py-3 text-left text-xs font-semibold tracking-widest text-white/80 hover:text-white"
+                className="py-3 text-left text-xs font-semibold tracking-widest text-black/80 hover:text-black"
                 aria-expanded={shareOpen}
               >
                 SHARE
@@ -272,7 +269,7 @@ export default function SiteHeader() {
                       await handleShareSite();
                       closeAllMenus();
                     }}
-                    className="block w-full py-2 text-left text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+                    className="block w-full py-2 text-left text-xs font-semibold tracking-widest text-black/70 hover:text-black"
                   >
                     SHARE LINK
                   </button>
@@ -280,14 +277,14 @@ export default function SiteHeader() {
                   <a
                     href={emailHref}
                     onClick={closeAllMenus}
-                    className="block py-2 text-left text-xs font-semibold tracking-widest text-white/70 hover:text-white"
+                    className="block py-2 text-left text-xs font-semibold tracking-widest text-black/70 hover:text-black"
                   >
                     EMAIL LINK
                   </a>
                 </div>
               ) : null}
 
-              <div className="py-2 text-[10px] font-semibold tracking-widest text-white/40">
+              <div className="py-2 text-[10px] font-semibold tracking-widest text-black/40">
                 SUPPORT
               </div>
 
@@ -296,7 +293,7 @@ export default function SiteHeader() {
                   key={it.href}
                   href={it.href}
                   onClick={closeAllMenus}
-                  className="py-3 text-xs font-semibold tracking-widest text-white/80 uppercase hover:text-white"
+                  className="py-3 text-xs font-semibold tracking-widest text-black/80 uppercase hover:text-black"
                 >
                   {it.label}
                 </Link>
@@ -305,13 +302,13 @@ export default function SiteHeader() {
               <Link
                 href="/signin"
                 onClick={closeAllMenus}
-                className="py-3 text-xs font-semibold tracking-widest text-white/80 hover:text-white"
+                className="py-3 text-xs font-semibold tracking-widest text-black/80 hover:text-black"
               >
                 Sign In
               </Link>
 
               {shareFeedback ? (
-                <div className="pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                <div className="pt-2 text-[10px] font-semibold uppercase tracking-widest text-black/60">
                   {shareFeedback}
                 </div>
               ) : null}

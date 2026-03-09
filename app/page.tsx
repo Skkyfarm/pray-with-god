@@ -208,15 +208,7 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <div className="fixed bottom-4 left-4 z-50">
-        <Link
-          href="/health"
-          className="text-[10px] text-black hover:opacity-70 transition-opacity uppercase tracking-widest"
-        >
-          Health Check
-        </Link>
-      </div>
+      
     </main>
   );
 }

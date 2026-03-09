@@ -256,7 +256,7 @@ function PrayPageInner() {
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.2);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
@@ -346,7 +346,12 @@ function PrayPageInner() {
         }
 
         const preferred =
-          available.find((voice) => /^en(-|_)/i.test(voice.lang)) || available[0];
+          available.find((voice) => voice.name === 'Google UK English Male') ||
+          available.find((voice) => voice.name === 'Google UK English Male (en-GB)') ||
+          available.find((voice) => voice.lang === 'en-GB' && /male/i.test(voice.name)) ||
+          available.find((voice) => voice.lang === 'en-GB') ||
+          available.find((voice) => /^en(-|_)/i.test(voice.lang)) ||
+          available[0];
 
         return preferred?.voiceURI || '';
       });

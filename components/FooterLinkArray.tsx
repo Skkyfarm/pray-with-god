@@ -12,19 +12,19 @@ const columnHeaderHref: Record<string, string> = {
 
 export default function FooterLinkArray() {
   return (
-    <footer className="w-full bg-[#6b553b] relative overflow-hidden">
-      <div className="absolute inset-0 bg-white/70 pointer-events-none" />
+    <footer className="relative w-full overflow-hidden bg-gradient-to-r from-amber-100 via-yellow-100 to-orange-100">
+      <div className="absolute inset-0 pointer-events-none bg-white/35" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className="relative z-10 mx-auto max-w-6xl px-6 py-14">
+        <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
           {footerColumns.map((col) => {
             const headerHref = columnHeaderHref[col.title];
 
             return (
               <div key={col.title} className="space-y-4">
-                <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-950/80">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/80">
                   {headerHref ? (
-                    <Link href={headerHref} className="hover:text-gray-950">
+                    <Link href={headerHref} className="hover:text-black">
                       {col.title}
                     </Link>
                   ) : (
@@ -37,13 +37,13 @@ export default function FooterLinkArray() {
                     <li key={item.label}>
                       {item.href ? (
                         <Link
-                          className="text-gray-950/70 hover:text-gray-950"
+                          className="text-black/70 hover:text-black"
                           href={item.href}
                         >
                           {item.label}
                         </Link>
                       ) : (
-                        <span className="text-gray-950/40 cursor-default">
+                        <span className="cursor-default text-black/40">
                           {item.label}
                         </span>
                       )}
@@ -55,11 +55,11 @@ export default function FooterLinkArray() {
           })}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-black/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="text-[12px] uppercase tracking-[0.25em] text-gray-950/60">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-black/10 pt-8 md:flex-row md:items-center">
+          <div className="text-[12px] uppercase tracking-[0.25em] text-black/60">
             PrayWithGod.ai
           </div>
-          <div className="text-[12px] text-gray-950/60">
+          <div className="text-[12px] text-black/60">
             © {new Date().getFullYear()} PrayWithGod.ai
           </div>
         </div>
