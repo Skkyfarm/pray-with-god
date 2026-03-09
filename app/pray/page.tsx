@@ -4,7 +4,6 @@ import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import GuideAvatar from '@/components/GuideAvatar';
-import NameCapture from '@/components/NameCapture';
 import { AVATARS } from '@/lib/avatars';
 import type { Tradition } from '@/lib/avatars';
 import {
@@ -27,6 +26,7 @@ import {
   Square,
   Volume2,
   XCircle,
+  Share2,
 } from 'lucide-react';
 
 type PrayerResponse = {
@@ -204,11 +204,13 @@ function PrayPageInner() {
   const [selectedFeelings, setSelectedFeelings] = useState<string[]>([]);
   const [input, setInput] = useState('');
   const [intention, setIntention] = useState('');
+  const [prayerForName, setPrayerForName] = useState('');
 
   const [isReflecting, setIsReflecting] = useState(false);
   const [prayer, setPrayer] = useState('');
   const [error, setError] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [shareFeedback, setShareFeedback] = useState('');
 
   const [quietIntro, setQuietIntro] = useState(false);
   const [fromPath, setFromPath] = useState('/');
@@ -222,6 +224,12 @@ function PrayPageInner() {
     const savedName = localStorage.getItem('pwg_user_name');
     if (savedName) setUserName(savedName);
   }, []);
+
+  useEffect(() => {
+    if (!shareFeedback) return;
+    const timer = setTimeout(() => setShareFeedback(''), 2200);
+    return () => clearTimeout(timer);
+  }, [shareFeedback]);
 
   useEffect(() => {
     if (isQuietPath(pathParam)) {
@@ -440,6 +448,8 @@ function PrayPageInner() {
     }
   }
 
+  const effectivePrayerForName = prayerForName.trim() || userName || '';
+
   async function handleGeneratePrayer() {
     stopSpeaking();
     setError('');
@@ -464,7 +474,7 @@ function PrayPageInner() {
               tradition: selectedTradition,
               mode: 'classic' as const,
               avatarLabel: currentAvatar?.label ?? 'Grace',
-              userName,
+              userName: effectivePrayerForName || null,
               selectedPrayerLabel,
               selectedPrayerKind,
               intention: intention.trim(),
@@ -474,7 +484,7 @@ function PrayPageInner() {
               mode: 'free' as const,
               avatarLabel: currentAvatar?.label ?? 'Grace',
               prayerType: selectedPrayerType,
-              userName,
+              userName: effectivePrayerForName || null,
               feelings: selectedFeelings,
               input: input.trim() || 'an understanding heart',
             };
@@ -577,6 +587,50 @@ function PrayPageInner() {
     synth.speak(utterance);
   }
 
+  async function handleSharePrayer() {
+    if (!prayer.trim()) return;
+
+    const siteUrl =
+      typeof window !== 'undefined'
+        ? window.location.origin
+        : 'https://praywithgod.ai';
+
+    const shareTitle = effectivePrayerForName
+      ? `Prayer for ${effectivePrayerForName}`
+      : 'Prayer from PrayWithGod.ai';
+
+    const shareText = [
+      shareTitle,
+      '',
+      prayer,
+      '',
+      'Created with PrayWithGod.ai',
+      siteUrl,
+    ].join('\n');
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: siteUrl,
+        });
+        setShareFeedback('Prayer shared');
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareText);
+      setShareFeedback('Prayer copied');
+    } catch {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setShareFeedback('Prayer copied');
+      } catch {
+        setShareFeedback('Unable to share');
+      }
+    }
+  }
+
   function handlePrint() {
     if (typeof window === 'undefined' || !prayer.trim()) return;
 
@@ -591,7 +645,9 @@ function PrayPageInner() {
     );
 
     const body = escapeHtml(prayer).replace(/\n/g, '<br />');
-    const preparedFor = userName ? escapeHtml(`Prepared for ${userName}.`) : '';
+    const preparedFor = effectivePrayerForName
+      ? escapeHtml(`Prepared for ${effectivePrayerForName}.`)
+      : '';
 
     const printHtml = `
       <!DOCTYPE html>
@@ -744,9 +800,9 @@ function PrayPageInner() {
                   {resultSubtitle}
                 </p>
 
-                {userName && (
+                {effectivePrayerForName && (
                   <p className="mt-4 max-w-2xl text-sm text-zinc-600">
-                    Prepared for {userName}.
+                    Prepared for {effectivePrayerForName}.
                   </p>
                 )}
               </div>
@@ -766,6 +822,15 @@ function PrayPageInner() {
                   >
                     <Printer className="h-4 w-4" />
                     Print
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSharePrayer}
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Share this Prayer
                   </button>
 
                   <button
@@ -804,6 +869,12 @@ function PrayPageInner() {
                     Add intention & regenerate
                   </button>
                 </div>
+
+                {shareFeedback ? (
+                  <div className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    {shareFeedback}
+                  </div>
+                ) : null}
 
                 <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-white/80 p-4 sm:flex-row sm:items-end sm:justify-center">
                   <div className="min-w-[220px]">
@@ -882,9 +953,12 @@ function PrayPageInner() {
                 </div>
               </div>
 
-              <div className="mb-6">
-                <NameCapture onComplete={setUserName} />
-              </div>
+              {userName ? (
+                <div className="mb-6 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-700">
+                  Personal name:{' '}
+                  <span className="font-semibold text-zinc-900">{userName}</span>
+                </div>
+              ) : null}
 
               <div>
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
@@ -921,6 +995,32 @@ function PrayPageInner() {
                   {isClassic
                     ? 'You chose a traditional prayer or prayer type. You can add a personal intention, then generate a tradition-faithful rendition.'
                     : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
+                </p>
+              </div>
+
+              <div className="mb-8">
+                <label
+                  htmlFor="prayer-for-name"
+                  className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500"
+                >
+                  Who is this prayer for? (optional)
+                </label>
+
+                <input
+                  id="prayer-for-name"
+                  type="text"
+                  value={prayerForName}
+                  onChange={(e) => setPrayerForName(e.target.value)}
+                  placeholder={
+                    userName
+                      ? `Leave blank to use your saved name, ${userName}.`
+                      : 'Example: Mom, Michael, my family, or myself'
+                  }
+                  className="w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
+                />
+
+                <p className="mt-2 text-sm text-zinc-500">
+                  This does not change your saved name. It only applies to this prayer.
                 </p>
               </div>
 

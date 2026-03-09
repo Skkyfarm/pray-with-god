@@ -6,15 +6,20 @@
   --glow-color: rgba(255, 255, 255, 0.28);
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
 body {
   background: linear-gradient(
     to bottom,
-    #f8fafc 0%,
-    #fef3c7 18%,
-    #fde68a 34%,
-    #fde2e8 55%,
-    #e0f2fe 78%,
-    #ffffff 100%
+    #dbeafe 0%,
+    #eff6ff 16%,
+    #f8fafc 34%,
+    #fce7f3 58%,
+    #fde68a 82%,
+    #fff7ed 100%
   );
   background-attachment: fixed;
   color: #1a1a1a;
@@ -22,37 +27,23 @@ body {
   overflow-x: hidden;
 }
 
-/* soft top light wash */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(
-    circle at 50% 0%,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.18) 28%,
-    transparent 68%
-  );
-  pointer-events: none;
-  z-index: -2;
-}
-
 /* Global sunrise / aura background */
+.bg-sunrise,
 .bg-rays {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% -6%, rgba(251, 191, 36, 0.32) 0%, transparent 28%),
-    radial-gradient(circle at 82% 18%, rgba(125, 211, 252, 0.22) 0%, transparent 22%),
-    radial-gradient(circle at 10% 38%, rgba(251, 113, 133, 0.18) 0%, transparent 18%),
-    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 47%, rgba(255, 255, 255, 0.08) 53%, transparent 60%),
-    linear-gradient(245deg, transparent 40%, rgba(255, 255, 255, 0.08) 47%, rgba(255, 255, 255, 0.08) 53%, transparent 60%);
+    radial-gradient(circle at 50% 112%, rgba(251, 191, 36, 0.42) 0%, rgba(251, 191, 36, 0.18) 18%, transparent 38%),
+    radial-gradient(circle at 82% 16%, rgba(125, 211, 252, 0.22) 0%, transparent 22%),
+    radial-gradient(circle at 10% 40%, rgba(251, 113, 133, 0.14) 0%, transparent 18%),
+    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.06) 47%, rgba(255, 255, 255, 0.06) 53%, transparent 60%),
+    linear-gradient(245deg, transparent 40%, rgba(255, 255, 255, 0.06) 47%, rgba(255, 255, 255, 0.06) 53%, transparent 60%);
   background-size: 100% 100%, 100% 100%, 100% 100%, 200% 200%, 200% 200%;
   filter: blur(42px);
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 /* Glassmorphism - refined for sunrise background */
@@ -65,9 +56,15 @@ body::before {
 
 /* Float Animation */
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {

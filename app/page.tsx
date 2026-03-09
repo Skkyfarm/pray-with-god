@@ -62,13 +62,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="relative min-h-screen flex flex-col text-black">
-      <section className="relative flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-20 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(254,243,199,0.8)_0%,rgba(253,186,116,0.3)_40%,transparent_70%)] blur-[120px] opacity-80" />
-          <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-blue-400/10 via-transparent to-transparent" />
-        </div>
-
+    <main className="relative min-h-screen overflow-hidden bg-transparent text-black">
+      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-24 pb-20">
         <div className="relative z-10 max-w-4xl w-full flex flex-col items-center text-center">
           <div className="space-y-4 mb-10 max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.35em] text-black">
@@ -185,7 +180,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto w-full px-8 pb-32">
+      <section className="relative z-10 max-w-5xl mx-auto w-full px-8 pb-32">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-xs uppercase tracking-[0.4em] text-black font-semibold">
             Guidance across traditions
@@ -222,6 +217,6 @@ export default function Home() {
           Health Check
         </Link>
       </div>
-    </div>
+    </main>
   );
 }
