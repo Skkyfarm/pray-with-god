@@ -1,18 +1,16 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, RotateCcw } from 'lucide-react';
 
 function AvatarThumb({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-black/10 border border-black/10 shadow-sm">
+    <div className="h-20 w-20 overflow-hidden rounded-2xl border border-black/10 bg-black/10 shadow-sm">
       <Image
         src={src}
         alt={alt}
         width={160}
         height={160}
-        className="w-full h-full object-cover"
+        className="h-full w-full object-cover"
         priority
       />
     </div>
@@ -21,36 +19,32 @@ function AvatarThumb({ src, alt }: { src: string; alt: string }) {
 
 export default function ChooseChristianPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Sunrise background */}
+    <div className="relative min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-200 via-pink-200 to-amber-200" />
-
-      {/* Readability veil */}
       <div className="absolute inset-0 bg-white/55 backdrop-blur-[1px]" />
 
-      {/* Top nav */}
-      <div className="absolute top-8 left-8 z-20 flex items-center gap-8">
+      <div className="absolute left-8 top-8 z-20 flex items-center gap-8">
         <Link
           href="/choose"
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 transition-colors hover:text-gray-950"
         >
-          <ChevronLeft className="w-3 h-3" />
+          <ChevronLeft className="h-3 w-3" />
           Back
         </Link>
 
         <Link
           href="/pray?path=grace&mode=free"
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 hover:text-gray-950 transition-colors"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-950/60 transition-colors hover:text-gray-950"
         >
-          <RotateCcw className="w-3 h-3" />
+          <RotateCcw className="h-3 w-3" />
           Return to Grace
         </Link>
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-20">
-        <div className="w-full max-w-4xl text-center space-y-10">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20">
+        <div className="w-full max-w-4xl space-y-10 text-center">
           <div className="space-y-3">
-            <h1 className="text-3xl md:text-4xl font-serif italic text-gray-950">
+            <h1 className="font-serif text-3xl italic text-gray-950 md:text-4xl">
               Choose a Christian path
             </h1>
             <p className="text-[10px] uppercase tracking-[0.25em] text-gray-950/60">
@@ -58,56 +52,60 @@ export default function ChooseChristianPage() {
             </p>
           </div>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 pt-4">
+          <div className="grid grid-cols-1 gap-8 pt-4 md:grid-cols-2 md:gap-10">
             <Link
-              href="/choose/catholic"
-              className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
+              href="/pray?path=catholic&mode=free"
+              className="group block rounded-3xl border border-black/10 bg-white/55 shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all hover:border-black/15 hover:bg-white/70"
             >
-              <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
+              <div className="flex flex-col items-center justify-center gap-6 p-10 md:p-12">
                 <AvatarThumb src="/avatars/priest.png" alt="Priest avatar" />
 
                 <div className="space-y-2">
-                  <div className="text-2xl font-serif italic text-gray-950">Catholic</div>
+                  <div className="font-serif text-2xl italic text-gray-950">
+                    Catholic
+                  </div>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-gray-950/60">
-                    Traditional • Liturgy
+                    Tradition • Devotion
                   </div>
                 </div>
 
-                <div className="text-[12px] text-gray-950/65 max-w-sm">
-                  A prayer voice with gentle tradition, reverence, and surrender to God’s will.
+                <div className="max-w-sm text-[12px] text-gray-950/65">
+                  A prayer voice with gentle tradition, reverence, and surrender
+                  to God’s will.
                 </div>
               </div>
             </Link>
 
             <Link
-              href="/choose/protestant"
-              className="group block rounded-3xl bg-white/55 border border-black/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:bg-white/70 hover:border-black/15 transition-all"
+              href="/pray?path=protestant&mode=free"
+              className="group block rounded-3xl border border-black/10 bg-white/55 shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all hover:border-black/15 hover:bg-white/70"
             >
-              <div className="p-10 md:p-12 flex flex-col items-center justify-center gap-6">
+              <div className="flex flex-col items-center justify-center gap-6 p-10 md:p-12">
                 <AvatarThumb src="/avatars/minister.png" alt="Minister avatar" />
 
                 <div className="space-y-2">
-                  <div className="text-2xl font-serif italic text-gray-950">Protestant</div>
+                  <div className="font-serif text-2xl italic text-gray-950">
+                    Protestant
+                  </div>
                   <div className="text-[10px] uppercase tracking-[0.22em] text-gray-950/60">
                     Scripture • Grace
                   </div>
                 </div>
 
-                <div className="text-[12px] text-gray-950/65 max-w-sm">
-                  A warm pastoral prayer voice — direct, encouraging, grounded in grace.
+                <div className="max-w-sm text-[12px] text-gray-950/65">
+                  A warm pastoral prayer voice — direct, encouraging, and
+                  grounded in grace.
                 </div>
               </div>
             </Link>
           </div>
 
-          {/* Bottom helper link */}
           <div className="pt-10">
             <Link
               href="/choose"
-              className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gray-950/55 hover:text-gray-950 transition-colors"
+              className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gray-950/55 transition-colors hover:text-gray-950"
             >
-              <ChevronLeft className="w-3 h-3" />
+              <ChevronLeft className="h-3 w-3" />
               Back to traditions
             </Link>
           </div>

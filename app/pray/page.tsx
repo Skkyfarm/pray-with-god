@@ -7,10 +7,11 @@ import GuideAvatar from '@/components/GuideAvatar';
 import { AVATARS } from '@/lib/avatars';
 import type { Tradition } from '@/lib/avatars';
 import {
-  PRAYER_CATALOG,
+  getPrayerOptions,
   type TraditionKey,
   type PrayerKind,
-} from '@/data/prayerCatalog';
+  type PrayerEntry,
+} from '@/lib/prayerCatalog';
 import {
   ArrowLeft,
   Sparkles,
@@ -18,7 +19,6 @@ import {
   Send,
   RefreshCw,
   CheckCircle2,
-  Wind,
   Bookmark,
   Printer,
   Play,
@@ -68,10 +68,12 @@ function normalizePrayerKind(value: string | null): PrayerKind {
 
 function normalizeCatalogKey(path: string | null): TraditionKey | null {
   switch ((path || '').toLowerCase()) {
+    case 'grace':
+      return 'grace';
     case 'christian':
-      return 'protestant' as TraditionKey;
+      return 'protestant';
     case 'protestant':
-      return 'protestant' as TraditionKey;
+      return 'protestant';
     case 'catholic':
       return 'catholic';
     case 'jewish':
@@ -149,27 +151,35 @@ function getGuideSubLabel(
   }
 }
 
-function getFreePrayerTypes(catalogKey: TraditionKey | null): string[] {
-  if (!catalogKey) return GRACE_FALLBACK_TYPES;
-
-  const items = PRAYER_CATALOG[catalogKey] || [];
-
-  const typeLabels = items
-    .filter((item) => item.kind === 'type')
-    .map((item) => item.label.trim())
-    .filter(Boolean);
-
-  const uniqueTypeLabels = Array.from(new Set(typeLabels));
-
-  if (uniqueTypeLabels.length > 0) {
-    return uniqueTypeLabels;
+function getFreePrayerOptions(catalogKey: TraditionKey | null): PrayerEntry[] {
+  if (!catalogKey) {
+    return GRACE_FALLBACK_TYPES.map((label) => ({
+      id: label.toLowerCase().replace(/\s+/g, '-'),
+      label,
+      gloss: label,
+      display: label,
+      kind: 'type' as PrayerKind,
+    }));
   }
 
-  const fallbackLabels = Array.from(
-    new Set(items.map((item) => item.label.trim()).filter(Boolean))
-  );
+  const items = getPrayerOptions(catalogKey);
+  const typeItems = items.filter((item) => item.kind === 'type');
 
-  return fallbackLabels.length > 0 ? fallbackLabels : GRACE_FALLBACK_TYPES;
+  if (typeItems.length > 0) {
+    return typeItems;
+  }
+
+  if (items.length > 0) {
+    return items;
+  }
+
+  return GRACE_FALLBACK_TYPES.map((label) => ({
+    id: label.toLowerCase().replace(/\s+/g, '-'),
+    label,
+    gloss: label,
+    display: label,
+    kind: 'type' as PrayerKind,
+  }));
 }
 
 function escapeHtml(value: string) {
@@ -234,11 +244,15 @@ function getLocalTimeContext() {
     );
 
     const dayPart =
-      hour24 < 5 ? 'night' :
-      hour24 < 12 ? 'morning' :
-      hour24 < 17 ? 'afternoon' :
-      hour24 < 21 ? 'evening' :
-      'night';
+      hour24 < 5
+        ? 'night'
+        : hour24 < 12
+          ? 'morning'
+          : hour24 < 17
+            ? 'afternoon'
+            : hour24 < 21
+              ? 'evening'
+              : 'night';
 
     const localDateTime = new Intl.DateTimeFormat('en-US', {
       timeZone: timezone || undefined,
@@ -277,7 +291,7 @@ function PrayPageInner() {
 
   const [userName, setUserName] = useState<string | null>(null);
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
-  const [activeCatalogKey, setActiveCatalogKey] = useState<TraditionKey | null>(null);
+  const [activeCatalogKey, setActiveCatalogKey] = useState<TraditionKey | null>('grace');
   const [mode, setMode] = useState<PrayMode>('free');
 
   const [selectedPrayerType, setSelectedPrayerType] = useState('');
@@ -296,7 +310,6 @@ function PrayPageInner() {
   const [shareFeedback, setShareFeedback] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
 
-  const [quietIntro, setQuietIntro] = useState(false);
   const [fromPath, setFromPath] = useState('/');
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -349,12 +362,18 @@ function PrayPageInner() {
 
     const mappedTradition = mapPathToTradition(pathParam);
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
-    const nextMode = normalizeMode(modeParam);
+    const requestedMode = normalizeMode(modeParam);
+
+    const christianClassicDisabled =
+      requestedMode === 'classic' &&
+      ['christian', 'catholic', 'protestant'].includes(
+        String(mappedTradition).toLowerCase()
+      );
+
+    const nextMode: PrayMode = christianClassicDisabled ? 'free' : requestedMode;
 
     if (fromParam) {
       setFromPath(fromParam);
-    } else if (nextMode === 'classic' && pathParam) {
-      setFromPath(`/choose/${pathParam}`);
     } else {
       setFromPath('/');
     }
@@ -365,9 +384,13 @@ function PrayPageInner() {
       localStorage.setItem('pwg_tradition', mappedTradition);
     } else {
       const savedTradition = localStorage.getItem('pwg_tradition') as Tradition | null;
+
       if (savedTradition && AVATARS[savedTradition]) {
         setSelectedTradition(savedTradition);
         setActiveCatalogKey(normalizeCatalogKey(savedTradition));
+      } else {
+        setSelectedTradition('grace' as Tradition);
+        setActiveCatalogKey('grace');
       }
     }
 
@@ -376,12 +399,10 @@ function PrayPageInner() {
     if (nextMode === 'classic') {
       setSelectedPrayerLabel(prayerLabelParam || '');
       setSelectedPrayerKind(normalizePrayerKind(prayerKindParam));
-      setQuietIntro(false);
       setSelectedFeelings([]);
     } else {
       setSelectedPrayerLabel('');
       setSelectedPrayerKind('type');
-      setQuietIntro(false);
       setSelectedFeelings([]);
     }
   }, [pathParam, modeParam, prayerLabelParam, prayerKindParam, fromParam, router]);
@@ -433,8 +454,8 @@ function PrayPageInner() {
   }, []);
 
   const traditions = useMemo(() => {
-    return (Object.entries(AVATARS) as [Tradition, (typeof AVATARS)[Tradition]][])
-      .filter(([key, avatar]) => {
+    return (Object.entries(AVATARS) as [Tradition, (typeof AVATARS)[Tradition]][]).filter(
+      ([key, avatar]) => {
         const normalizedKey = String(key).toLowerCase();
         const normalizedLabel = String(avatar?.label || '').toLowerCase();
 
@@ -443,7 +464,8 @@ function PrayPageInner() {
         if (normalizedLabel === 'silence') return false;
 
         return true;
-      });
+      }
+    );
   }, []);
 
   const currentAvatar =
@@ -456,23 +478,36 @@ function PrayPageInner() {
     AVATARS.buddhist ||
     AVATARS.grace;
 
-  const prayerTypes = useMemo(() => {
-    return getFreePrayerTypes(activeCatalogKey);
+  const freePrayerOptions = useMemo(() => {
+    return getFreePrayerOptions(activeCatalogKey);
   }, [activeCatalogKey]);
 
   const traditionalOptions = useMemo(() => {
     if (!activeCatalogKey) return [];
-    return PRAYER_CATALOG[activeCatalogKey] || [];
+    return getPrayerOptions(activeCatalogKey);
   }, [activeCatalogKey]);
+
+  const selectedTraditionalEntry = useMemo(() => {
+    return (
+      traditionalOptions.find(
+        (item) =>
+          item.label === selectedPrayerLabel && item.kind === selectedPrayerKind
+      ) || null
+    );
+  }, [traditionalOptions, selectedPrayerLabel, selectedPrayerKind]);
+
+  const selectedFreePrayerEntry = useMemo(() => {
+    return freePrayerOptions.find((item) => item.label === selectedPrayerType) || null;
+  }, [freePrayerOptions, selectedPrayerType]);
 
   useEffect(() => {
     if (mode !== 'free') return;
 
     setSelectedPrayerType((prev) => {
-      if (prev && prayerTypes.includes(prev)) return prev;
-      return prayerTypes[0] || '';
+      if (prev && freePrayerOptions.some((item) => item.label === prev)) return prev;
+      return freePrayerOptions[0]?.label || '';
     });
-  }, [mode, prayerTypes]);
+  }, [mode, freePrayerOptions]);
 
   useEffect(() => {
     if (mode !== 'classic') return;
@@ -526,30 +561,25 @@ function PrayPageInner() {
     }
 
     const nextCatalogKey = normalizeCatalogKey(trad);
-    const nextCatalogItems = nextCatalogKey ? PRAYER_CATALOG[nextCatalogKey] || [] : [];
+    const nextFreeOptions = getFreePrayerOptions(nextCatalogKey);
 
     setSelectedTradition(trad);
     setActiveCatalogKey(nextCatalogKey);
+
+    // Sidebar switching always goes to free mode so feelings remain available.
+    setMode('free');
+
     setPrayer('');
     setError('');
     setHasSubmitted(false);
-    setQuietIntro(false);
     setShowSaveModal(false);
 
     setInput('');
     setIntention('');
     setSelectedFeelings([]);
-    setSelectedPrayerType('');
-
-    if (nextCatalogItems.length > 0) {
-      setMode('classic');
-      setSelectedPrayerLabel(nextCatalogItems[0].label);
-      setSelectedPrayerKind(nextCatalogItems[0].kind);
-    } else {
-      setMode('free');
-      setSelectedPrayerLabel('');
-      setSelectedPrayerKind('type');
-    }
+    setSelectedPrayerLabel('');
+    setSelectedPrayerKind('type');
+    setSelectedPrayerType(nextFreeOptions[0]?.label || '');
   }
 
   const effectivePrayerForName = prayerForName.trim() || userName || '';
@@ -652,7 +682,7 @@ function PrayPageInner() {
     } else {
       setInput('');
       setSelectedFeelings([]);
-      setSelectedPrayerType(prayerTypes[0] || '');
+      setSelectedPrayerType(freePrayerOptions[0]?.label || '');
     }
   }
 
@@ -876,8 +906,8 @@ function PrayPageInner() {
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
   const resultTitle = isClassic
-    ? selectedPrayerLabel || 'Traditional prayer'
-    : selectedPrayerType || 'Prayer';
+    ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'
+    : selectedFreePrayerEntry?.display || selectedPrayerType || 'Prayer';
 
   const resultSubtitle = pathDisplayLabel;
 
@@ -1214,21 +1244,6 @@ function PrayPageInner() {
                 </p>
               </div>
 
-              {quietIntro && !isClassic && (
-                <div className="mb-8 rounded-[1.75rem] border border-sky-100 bg-white/70 px-5 py-4 shadow-sm">
-                  <div className="flex items-start gap-3">
-                    <Wind className="mt-0.5 h-5 w-5 text-sky-700" />
-                    <div>
-                      <div className="font-medium text-zinc-900">A quiet beginning</div>
-                      <p className="mt-1 text-sm text-zinc-900">
-                        You came here to sit quietly first. Take a breath, gather your thoughts,
-                        and when you are ready, write a few words or simply continue with a peaceful heart.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {isClassic ? (
                 <>
                   <div className="mb-8">
@@ -1256,10 +1271,7 @@ function PrayPageInner() {
                                 : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
-                            <div className="font-medium text-zinc-900">{item.label}</div>
-                            <div className="mt-1 text-sm text-zinc-900">
-                              {item.kind === 'named' ? 'Named' : 'Type'}
-                            </div>
+                            <div className="font-medium text-zinc-900">{item.display}</div>
                           </button>
                         );
                       })}
@@ -1274,11 +1286,11 @@ function PrayPageInner() {
                       </span>
                     </div>
                     <div className="text-xl font-semibold text-zinc-900">
-                      {selectedPrayerLabel || 'Traditional prayer'}
+                      {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'}
                     </div>
-                    <div className="mt-2 text-sm text-zinc-900">
-                      {selectedPrayerKind === 'named' ? 'Named prayer' : 'Prayer type'}
-                    </div>
+                    {selectedPrayerKind === 'named' ? (
+                      <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
+                    ) : null}
                   </div>
 
                   <div className="mb-8">
@@ -1304,20 +1316,20 @@ function PrayPageInner() {
                       Prayer type
                     </div>
                     <div className="flex flex-wrap gap-3">
-                      {prayerTypes.map((type) => {
-                        const active = selectedPrayerType === type;
+                      {freePrayerOptions.map((item) => {
+                        const active = selectedPrayerType === item.label;
                         return (
                           <button
-                            key={type}
+                            key={item.id}
                             type="button"
-                            onClick={() => setSelectedPrayerType(type)}
+                            onClick={() => setSelectedPrayerType(item.label)}
                             className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                               active
                                 ? 'border-sky-400 bg-sky-100 text-zinc-900'
                                 : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
-                            {type}
+                            {item.display}
                           </button>
                         );
                       })}

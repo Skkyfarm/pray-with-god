@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { buildStructureInstruction, postProcessPrayer } from "@/lib/prayerStructure";
+import {
+  buildStructureInstruction,
+  postProcessPrayer,
+} from "@/lib/prayerStructure";
 import type { Tradition } from "@/lib/avatars";
 
-export const runtime = "nodejs"; // ensures server runtime (needed for @google/genai)
+export const runtime = "nodejs";
 
 type PrayMode = "free" | "classic";
 type PrayerKind = "type" | "named";
@@ -20,12 +23,12 @@ type PrayBody = {
   // free mode
   feelings?: string[];
   input?: string;
-  prayerType?: string; // from pray/page.tsx selector
+  prayerType?: string;
 
   // classic mode
-  selectedPrayerLabel?: string; // e.g., "The Prayer of St. Francis" or "Shacharit"
-  selectedPrayerKind?: PrayerKind; // "type" | "named"
-  intention?: string; // optional personalization
+  selectedPrayerLabel?: string;
+  selectedPrayerKind?: PrayerKind;
+  intention?: string;
 
   // optional time awareness from client
   timezone?: string | null;
@@ -33,8 +36,6 @@ type PrayBody = {
   dayPart?: DayPart | null;
 };
 
-// Pull a short exact phrase from the user's message to enforce specificity.
-// We keep it simple & safe: pick up to 10 words from the start of the message.
 function pickExactPhrase(input: string) {
   const cleaned = String(input || "").replace(/\s+/g, " ").trim();
   if (!cleaned) return "";
@@ -47,8 +48,6 @@ function pickExactPhrase(input: string) {
   return phrase;
 }
 
-// Remove common generic openers if the model slips.
-// Also trims leading quotes/spaces.
 function stripGenericOpeners(text: string) {
   let out = text.trim();
 
@@ -75,6 +74,132 @@ function normalizeMode(mode?: string): PrayMode {
 
 function normalizeKind(kind?: string): PrayerKind {
   return kind === "named" ? "named" : "type";
+}
+
+function isHighRiskNamedPrayer(label: string) {
+  const value = label.toLowerCase().trim();
+
+  const exactMatches = new Set([
+    "the lord’s prayer",
+    "the lord's prayer",
+    "our father",
+    "magnificat",
+    "the magnificat",
+    "prayer of mary",
+    "the prayer of mary",
+    "the prayer of mary, the mother of jesus",
+    "prayer of hannah",
+    "the prayer of hannah",
+    "prayer of king solomon",
+    "the prayer of king solomon",
+  ]);
+
+  return exactMatches.has(value);
+}
+
+function buildTraditionBoundaryNotes(tradition: Tradition) {
+  const key = String(tradition).toLowerCase();
+
+  switch (key) {
+    case "muslim":
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a reverent, humble, devotional prayer inspired by Islamic spirituality.
+- Do NOT imitate Qur'an, Qur'anic cadence, surah structure, revelation language, or authoritative sacred speech.
+- Do NOT present the output as scripture, translation, or sacred recitation.
+      `.trim();
+
+    case "hindu":
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a reverent devotional prayer inspired by Hindu tradition.
+- Do NOT imitate mantra, shloka, scripture, or authoritative sacred translation.
+- Do NOT create pseudo-scriptural verse or present the prayer as a sacred formula.
+      `.trim();
+
+    case "buddhist":
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a contemplative, compassionate devotional prayer inspired by Buddhist tradition.
+- Do NOT imitate sutras, canonical chants, or liturgical recitations.
+- Do NOT make the text read like a translated sacred text.
+      `.trim();
+
+    case "jewish":
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a reverent prayer inspired by Jewish tradition.
+- Do NOT imitate scripture, formal liturgy, or an authoritative translation.
+- Do NOT reproduce recognizable liturgical wording in sequence.
+      `.trim();
+
+    case "catholic":
+    case "protestant":
+    case "christian":
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a reverent Christian prayer that feels devotional and tradition-aware.
+- Do NOT rewrite scripture, psalms, gospel prayers, creeds, or official liturgical texts.
+- Do NOT reproduce hallmark lines from famous canonical prayers unless they are extremely brief and unavoidable.
+      `.trim();
+
+    case "grace":
+    default:
+      return `
+TRADITION-SPECIFIC BOUNDARY:
+- Write a reverent, original devotional prayer shaped by the selected tradition.
+- Do NOT imitate sacred texts, official liturgy, or authoritative translations.
+      `.trim();
+  }
+}
+
+function buildUniversalBoundaryNotes() {
+  return `
+PWG CONTENT POLICY (MANDATORY):
+- Produce an ORIGINAL devotional prayer.
+- The output may be inspired by a tradition, prayer form, or famous prayer, but it must remain original writing.
+- Do NOT quote or closely paraphrase scripture, sutras, mantras, psalms, formal liturgy, or canonized prayers at length.
+- Do NOT imitate the signature wording, sequence, cadence, or structure of a famous sacred prayer too closely.
+- Do NOT present the output as an official translation, revealed text, canonical prayer, or authorized liturgical form.
+- Do NOT mention rules, policy, copyright, or safety in the prayer itself.
+- Keep the result recognizably human and devotional, not pseudo-scriptural or artificially grand.
+- Avoid fake antiquity, fake scripture voice, and "new sacred text" energy.
+  `.trim();
+}
+
+function buildClassicBoundaryNotes(
+  selectedPrayerLabel: string,
+  selectedPrayerKind: PrayerKind
+) {
+  const highRisk = selectedPrayerKind === "named" && isHighRiskNamedPrayer(selectedPrayerLabel);
+
+  if (highRisk) {
+    return `
+CLASSIC MODE BOUNDARY FOR HIGH-RISK NAMED PRAYER:
+- The selected item is scripture-adjacent or especially recognizable.
+- Do NOT render it line-by-line.
+- Do NOT preserve its sequence, hallmark wording, or famous opening/closing lines.
+- Instead, write an original devotional meditation inspired by its themes, posture, and spiritual intent.
+    `.trim();
+  }
+
+  if (selectedPrayerKind === "named") {
+    return `
+CLASSIC MODE BOUNDARY FOR NAMED PRAYER:
+- The selected item is a known named prayer.
+- Make it recognizable in spiritual posture and theme, but NOT in signature wording.
+- Do NOT closely paraphrase the source.
+- Do NOT mimic the original line order or famous turns of phrase.
+- This must read as a fresh devotional rendering, not a rewrite.
+    `.trim();
+  }
+
+  return `
+CLASSIC MODE BOUNDARY FOR PRAYER TYPE:
+- The selected item is a prayer type.
+- Write an exemplary original prayer of that type in the selected tradition.
+- Do NOT imitate a specific published or canonical prayer.
+    `.trim();
 }
 
 export async function POST(req: Request) {
@@ -104,20 +229,20 @@ export async function POST(req: Request) {
     const avatarLabel = body?.avatarLabel || "Grace";
     const userName = body?.userName ?? null;
 
-    // free mode fields
     const feelings = Array.isArray(body?.feelings) ? body.feelings : [];
     const input = String(body?.input || "").trim();
     const prayerType = String(body?.prayerType || "").trim();
 
-    // classic mode fields
     const selectedPrayerLabel = String(body?.selectedPrayerLabel || "").trim();
     const selectedPrayerKind = normalizeKind(body?.selectedPrayerKind);
     const intention = String(body?.intention || "").trim();
 
-    // Validation
     if (mode === "free") {
       if (!input && feelings.length === 0) {
-        return NextResponse.json({ error: "Missing prayer input." }, { status: 400 });
+        return NextResponse.json(
+          { error: "Missing prayer input." },
+          { status: 400 }
+        );
       }
     } else {
       if (!selectedPrayerLabel) {
@@ -147,7 +272,6 @@ TIME AWARENESS:
 - Keep the prayer time-neutral unless the user explicitly asked for a time-based reference.
 `.trim();
 
-    // ✅ SERVER-ONLY KEY
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -170,9 +294,13 @@ ${timeInstruction}
 MANDATORY STRUCTURE:
 ${buildStructureInstruction(tradition)}
 
+${buildUniversalBoundaryNotes()}
+
+${buildTraditionBoundaryNotes(tradition)}
+
 DEPTH REQUIREMENTS:
-- Use at least one concrete image (physical or situational).
-- Use language weight appropriate to the tradition (see structure/style limits).
+- Use at least one concrete image, lived detail, or felt situation.
+- Use language weight appropriate to the tradition.
 - Avoid vague spiritual abstractions.
 - Avoid filler phrases.
 - Avoid repetition of common AI constructions.
@@ -201,10 +329,12 @@ WRITING STYLE:
       systemInstruction = `
 ${baseSystem}
 
-DEPTH REQUIREMENTS (FREE MODE):
-- Reflect 1–2 exact emotional phrases from the user's message.
+FREE MODE REQUIREMENTS:
+- Write an original prayer shaped by the user's situation, feelings, and selected prayer type.
+- If the user gave a personal request, reflect its emotional reality specifically.
 ${prayerType ? `- The prayer must clearly embody this prayer type within the ${tradition} tradition: ${prayerType}.` : ""}
-${prayerType ? `- Let the structure, tone, and emphasis feel recognizably like a ${prayerType} prayer, not just a general prayer with the label attached.` : ""}
+${prayerType ? `- Let the structure, tone, and emphasis feel recognizably like a ${prayerType} prayer, not just a generic prayer with a label attached.` : ""}
+- You may echo short ordinary personal language from the user's request, but do NOT echo famous sacred lines or create near-paraphrases of sacred texts.
 
 Write the prayer now.
       `.trim();
@@ -219,9 +349,10 @@ User wrote:
 
 ${
   exactPhrase
-    ? `HARD REQUIREMENT:
-- Include this exact phrase somewhere in the prayer (verbatim, unmodified):
-"${exactPhrase}"`
+    ? `SOFT SPECIFICITY REQUIREMENT:
+- If natural, include this exact short phrase somewhere in the prayer:
+"${exactPhrase}"
+- But do NOT do this if it would make the prayer sound like scripture, liturgy, or a famous published prayer.`
     : `The user did not provide a written prayer request.
 - Do not invent a quoted phrase.
 - Draw naturally from the listed feelings instead.`
@@ -238,11 +369,15 @@ Do not mention rules or instructions.
       systemInstruction = `
 ${baseSystem}
 
+${buildClassicBoundaryNotes(selectedPrayerLabel, selectedPrayerKind)}
+
 CLASSIC PRAYER MODE:
-- You are creating a tradition-faithful prayerful rendition inspired by a known prayer or prayer-type.
-- DO NOT claim the text is a verbatim historical or official translation.
-- DO NOT say you "looked it up" or cite sources.
+- You are creating a tradition-faithful devotional rendering inspired by a known prayer or prayer type.
+- The result must remain original writing.
+- Do NOT claim the text is verbatim, official, historical, or an authoritative translation.
+- Do NOT say you "looked it up" or cite sources.
 - Keep it respectful, recognizable in spirit, and consistent with the tradition.
+- If the selected item is too well-known or sacred-text-adjacent, favor an original meditation on its themes rather than a close rendition.
 
 Write the prayer now.
       `.trim();
@@ -253,9 +388,9 @@ Type: ${selectedPrayerKind}
 
 ${intention ? `Personal intention to weave in gently:\n"${intention}"\n` : ""}
 
-Write a tradition-faithful prayerful rendition inspired by the selected item.
+Write a tradition-faithful original devotional rendering inspired by the selected item.
 If the selected item is a "type", create an exemplary prayer of that type.
-If the selected item is a "named prayer", make it recognizable in spirit without claiming it is verbatim.
+If the selected item is a "named prayer", make it recognizable in spiritual posture and theme without reproducing signature wording.
 
 Do not mention rules or instructions.
       `.trim();
@@ -266,7 +401,7 @@ Do not mention rules or instructions.
       contents: prompt,
       config: {
         systemInstruction,
-        temperature: mode === "classic" ? 0.85 : 0.92,
+        temperature: mode === "classic" ? 0.82 : 0.9,
       },
     });
 
@@ -274,7 +409,10 @@ Do not mention rules or instructions.
     text = stripGenericOpeners(text);
 
     if (!text) {
-      return NextResponse.json({ error: "Empty response from model." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Empty response from model." },
+        { status: 500 }
+      );
     }
 
     text = stripGenericOpeners(text);
