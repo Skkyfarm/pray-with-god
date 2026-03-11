@@ -7,6 +7,7 @@ export const runtime = "nodejs"; // ensures server runtime (needed for @google/g
 
 type PrayMode = "free" | "classic";
 type PrayerKind = "type" | "named";
+type DayPart = "morning" | "afternoon" | "evening" | "night";
 
 type PrayBody = {
   tradition: Tradition;
@@ -25,19 +26,23 @@ type PrayBody = {
   selectedPrayerLabel?: string; // e.g., "The Prayer of St. Francis" or "Shacharit"
   selectedPrayerKind?: PrayerKind; // "type" | "named"
   intention?: string; // optional personalization
+
+  // optional time awareness from client
+  timezone?: string | null;
+  localDateTime?: string | null;
+  dayPart?: DayPart | null;
 };
 
 // Pull a short exact phrase from the user's message to enforce specificity.
-// We keep it simple & safe: pick 6–12 words from the start of the message (or the whole message if short).
+// We keep it simple & safe: pick up to 10 words from the start of the message.
 function pickExactPhrase(input: string) {
   const cleaned = String(input || "").replace(/\s+/g, " ").trim();
   if (!cleaned) return "";
 
   const words = cleaned.split(" ");
-  const slice = words.slice(0, Math.min(words.length, 10)); // up to 10 words
+  const slice = words.slice(0, Math.min(words.length, 10));
   let phrase = slice.join(" ").trim();
 
-  // Remove a trailing punctuation-only edge
   phrase = phrase.replace(/[,\s]+$/g, "");
   return phrase;
 }
@@ -47,7 +52,6 @@ function pickExactPhrase(input: string) {
 function stripGenericOpeners(text: string) {
   let out = text.trim();
 
-  // Remove leading quotes/spaces
   out = out.replace(/^["'\s]+/, "");
 
   const patterns: RegExp[] = [
@@ -77,6 +81,24 @@ export async function POST(req: Request) {
   try {
     const body = (await req.json()) as PrayBody;
 
+    const timezone =
+      typeof body?.timezone === "string" && body.timezone.trim()
+        ? body.timezone.trim()
+        : null;
+
+    const localDateTime =
+      typeof body?.localDateTime === "string" && body.localDateTime.trim()
+        ? body.localDateTime.trim()
+        : null;
+
+    const dayPart: DayPart | null =
+      body?.dayPart === "morning" ||
+      body?.dayPart === "afternoon" ||
+      body?.dayPart === "evening" ||
+      body?.dayPart === "night"
+        ? body.dayPart
+        : null;
+
     const tradition = (body?.tradition || "grace") as Tradition;
     const mode = normalizeMode(body?.mode);
     const avatarLabel = body?.avatarLabel || "Grace";
@@ -92,7 +114,7 @@ export async function POST(req: Request) {
     const selectedPrayerKind = normalizeKind(body?.selectedPrayerKind);
     const intention = String(body?.intention || "").trim();
 
-    // Validation: free mode needs input or feelings. classic mode needs a label.
+    // Validation
     if (mode === "free") {
       if (!input && feelings.length === 0) {
         return NextResponse.json({ error: "Missing prayer input." }, { status: 400 });
@@ -106,7 +128,26 @@ export async function POST(req: Request) {
       }
     }
 
-    // ✅ SERVER-ONLY KEY (never use NEXT_PUBLIC here)
+    const timeInstruction =
+      timezone && localDateTime && dayPart
+        ? `
+TIME AWARENESS:
+- The user's local timezone is ${timezone}.
+- The user's local date and time is ${localDateTime}.
+- It is currently ${dayPart} for the user.
+- Any greeting, blessing, or reference to time of day must match the user's local time.
+- Do not mention tomorrow, tonight, this evening, good night, or good morning unless it truly matches the user's local time.
+- If time of day is not necessary, avoid mentioning it.
+`.trim()
+        : `
+TIME AWARENESS:
+- Reliable local time data was not provided.
+- Do not guess the user's time of day.
+- Avoid references to morning, afternoon, evening, night, tonight, tomorrow, or greetings like "good morning" and "good night".
+- Keep the prayer time-neutral unless the user explicitly asked for a time-based reference.
+`.trim();
+
+    // ✅ SERVER-ONLY KEY
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -117,13 +158,14 @@ export async function POST(req: Request) {
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Build system instruction (differs by mode)
     const baseSystem = `
 You are ${avatarLabel}, speaking within the ${tradition} tradition.
 
 Your task is to write a prayer that feels emotionally specific, spiritually authentic, and distinctly shaped by this tradition — not generic spirituality.
 
 ${userName ? `The person's name is ${userName}. Use their name naturally, not artificially.` : ""}
+
+${timeInstruction}
 
 MANDATORY STRUCTURE:
 ${buildStructureInstruction(tradition)}
@@ -153,15 +195,14 @@ WRITING STYLE:
     let systemInstruction = baseSystem;
     let prompt = "";
 
-    // FREE MODE prompt (current behavior + exact phrase requirement + prayer type guidance)
     if (mode === "free") {
-      const exactPhrase = pickExactPhrase(input);
+      const exactPhrase = input ? pickExactPhrase(input) : "";
 
       systemInstruction = `
 ${baseSystem}
 
 DEPTH REQUIREMENTS (FREE MODE):
-- Reflect 1–2 exact emotional phrases from the user’s message.
+- Reflect 1–2 exact emotional phrases from the user's message.
 ${prayerType ? `- The prayer must clearly embody this prayer type within the ${tradition} tradition: ${prayerType}.` : ""}
 ${prayerType ? `- Let the structure, tone, and emphasis feel recognizably like a ${prayerType} prayer, not just a general prayer with the label attached.` : ""}
 
@@ -176,9 +217,15 @@ ${prayerType ? `Selected prayer type: "${prayerType}"` : 'Selected prayer type: 
 User wrote:
 "${input}"
 
-HARD REQUIREMENT:
+${
+  exactPhrase
+    ? `HARD REQUIREMENT:
 - Include this exact phrase somewhere in the prayer (verbatim, unmodified):
-"${exactPhrase || "(no phrase)"}"
+"${exactPhrase}"`
+    : `The user did not provide a written prayer request.
+- Do not invent a quoted phrase.
+- Draw naturally from the listed feelings instead.`
+}
 
 ${prayerType ? `Make the prayer clearly read like a ${prayerType} prayer in the ${tradition} tradition.` : ""}
 
@@ -187,7 +234,6 @@ Do not mention rules or instructions.
       `.trim();
     }
 
-    // CLASSIC MODE prompt (tradition-faithful rendition inspired by a known prayer/type)
     if (mode === "classic") {
       systemInstruction = `
 ${baseSystem}
@@ -231,7 +277,6 @@ Do not mention rules or instructions.
       return NextResponse.json({ error: "Empty response from model." }, { status: 500 });
     }
 
-    // Extra enforcement: if it STILL starts generic, we just trim again.
     text = stripGenericOpeners(text);
 
     return NextResponse.json({ prayer: text });

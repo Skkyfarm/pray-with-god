@@ -20,11 +20,11 @@ import {
   CheckCircle2,
   Wind,
   Bookmark,
-  PenSquare,
   Printer,
   Play,
   Square,
   Volume2,
+  X,
   XCircle,
   Share2,
 } from 'lucide-react';
@@ -220,6 +220,50 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   }
 }
 
+function getLocalTimeContext() {
+  try {
+    const now = new Date();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null;
+
+    const hour24 = Number(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone || undefined,
+        hour: 'numeric',
+        hour12: false,
+      }).format(now)
+    );
+
+    const dayPart =
+      hour24 < 5 ? 'night' :
+      hour24 < 12 ? 'morning' :
+      hour24 < 17 ? 'afternoon' :
+      hour24 < 21 ? 'evening' :
+      'night';
+
+    const localDateTime = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || undefined,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(now);
+
+    return {
+      timezone,
+      localDateTime,
+      dayPart,
+    };
+  } catch {
+    return {
+      timezone: null,
+      localDateTime: null,
+      dayPart: null,
+    };
+  }
+}
+
 function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -250,6 +294,7 @@ function PrayPageInner() {
   const [error, setError] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [shareFeedback, setShareFeedback] = useState('');
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const [quietIntro, setQuietIntro] = useState(false);
   const [fromPath, setFromPath] = useState('/');
@@ -271,6 +316,19 @@ function PrayPageInner() {
   }, [shareFeedback]);
 
   useEffect(() => {
+    if (!showSaveModal) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowSaveModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [showSaveModal]);
+
+  useEffect(() => {
     if (isQuietPath(pathParam)) {
       router.replace('/quiet');
       return;
@@ -287,6 +345,7 @@ function PrayPageInner() {
     setError('');
     setHasSubmitted(false);
     setIsReflecting(false);
+    setShowSaveModal(false);
 
     const mappedTradition = mapPathToTradition(pathParam);
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
@@ -475,6 +534,7 @@ function PrayPageInner() {
     setError('');
     setHasSubmitted(false);
     setQuietIntro(false);
+    setShowSaveModal(false);
 
     setInput('');
     setIntention('');
@@ -498,11 +558,14 @@ function PrayPageInner() {
     stopSpeaking();
     setError('');
     setPrayer('');
+    setShowSaveModal(false);
 
     if (mode === 'classic' && !selectedPrayerLabel.trim()) {
       setError('Please choose a traditional prayer first.');
       return;
     }
+
+    const timeContext = getLocalTimeContext();
 
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -522,6 +585,7 @@ function PrayPageInner() {
               selectedPrayerLabel,
               selectedPrayerKind,
               intention: intention.trim(),
+              ...timeContext,
             }
           : {
               tradition: selectedTradition,
@@ -530,7 +594,8 @@ function PrayPageInner() {
               prayerType: selectedPrayerType,
               userName: effectivePrayerForName || null,
               feelings: selectedFeelings,
-              input: input.trim() || 'an understanding heart',
+              input: input.trim(),
+              ...timeContext,
             };
 
       const res = await fetch('/api/pray', {
@@ -580,6 +645,7 @@ function PrayPageInner() {
     setPrayer('');
     setError('');
     setHasSubmitted(false);
+    setShowSaveModal(false);
 
     if (mode === 'classic') {
       setIntention('');
@@ -590,12 +656,13 @@ function PrayPageInner() {
     }
   }
 
-  function handleBackToEditor() {
+  function handleAddIntentions() {
     stopSpeaking();
     stopGenerating();
     setPrayer('');
     setError('');
     setHasSubmitted(false);
+    setShowSaveModal(false);
   }
 
   function handleReadAloud() {
@@ -678,20 +745,10 @@ function PrayPageInner() {
   function handlePrint() {
     if (typeof window === 'undefined' || !prayer.trim()) return;
 
-    const title = escapeHtml(
-      isClassic ? selectedPrayerLabel || 'Traditional Prayer' : selectedPrayerType || 'Prayer'
-    );
-
-    const subtitle = escapeHtml(
-      isClassic
-        ? `${pathDisplayLabel} • ${selectedPrayerKind === 'named' ? 'Named prayer' : 'Prayer type'}`
-        : `${pathDisplayLabel} • ${selectedPrayerType || 'Free prayer'}`
-    );
-
+    const title = escapeHtml(resultTitle);
+    const subtitle = escapeHtml(resultSubtitle);
     const body = escapeHtml(prayer).replace(/\n/g, '<br />');
-    const preparedFor = effectivePrayerForName
-      ? escapeHtml(`Prepared for ${effectivePrayerForName}.`)
-      : '';
+    const preparedMeta = escapeHtml(preparedMetaLine);
     const disclosure = escapeHtml(disclosureNote);
 
     const printHtml = `
@@ -705,7 +762,7 @@ function PrayPageInner() {
               margin: 0;
               padding: 0;
               background: #ffffff;
-              color: #18181b;
+              color: #000000;
               font-family: Georgia, "Times New Roman", serif;
             }
             body {
@@ -727,28 +784,35 @@ function PrayPageInner() {
               font-size: 34px;
               line-height: 1.2;
               font-weight: 600;
+              color: #000000;
             }
             .subtitle {
               font-size: 12px;
               text-transform: uppercase;
               letter-spacing: 0.18em;
-              color: #71717a;
+              color: #000000;
               margin-bottom: 20px;
             }
             .prepared {
               font-size: 14px;
-              color: #52525b;
-              margin-bottom: 20px;
+              color: #000000;
+              margin-bottom: 24px;
+            }
+            .prayer {
+              font-size: 22px;
+              line-height: 1.9;
+              font-style: italic;
+              color: #000000;
             }
             .note {
-              margin-bottom: 28px;
+              margin-top: 30px;
               padding: 16px 18px;
               border: 1px solid #e5e7eb;
               border-radius: 16px;
               background: #fafaf9;
               font-size: 14px;
               line-height: 1.7;
-              color: #52525b;
+              color: #000000;
             }
             .note-title {
               display: block;
@@ -758,11 +822,6 @@ function PrayPageInner() {
               text-transform: uppercase;
               color: #92400e;
               font-weight: 700;
-            }
-            .prayer {
-              font-size: 22px;
-              line-height: 1.9;
-              font-style: italic;
             }
             @media print {
               body {
@@ -776,12 +835,12 @@ function PrayPageInner() {
             <div class="eyebrow">${isClassic ? 'Tradition-faithful rendition' : 'Prayer formed'}</div>
             <h1>${title}</h1>
             <div class="subtitle">${subtitle}</div>
-            ${preparedFor ? `<div class="prepared">${preparedFor}</div>` : ''}
+            <div class="prepared">${preparedMeta}</div>
+            <div class="prayer">${body}</div>
             <div class="note">
               <span class="note-title">About this prayer</span>
               ${disclosure}
             </div>
-            <div class="prayer">${body}</div>
           </div>
         </body>
       </html>
@@ -820,11 +879,63 @@ function PrayPageInner() {
     ? selectedPrayerLabel || 'Traditional prayer'
     : selectedPrayerType || 'Prayer';
 
-  const resultSubtitle = isClassic
-    ? `${pathDisplayLabel} • ${selectedPrayerKind === 'named' ? 'Named prayer' : 'Prayer type'}`
-    : `${pathDisplayLabel} • ${selectedPrayerType || 'Free prayer'}`;
+  const resultSubtitle = pathDisplayLabel;
 
   const disclosureNote = getPrayerDisclosure(selectedTradition, isClassic);
+
+  const preparedByName = userName?.trim() || 'User';
+  const explicitRecipient = prayerForName.trim();
+  const preparedRecipient =
+    explicitRecipient && explicitRecipient !== preparedByName
+      ? explicitRecipient
+      : '';
+
+  const preparedMetaLine = preparedRecipient
+    ? `Prepared by ${preparedByName} for ${preparedRecipient}`
+    : `Prepared by ${preparedByName}`;
+
+  const requestSummary = isClassic ? intention.trim() : input.trim();
+  const feelingsSummary = selectedFeelings.length
+    ? selectedFeelings.join(', ')
+    : 'Not provided';
+
+  const saveChecklistItems = [
+    {
+      label: 'Prayer text file',
+      value: 'Current prayer output',
+      checked: Boolean(prayer.trim()),
+    },
+    {
+      label: 'Prepared by',
+      value: preparedByName,
+      checked: Boolean(preparedByName),
+    },
+    {
+      label: 'Prayer recipient',
+      value: preparedRecipient || 'Not provided',
+      checked: Boolean(preparedRecipient),
+    },
+    {
+      label: 'Tradition',
+      value: pathDisplayLabel,
+      checked: Boolean(pathDisplayLabel),
+    },
+    {
+      label: 'Prayer type',
+      value: resultTitle,
+      checked: Boolean(resultTitle),
+    },
+    {
+      label: 'Prayer request',
+      value: requestSummary || 'Not provided',
+      checked: Boolean(requestSummary),
+    },
+    {
+      label: 'Feelings',
+      value: feelingsSummary,
+      checked: selectedFeelings.length > 0,
+    },
+  ];
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
@@ -832,13 +943,13 @@ function PrayPageInner() {
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
             href={fromPath}
-            className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm backdrop-blur transition hover:bg-white"
+            className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm backdrop-blur transition hover:bg-white"
           >
             <ArrowLeft className="h-4 w-4" />
             {fromPath.startsWith('/choose') ? 'Back to tradition' : 'Back home'}
           </Link>
 
-          <div className="rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm text-zinc-700 shadow-sm backdrop-blur">
+          <div className="rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm text-zinc-900 shadow-sm backdrop-blur">
             {userName ? `Welcome back, ${userName}.` : 'A quiet place to pray.'}
           </div>
         </div>
@@ -862,32 +973,21 @@ function PrayPageInner() {
                   </span>
                 </div>
 
-                <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
+                <h1 className="text-3xl font-semibold tracking-tight text-black sm:text-4xl">
                   {resultTitle}
                 </h1>
 
-                <p className="mt-3 text-sm uppercase tracking-[0.2em] text-zinc-500">
+                <p className="mt-3 text-sm uppercase tracking-[0.2em] text-black">
                   {resultSubtitle}
                 </p>
 
-                {effectivePrayerForName && (
-                  <p className="mt-4 max-w-2xl text-sm text-zinc-600">
-                    Prepared for {effectivePrayerForName}.
-                  </p>
-                )}
-
-                <div className="mt-5 max-w-2xl rounded-[1.25rem] border border-amber-100 bg-white/75 px-5 py-4 text-left shadow-sm">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700">
-                    About this prayer
-                  </div>
-                  <p className="mt-2 text-sm leading-7 text-zinc-600">
-                    {disclosureNote}
-                  </p>
-                </div>
+                <p className="mt-4 max-w-2xl text-sm text-black">
+                  {preparedMetaLine}
+                </p>
               </div>
 
-              <div className="rounded-[1.75rem] border border-amber-100 bg-gradient-to-b from-white to-amber-50/60 px-6 py-8 shadow-sm sm:px-8 sm:py-10">
-                <div className="whitespace-pre-wrap font-serif text-[1.08rem] italic leading-8 text-zinc-900 sm:text-[1.12rem]">
+              <div className="rounded-[1.75rem] border border-amber-200 bg-gradient-to-b from-white via-amber-100/70 to-orange-200/70 px-6 py-8 shadow-sm sm:px-8 sm:py-10">
+                <div className="whitespace-pre-wrap font-serif text-[1.08rem] italic leading-8 text-black sm:text-[1.12rem]">
                   {prayer}
                 </div>
               </div>
@@ -896,74 +996,76 @@ function PrayPageInner() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     type="button"
-                    onClick={handlePrint}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
+                    onClick={() => setShowSaveModal(true)}
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
                   >
-                    <Printer className="h-4 w-4" />
-                    Print
+                    <Bookmark className="h-4 w-4" />
+                    Save
                   </button>
+                </div>
 
-                  <button
-                    type="button"
-                    onClick={handleSharePrayer}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
-                  >
-                    <Share2 className="h-4 w-4" />
-                    Share this Prayer
-                  </button>
-
+                <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     type="button"
                     onClick={handleReadAloud}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
                   >
                     {isSpeaking ? (
                       <>
                         <Square className="h-4 w-4" />
-                        Stop reading
+                        Stop Reading
                       </>
                     ) : (
                       <>
                         <Play className="h-4 w-4" />
-                        Read aloud
+                        Read Aloud
                       </>
                     )}
                   </button>
 
                   <button
                     type="button"
-                    onClick={handleBackToEditor}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
+                    onClick={handleAddIntentions}
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
                   >
-                    <PenSquare className="h-4 w-4" />
-                    Back to editing
+                    <RefreshCw className="h-4 w-4" />
+                    Add Intentions
                   </button>
 
                   <button
                     type="button"
-                    onClick={handleBackToEditor}
-                    className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 transition hover:bg-amber-50"
+                    onClick={handleSharePrayer}
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
                   >
-                    <RefreshCw className="h-4 w-4" />
-                    Add intention & regenerate
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handlePrint}
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
+                  >
+                    <Printer className="h-4 w-4" />
+                    Print
                   </button>
                 </div>
 
                 {shareFeedback ? (
-                  <div className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                  <div className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-black">
                     {shareFeedback}
                   </div>
                 ) : null}
 
-                <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-white/80 p-4 sm:flex-row sm:items-end sm:justify-center">
+                <div className="flex flex-col gap-4 rounded-2xl border border-sky-200 bg-sky-50/80 p-4 sm:flex-row sm:items-end sm:justify-center">
                   <div className="min-w-[220px]">
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-black">
                       Voice
                     </label>
                     <select
                       value={selectedVoiceURI}
                       onChange={(e) => setSelectedVoiceURI(e.target.value)}
-                      className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
+                      className="w-full rounded-2xl border border-sky-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                     >
                       {voices.length > 0 ? (
                         voices.map((voice) => (
@@ -978,7 +1080,7 @@ function PrayPageInner() {
                   </div>
 
                   <div className="min-w-[240px]">
-                    <label className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <label className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-black">
                       <Volume2 className="h-4 w-4" />
                       Volume
                     </label>
@@ -990,13 +1092,22 @@ function PrayPageInner() {
                         step="0.1"
                         value={volume}
                         onChange={(e) => setVolume(Number(e.target.value))}
-                        className="w-full"
+                        className="w-full accent-sky-500"
                       />
-                      <span className="min-w-[2.5rem] text-sm font-medium text-zinc-700">
+                      <span className="min-w-[2.5rem] text-sm font-medium text-black">
                         {volume.toFixed(1)}
                       </span>
                     </div>
                   </div>
+                </div>
+
+                <div className="rounded-[1.25rem] border border-amber-100 bg-white/75 px-5 py-4 text-left shadow-sm">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700">
+                    About this prayer
+                  </div>
+                  <p className="mt-2 text-sm leading-7 text-black">
+                    {disclosureNote}
+                  </p>
                 </div>
               </div>
             </div>
@@ -1012,7 +1123,7 @@ function PrayPageInner() {
                   <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
                     Pray
                   </h1>
-                  <p className="text-sm text-zinc-600">
+                  <p className="text-sm text-zinc-900">
                     {isClassic
                       ? 'You selected a traditional prayer path.'
                       : 'Choose a guide, share your heart, and receive a prayer.'}
@@ -1026,21 +1137,21 @@ function PrayPageInner() {
                   <h2 className="text-lg font-semibold text-zinc-900">
                     {currentAvatar?.label || 'Grace'}
                   </h2>
-                  <p className="mt-1 text-sm text-zinc-600">
+                  <p className="mt-1 text-sm text-zinc-900">
                     {getGuideSubLabel(selectedTradition, currentAvatar)}
                   </p>
                 </div>
               </div>
 
               {userName ? (
-                <div className="mb-6 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-700">
-                  Personal name:{' '}
+                <div className="mb-6 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-900">
+                  Personal name{' '}
                   <span className="font-semibold text-zinc-900">{userName}</span>
                 </div>
               ) : null}
 
               <div>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
                   Spiritual guide
                 </h3>
                 <div className="grid gap-3">
@@ -1051,12 +1162,12 @@ function PrayPageInner() {
                       onClick={() => switchTradition(key)}
                       className={`rounded-2xl border px-4 py-3 text-left transition ${
                         selectedTradition === key
-                          ? 'border-amber-300 bg-amber-50 shadow-sm'
-                          : 'border-zinc-200 bg-white hover:border-amber-200 hover:bg-amber-50/40'
+                          ? 'border-sky-400 bg-sky-100 shadow-sm'
+                          : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
                       }`}
                     >
                       <div className="font-medium text-zinc-900">{avatar.label}</div>
-                      <div className="mt-1 text-sm text-zinc-600">
+                      <div className="mt-1 text-sm text-zinc-900">
                         {getGuideSubLabel(key, avatar)}
                       </div>
                     </button>
@@ -1070,7 +1181,7 @@ function PrayPageInner() {
                 <h2 className="text-3xl font-semibold tracking-tight text-zinc-900">
                   {isClassic ? 'Traditional prayer path' : 'What would you like prayer for?'}
                 </h2>
-                <p className="mt-2 max-w-2xl text-zinc-600">
+                <p className="mt-2 max-w-2xl text-zinc-900">
                   {isClassic
                     ? 'You chose a traditional prayer or prayer type. You can add a personal intention, then generate a tradition-faithful rendition.'
                     : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
@@ -1080,7 +1191,7 @@ function PrayPageInner() {
               <div className="mb-8">
                 <label
                   htmlFor="prayer-for-name"
-                  className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500"
+                  className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
                 >
                   Who is this prayer for? (optional)
                 </label>
@@ -1095,10 +1206,10 @@ function PrayPageInner() {
                       ? `Leave blank to use your saved name, ${userName}.`
                       : 'Example: Mom, Michael, my family, or myself'
                   }
-                  className="w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
+                  className="w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                 />
 
-                <p className="mt-2 text-sm text-zinc-500">
+                <p className="mt-2 text-sm text-zinc-900">
                   This does not change your saved name. It only applies to this prayer.
                 </p>
               </div>
@@ -1109,7 +1220,7 @@ function PrayPageInner() {
                     <Wind className="mt-0.5 h-5 w-5 text-sky-700" />
                     <div>
                       <div className="font-medium text-zinc-900">A quiet beginning</div>
-                      <p className="mt-1 text-sm text-zinc-600">
+                      <p className="mt-1 text-sm text-zinc-900">
                         You came here to sit quietly first. Take a breath, gather your thoughts,
                         and when you are ready, write a few words or simply continue with a peaceful heart.
                       </p>
@@ -1121,7 +1232,7 @@ function PrayPageInner() {
               {isClassic ? (
                 <>
                   <div className="mb-8">
-                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
                       Traditional prayers & prayer types
                     </div>
 
@@ -1141,12 +1252,12 @@ function PrayPageInner() {
                             }}
                             className={`rounded-2xl border px-4 py-4 text-left transition ${
                               active
-                                ? 'border-amber-300 bg-amber-50 shadow-sm'
-                                : 'border-zinc-200 bg-white hover:border-amber-200 hover:bg-amber-50/40'
+                                ? 'border-sky-400 bg-sky-100 shadow-sm'
+                                : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
                             <div className="font-medium text-zinc-900">{item.label}</div>
-                            <div className="mt-1 text-sm text-zinc-600">
+                            <div className="mt-1 text-sm text-zinc-900">
                               {item.kind === 'named' ? 'Named' : 'Type'}
                             </div>
                           </button>
@@ -1155,8 +1266,8 @@ function PrayPageInner() {
                     </div>
                   </div>
 
-                  <div className="mb-8 rounded-[1.75rem] border border-amber-200 bg-gradient-to-b from-white to-amber-50/70 px-5 py-5 shadow-sm">
-                    <div className="mb-2 flex items-center gap-2 text-amber-700">
+                  <div className="mb-8 rounded-[1.75rem] border border-sky-300 bg-gradient-to-b from-white to-sky-100 px-5 py-5 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2 text-sky-800">
                       <Bookmark className="h-4 w-4" />
                       <span className="text-sm font-semibold uppercase tracking-[0.18em]">
                         Selected tradition item
@@ -1165,7 +1276,7 @@ function PrayPageInner() {
                     <div className="text-xl font-semibold text-zinc-900">
                       {selectedPrayerLabel || 'Traditional prayer'}
                     </div>
-                    <div className="mt-2 text-sm text-zinc-600">
+                    <div className="mt-2 text-sm text-zinc-900">
                       {selectedPrayerKind === 'named' ? 'Named prayer' : 'Prayer type'}
                     </div>
                   </div>
@@ -1173,7 +1284,7 @@ function PrayPageInner() {
                   <div className="mb-8">
                     <label
                       htmlFor="intention-input"
-                      className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500"
+                      className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
                     >
                       Personal intention (optional)
                     </label>
@@ -1182,14 +1293,14 @@ function PrayPageInner() {
                       value={intention}
                       onChange={(e) => setIntention(e.target.value)}
                       placeholder="Example: Please weave in peace for my family, wisdom for a difficult decision, and strength for the week ahead."
-                      className="min-h-[160px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
+                      className="min-h-[160px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                     />
                   </div>
                 </>
               ) : (
                 <>
                   <div className="mb-8">
-                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
                       Prayer type
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -1202,8 +1313,8 @@ function PrayPageInner() {
                             onClick={() => setSelectedPrayerType(type)}
                             className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                               active
-                                ? 'border-amber-300 bg-amber-100 text-zinc-900'
-                                : 'border-zinc-200 bg-white text-zinc-700 hover:border-amber-200 hover:bg-amber-50'
+                                ? 'border-sky-400 bg-sky-100 text-zinc-900'
+                                : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
                             {type}
@@ -1216,7 +1327,7 @@ function PrayPageInner() {
                   <div className="mb-8">
                     <label
                       htmlFor="prayer-input"
-                      className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500"
+                      className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
                     >
                       Your prayer request (optional)
                     </label>
@@ -1225,12 +1336,12 @@ function PrayPageInner() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. This field is optional."
-                      className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-amber-300 focus:ring-4 focus:ring-amber-100"
+                      className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                     />
                   </div>
 
                   <div className="mb-8">
-                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
                       <Heart className="h-4 w-4" />
                       How are you feeling?
                     </div>
@@ -1244,8 +1355,8 @@ function PrayPageInner() {
                             onClick={() => toggleFeeling(feeling)}
                             className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                               active
-                                ? 'border-amber-300 bg-amber-100 text-zinc-900'
-                                : 'border-zinc-200 bg-white text-zinc-700 hover:border-amber-200 hover:bg-amber-50'
+                                ? 'border-sky-400 bg-sky-100 text-zinc-900'
+                                : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
                             {feeling}
@@ -1290,7 +1401,7 @@ function PrayPageInner() {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-sky-200"
                   >
                     Reset
                   </button>
@@ -1308,7 +1419,7 @@ function PrayPageInner() {
                   {isReflecting && !error && (
                     <div className="rounded-[2rem] border border-amber-200 bg-gradient-to-b from-amber-50 to-white px-6 py-8 shadow-sm">
                       <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 text-zinc-800">
+                        <div className="flex items-center gap-3 text-zinc-900">
                           <RefreshCw className="h-5 w-5 animate-spin text-amber-700" />
                           <span className="font-medium">
                             Holding your request in a quiet moment of reflection...
@@ -1332,6 +1443,85 @@ function PrayPageInner() {
           </section>
         )}
       </div>
+
+      {showSaveModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/55 p-4"
+          onClick={() => setShowSaveModal(false)}
+        >
+          <div
+            className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-white shadow-[0_20px_80px_rgba(0,0,0,0.18)] backdrop-blur-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5 sm:px-8">
+              <div>
+                <Link
+                  href="/join"
+                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                >
+                  Become a Member!
+                </Link>
+
+                <h2 className="mt-5 text-2xl font-semibold tracking-tight text-zinc-900">
+                  Save this prayer
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-black">
+                  Member save tools are coming soon. When enabled, this prayer can be saved
+                  along with the details below.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowSaveModal(false)}
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
+                aria-label="Close save modal"
+              >
+                <X className="h-4 w-4" />
+                Close
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-5 sm:px-8">
+              <div className="space-y-3">
+                {saveChecklistItems.map((item) => (
+                  <label
+                    key={item.label}
+                    className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 opacity-60"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={item.checked}
+                      readOnly
+                      disabled
+                      className="mt-1 h-4 w-4"
+                    />
+                    <div>
+                      <div className="text-sm font-semibold text-black">
+                        {item.label}
+                      </div>
+                      <div className="mt-1 text-sm text-black">
+                        {item.value}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-zinc-100 px-6 py-4 sm:px-8">
+              <button
+                type="button"
+                onClick={() => setShowSaveModal(false)}
+                className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
