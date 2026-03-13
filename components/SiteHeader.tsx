@@ -49,22 +49,29 @@ export default function SiteHeader() {
     return () => clearTimeout(timer);
   }, [shareFeedback]);
 
-  const siteUrl = "https://pray-with-god.vercel.app";
+  const siteUrl = "https://praywithgod.ai";
+
+  const sharePath =
+    typeof window !== "undefined"
+      ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+      : "";
+
+  const shareUrl = `${siteUrl}${sharePath || ""}`;
 
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("PrayWithGod");
     const body = encodeURIComponent(
-      `I wanted to share PrayWithGod with you.\n\nThoughtful, personalized prayer across spiritual traditions.\n\n${siteUrl}`
+      `I wanted to share PrayWithGod with you.\n\nThoughtful, personalized prayer across spiritual traditions.\n\n${shareUrl}`
     );
 
     return `mailto:?subject=${subject}&body=${body}`;
-  }, [siteUrl]);
+  }, [shareUrl]);
 
   async function handleShareSite() {
     const shareData = {
       title: "PrayWithGod",
-      text: `PrayWithGod — thoughtful, personalized prayer across spiritual traditions.\n\n${siteUrl}`,
-      url: siteUrl,
+      text: `PrayWithGod — thoughtful, personalized prayer across spiritual traditions.\n\n${shareUrl}`,
+      url: shareUrl,
     };
 
     try {
@@ -74,11 +81,11 @@ export default function SiteHeader() {
         return;
       }
 
-      await navigator.clipboard.writeText(siteUrl);
+      await navigator.clipboard.writeText(shareUrl);
       setShareFeedback("Link copied");
     } catch {
       try {
-        await navigator.clipboard.writeText(siteUrl);
+        await navigator.clipboard.writeText(shareUrl);
         setShareFeedback("Link copied");
       } catch {
         setShareFeedback("Unable to share");

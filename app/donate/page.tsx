@@ -1,80 +1,57 @@
-import Link from "next/link";
+'use client';
 
-const PAYPAL_ME_HANDLE = "YOUR_PAYPAL_ME_HANDLE"; // change this
-const STRIPE_PAYMENT_LINK = ""; // optional
+import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
 
-function paypalMe(amount?: number, currencyCode?: string) {
-  if (!amount) return `https://paypal.me/${PAYPAL_ME_HANDLE}`;
-  const suffix = currencyCode ? `${amount}${currencyCode}` : `${amount}`;
-  return `https://paypal.me/${PAYPAL_ME_HANDLE}/${suffix}`;
+declare global {
+  interface Window {
+    paypal?: any;
+  }
 }
 
+const PAYPAL_HOSTED_BUTTON_ID = "FNQFJXQAXQKEQ";
+const PAYPAL_CONTAINER_ID = "paypal-container-FNQFJXQAXQKEQ";
+
 export default function DonatePage() {
-  const tiers = [
-    { amount: 5, note: "Keeps a light on" },
-    { amount: 15, note: "Supports development" },
-    { amount: 50, note: "Expands access" },
-  ];
+  const [sdkLoaded, setSdkLoaded] = useState(false);
+  const renderedRef = useRef(false);
+
+  useEffect(() => {
+    if (!sdkLoaded) return;
+    if (!window.paypal) return;
+    if (renderedRef.current) return;
+
+    renderedRef.current = true;
+
+    window.paypal
+      .HostedButtons({
+        hostedButtonId: PAYPAL_HOSTED_BUTTON_ID,
+      })
+      .render(`#${PAYPAL_CONTAINER_ID}`);
+  }, [sdkLoaded]);
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
+      <Script
+        id="paypal-hosted-buttons-sdk"
+        src="https://www.paypal.com/sdk/js?client-id=BAApc_qR3uEvAJzGK4iYq-DLrXiezQitPWyrktYASlHu77cGhKtdFLgJfXqYKEQkNoueS85RrJ6GRAc6OA&components=hosted-buttons&enable-funding=venmo&currency=USD"
+        strategy="afterInteractive"
+        onLoad={() => setSdkLoaded(true)}
+      />
+
       <h1 className="text-3xl font-semibold">Donate</h1>
       <p className="mt-3 text-gray-800">
-        Your support helps keep PrayWithGod.ai calm, respectful, and available to anyone who needs a place to pray.
+        Your support helps keep PrayWithGod.ai calm, respectful, and available
+        to anyone who needs a place to pray.
       </p>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {tiers.map((t) => (
-          <div key={t.amount} className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-            <div className="text-2xl font-semibold">${t.amount}</div>
-            <div className="mt-2 text-sm text-gray-700">{t.note}</div>
-
-            <a
-              href={paypalMe(t.amount)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 block w-full rounded-xl bg-black px-4 py-2 text-center text-xs font-semibold tracking-widest text-white hover:bg-black/90"
-            >
-              DONATE (PAYPAL)
-            </a>
-
-            {STRIPE_PAYMENT_LINK ? (
-              <a
-                href={STRIPE_PAYMENT_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 block w-full rounded-xl border border-black/15 bg-white px-4 py-2 text-center text-xs font-semibold tracking-widest text-gray-950 hover:bg-white/80"
-              >
-                DONATE (CARD)
-              </a>
-            ) : null}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold">Other amount</h2>
+      <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
+        <h2 className="text-lg font-semibold">Give with PayPal</h2>
         <p className="mt-2 text-gray-800">
-          Prefer a different amount? You can choose any amount via PayPal.
+          Donate securely using the options available in the PayPal form below.
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-3">
-          <a
-            href={paypalMe()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
-          >
-            Open PayPal.Me
-          </a>
-
-          <Link
-            href="/support"
-            className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
-          >
-            Support
-          </Link>
-        </div>
+        <div className="mt-5" id={PAYPAL_CONTAINER_ID} />
       </div>
     </main>
   );
