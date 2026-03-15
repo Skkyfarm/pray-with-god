@@ -1030,7 +1030,7 @@ function PrayPageInner() {
                     className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
                   >
                     <Share2 className="h-4 w-4" />
-                    Share
+                    Share this Prayer
                   </button>
 
                   <button
