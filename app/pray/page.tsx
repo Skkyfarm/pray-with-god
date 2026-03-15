@@ -45,8 +45,20 @@ const FEELING_OPTIONS = [
   'Tired',
   'Joyful',
   'Afraid',
+  'Guilty',
   'Brokenhearted',
   'Peaceful',
+  'Overwhelmed',
+  'Discouraged',
+  'Angry',
+  'Grieving',
+  'Worn Out',
+  'Restless',
+  'Ashamed',
+  'Numb',
+  'Seeking Clarity',
+  'Burdened',
+  'Frustrated',
 ];
 
 const DEFAULT_FEELING = FEELING_OPTIONS[0];
