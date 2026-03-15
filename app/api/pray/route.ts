@@ -171,7 +171,8 @@ function buildClassicBoundaryNotes(
   selectedPrayerLabel: string,
   selectedPrayerKind: PrayerKind
 ) {
-  const highRisk = selectedPrayerKind === "named" && isHighRiskNamedPrayer(selectedPrayerLabel);
+  const highRisk =
+    selectedPrayerKind === "named" && isHighRiskNamedPrayer(selectedPrayerLabel);
 
   if (highRisk) {
     return `
@@ -200,6 +201,85 @@ CLASSIC MODE BOUNDARY FOR PRAYER TYPE:
 - Write an exemplary original prayer of that type in the selected tradition.
 - Do NOT imitate a specific published or canonical prayer.
     `.trim();
+}
+
+function buildFeelingToneGuidance(feelings: string[]) {
+  const normalized = Array.from(
+    new Set(
+      feelings
+        .map((feeling) => String(feeling || "").trim().toLowerCase())
+        .filter(Boolean)
+    )
+  );
+
+  if (normalized.length === 0) {
+    return `
+EMOTIONAL TONE:
+- Meet the person gently and specifically.
+- Do not default to bright optimism.
+- Let comfort or hope emerge naturally, not automatically.
+    `.trim();
+  }
+
+  const hasAny = (...labels: string[]) =>
+    labels.some((label) => normalized.includes(label.toLowerCase()));
+
+  const lines: string[] = [
+    "EMOTIONAL TONE:",
+    "- The prayer must emotionally meet the person where they are.",
+    "- Do not force cheerfulness, quick reassurance, or a tidy happy ending.",
+    "- Let hope appear honestly and gradually only if it fits the emotional truth of the prayer.",
+  ];
+
+  if (hasAny("anxious", "overwhelmed", "restless", "afraid")) {
+    lines.push(
+      "- Use steady, grounding language rather than excited, triumphant, or overly elevated language."
+    );
+  }
+
+  if (hasAny("discouraged", "tired", "worn out", "burdened")) {
+    lines.push(
+      "- Sound patient, strengthening, and compassionate; do not sound chirpy or eager to skip past the heaviness."
+    );
+  }
+
+  if (hasAny("brokenhearted", "grieving", "lonely")) {
+    lines.push(
+      "- Allow sorrow, tenderness, and lament to be present. Do not rush too quickly into reassurance."
+    );
+  }
+
+  if (hasAny("angry", "frustrated")) {
+    lines.push(
+      "- Acknowledge emotional heat honestly and reverently, without scolding the person for feeling it."
+    );
+  }
+
+  if (hasAny("confused", "seeking clarity")) {
+    lines.push(
+      "- Emphasize guidance, wisdom, and light for the next step rather than total certainty."
+    );
+  }
+
+  if (hasAny("guilty", "ashamed")) {
+    lines.push(
+      "- Use gentle, honest language about mercy, forgiveness, cleansing, or return, without becoming crushing or condemning."
+    );
+  }
+
+  if (hasAny("numb")) {
+    lines.push(
+      "- Keep the language spacious, patient, and quiet. Do not assume strong emotion where the person feels flat or distant."
+    );
+  }
+
+  if (hasAny("grateful", "joyful", "peaceful", "hopeful")) {
+    lines.push(
+      "- Warmth is welcome, but keep it sincere and grounded rather than sugary."
+    );
+  }
+
+  return lines.join("\n");
 }
 
 export async function POST(req: Request) {
@@ -325,6 +405,7 @@ WRITING STYLE:
 
     if (mode === "free") {
       const exactPhrase = input ? pickExactPhrase(input) : "";
+      const feelingToneGuidance = buildFeelingToneGuidance(feelings);
 
       systemInstruction = `
 ${baseSystem}
@@ -332,6 +413,7 @@ ${baseSystem}
 FREE MODE REQUIREMENTS:
 - Write an original prayer shaped by the user's situation, feelings, and selected prayer type.
 - If the user gave a personal request, reflect its emotional reality specifically.
+${feelingToneGuidance}
 ${prayerType ? `- The prayer must clearly embody this prayer type within the ${tradition} tradition: ${prayerType}.` : ""}
 ${prayerType ? `- Let the structure, tone, and emphasis feel recognizably like a ${prayerType} prayer, not just a generic prayer with a label attached.` : ""}
 - You may echo short ordinary personal language from the user's request, but do NOT echo famous sacred lines or create near-paraphrases of sacred texts.
