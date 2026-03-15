@@ -104,8 +104,8 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-5">
         <Link
           href="/"
-          className="text-xs sm:text-sm font-semibold tracking-[0.18em] text-black/90 hover:text-black"
-          aria-label="Go to home"
+          className="text-xs font-semibold tracking-[0.18em] text-black/90 hover:text-black sm:text-sm"
+          aria-label="Go to PrayWithGod home"
         >
           PWG
         </Link>
@@ -291,7 +291,7 @@ export default function SiteHeader() {
                 </div>
               ) : null}
 
-              <div className="pt-2 pb-1 text-[10px] font-semibold tracking-[0.18em] text-black/40">
+              <div className="pb-1 pt-2 text-[10px] font-semibold tracking-[0.18em] text-black/40">
                 SUPPORT
               </div>
 

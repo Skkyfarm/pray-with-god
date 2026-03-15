@@ -5,7 +5,6 @@ import Link from 'next/link';
 import GuideAvatar from '@/components/GuideAvatar';
 import NameCapture from '@/components/NameCapture';
 import { AVATARS } from '@/lib/avatars';
-import { Compass, Heart, Wind } from 'lucide-react';
 
 export default function Home() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -54,35 +53,36 @@ export default function Home() {
   };
 
   const traditions = [
-    { name: 'Christian', path: '/choose/christian', avatar: AVATARS.catholic },
+    { name: 'Protestant', path: '/pray?path=protestant', avatar: AVATARS.protestant },
+    { name: 'Catholic', path: '/pray?path=catholic', avatar: AVATARS.catholic },
     { name: 'Jewish', path: '/pray?path=jewish', avatar: AVATARS.jewish },
     { name: 'Muslim', path: '/pray?path=muslim', avatar: AVATARS.muslim },
-    { name: 'Hindu', path: '/pray?path=hindu', avatar: AVATARS.hindu },
     { name: 'Buddhist', path: '/pray?path=buddhist', avatar: AVATARS.buddhist },
-    { name: 'Non-Denom', path: '/pray?path=grace', avatar: AVATARS.grace },
+    { name: 'Hindu', path: '/pray?path=hindu', avatar: AVATARS.hindu },
+    { name: 'Exploring', path: '/pray?path=grace', avatar: AVATARS.grace },
   ];
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-black">
-      <section className="relative flex flex-col items-center px-4 pt-6 pb-8 sm:px-6 md:px-6 md:pt-10 md:pb-10">
-        <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
+      <section className="relative flex flex-col items-center px-4 pb-8 pt-6 sm:px-6 md:px-6 md:pb-10 md:pt-10">
+        <div className="relative z-10 flex w-full max-w-5xl flex-col items-center text-center">
           <div className="mb-4 max-w-2xl space-y-2 md:mb-6 md:space-y-3">
             <p className="text-sm uppercase tracking-[0.22em] text-black">
               Welcome to PrayWithGod
             </p>
 
-            <h1 className="text-3xl md:text-5xl font-semibold text-black tracking-tight leading-tight">
+            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-5xl">
               Thoughtful, personalized prayer across spiritual traditions.
             </h1>
 
-            <p className="text-sm md:text-base leading-relaxed text-black">
+            <p className="text-sm leading-relaxed text-black md:text-base">
               Create prayers in a peaceful space shaped by reverence, reflection,
               and care.
             </p>
 
-            <p className="text-sm md:text-base leading-relaxed text-black">
-              Pray freely without an account. Add your name only if you’d like
-              your prayer experience to feel more personal.
+            <p className="text-sm leading-relaxed text-black md:text-base">
+              Choose a tradition below and begin directly. Add your name only if
+              you’d like your prayer experience to feel more personal.
             </p>
           </div>
 
@@ -104,7 +104,7 @@ export default function Home() {
           {(userName || !hasSkippedName) && (
             <div className="glass-panel mb-6 w-full max-w-xl rounded-2xl border border-black/10 px-4 py-4 md:mb-8 md:px-5 md:py-4">
               <div className="mb-3 space-y-1.5">
-                <h2 className="text-lg md:text-xl italic text-black">
+                <h2 className="text-lg italic text-black md:text-xl">
                   {userName ? greeting : 'What should we call you?'}
                 </h2>
 
@@ -119,82 +119,47 @@ export default function Home() {
             </div>
           )}
 
-          <div className="mb-6 space-y-1.5 md:mb-8">
-            <h3 className="text-2xl md:text-5xl font-semibold text-black tracking-tight leading-tight">
+          <div className="mb-6 space-y-2 md:mb-8">
+            <h3 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-5xl">
               How would you like to pray today?
             </h3>
+            <p className="text-sm leading-relaxed text-black md:text-base">
+              Grace welcomes everyone. Choose a path below.
+            </p>
           </div>
 
-          <div className="mb-8 grid w-full max-w-3xl grid-cols-1 gap-3 md:mb-10 md:grid-cols-3 md:gap-4">
-            <Link href="/pray?path=grace" className="group">
-              <div className="glass-panel flex h-full flex-col items-center rounded-2xl border border-black/10 p-4 text-center transition-all duration-500 hover:border-black md:p-5">
-                <Heart className="mb-2 h-6 w-6 text-black" />
-                <h3 className="mb-1.5 text-sm font-medium text-black">
-                  Non-denominational
-                </h3>
-                <p className="text-[11px] leading-relaxed text-black">
-                  Stay with Grace for a universal connection.
-                </p>
-              </div>
-            </Link>
+          <div className="mb-10 w-full max-w-5xl">
+            <div className="mb-6 flex items-center justify-between md:mb-8">
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.28em] text-black md:text-xs md:tracking-[0.4em]">
+                Guidance across traditions
+              </h2>
+              <div className="ml-4 h-px flex-grow bg-black/20 md:ml-8" />
+            </div>
 
-            <Link href="/choose" className="group">
-              <div className="glass-panel flex h-full flex-col items-center rounded-2xl border border-black/10 p-4 text-center transition-all duration-500 hover:border-black md:p-5">
-                <Compass className="mb-2 h-6 w-6 text-black" />
-                <h3 className="mb-1.5 text-sm font-medium text-black">
-                  Choose a tradition
-                </h3>
-                <p className="text-[11px] leading-relaxed text-black">
-                  Find guidance through a specific spiritual path.
-                </p>
-              </div>
-            </Link>
-
-            <Link href="/quiet" className="group">
-              <div className="glass-panel flex h-full flex-col items-center rounded-2xl border border-black/10 p-4 text-center transition-all duration-500 hover:border-black md:p-5">
-                <Wind className="mb-2 h-6 w-6 text-black" />
-                <h3 className="mb-1.5 text-sm font-medium text-black">
-                  Sit quietly first
-                </h3>
-                <p className="text-[11px] leading-relaxed text-black">
-                  Begin with a moment of silent reflection.
-                </p>
-              </div>
-            </Link>
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-7 md:gap-3">
+              {traditions.map((t) => (
+                <Link key={t.name} href={t.path} className="group">
+                  <div className="glass-panel flex flex-col items-center rounded-xl border border-black/10 p-3 text-center transition-all duration-500 hover:border-black md:p-4">
+                    <div className="mb-2 h-12 w-12 md:h-14 md:w-14">
+                      <GuideAvatar
+                        src={t.avatar.imagePath}
+                        fallbackSrc={t.avatar.fallbackPath}
+                        alt={t.name}
+                        className="h-full w-full opacity-90 transition-opacity group-hover:opacity-100"
+                      />
+                    </div>
+                    <span className="text-[10px] uppercase tracking-widest text-black">
+                      {t.name}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
 
-          <p className="text-xl md:text-2xl italic text-black">
+          <p className="text-xl italic text-black md:text-2xl">
             All are welcome here.
           </p>
-        </div>
-      </section>
-
-      <section className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-12 sm:px-6 md:px-8 md:pb-18">
-        <div className="mb-6 flex items-center justify-between md:mb-8">
-          <h2 className="text-[11px] md:text-xs font-semibold uppercase tracking-[0.28em] md:tracking-[0.4em] text-black">
-            Guidance across traditions
-          </h2>
-          <div className="ml-4 h-px flex-grow bg-black/20 md:ml-8" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-6 md:gap-3">
-          {traditions.map((t) => (
-            <Link key={t.name} href={t.path} className="group">
-              <div className="glass-panel flex flex-col items-center rounded-xl border border-black/10 p-3 text-center transition-all duration-500 hover:border-black md:p-4">
-                <div className="mb-2 h-12 w-12 md:h-14 md:w-14">
-                  <GuideAvatar
-                    src={t.avatar.imagePath}
-                    fallbackSrc={t.avatar.fallbackPath}
-                    alt={t.name}
-                    className="h-full w-full opacity-90 transition-opacity group-hover:opacity-100"
-                  />
-                </div>
-                <span className="text-[10px] uppercase tracking-widest text-black">
-                  {t.name}
-                </span>
-              </div>
-            </Link>
-          ))}
         </div>
       </section>
     </main>

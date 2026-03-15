@@ -49,6 +49,8 @@ const FEELING_OPTIONS = [
   'Peaceful',
 ];
 
+const DEFAULT_FEELING = FEELING_OPTIONS[0];
+
 const GRACE_FALLBACK_TYPES = [
   'General Prayer',
   'Peace',
@@ -287,7 +289,6 @@ function PrayPageInner() {
   const modeParam = searchParams.get('mode');
   const prayerLabelParam = searchParams.get('prayerLabel');
   const prayerKindParam = searchParams.get('prayerKind');
-  const fromParam = searchParams.get('from');
 
   const [userName, setUserName] = useState<string | null>(null);
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
@@ -298,7 +299,7 @@ function PrayPageInner() {
   const [selectedPrayerLabel, setSelectedPrayerLabel] = useState('');
   const [selectedPrayerKind, setSelectedPrayerKind] = useState<PrayerKind>('type');
 
-  const [selectedFeelings, setSelectedFeelings] = useState<string[]>([]);
+  const [selectedFeelings, setSelectedFeelings] = useState<string[]>([DEFAULT_FEELING]);
   const [input, setInput] = useState('');
   const [intention, setIntention] = useState('');
   const [prayerForName, setPrayerForName] = useState('');
@@ -309,8 +310,6 @@ function PrayPageInner() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [shareFeedback, setShareFeedback] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
-
-  const [fromPath, setFromPath] = useState('/');
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -372,12 +371,6 @@ function PrayPageInner() {
 
     const nextMode: PrayMode = christianClassicDisabled ? 'free' : requestedMode;
 
-    if (fromParam) {
-      setFromPath(fromParam);
-    } else {
-      setFromPath('/');
-    }
-
     if (pathParam) {
       setSelectedTradition(mappedTradition);
       setActiveCatalogKey(mappedCatalogKey);
@@ -403,9 +396,9 @@ function PrayPageInner() {
     } else {
       setSelectedPrayerLabel('');
       setSelectedPrayerKind('type');
-      setSelectedFeelings([]);
+      setSelectedFeelings([DEFAULT_FEELING]);
     }
-  }, [pathParam, modeParam, prayerLabelParam, prayerKindParam, fromParam, router]);
+  }, [pathParam, modeParam, prayerLabelParam, prayerKindParam, router]);
 
   useEffect(() => {
     localStorage.setItem('pwg_tradition', selectedTradition);
@@ -451,21 +444,6 @@ function PrayPageInner() {
     return () => {
       abortRef.current?.abort();
     };
-  }, []);
-
-  const traditions = useMemo(() => {
-    return (Object.entries(AVATARS) as [Tradition, (typeof AVATARS)[Tradition]][]).filter(
-      ([key, avatar]) => {
-        const normalizedKey = String(key).toLowerCase();
-        const normalizedLabel = String(avatar?.label || '').toLowerCase();
-
-        if (normalizedKey === 'christian') return false;
-        if (normalizedKey === 'quiet' || normalizedKey === 'silence') return false;
-        if (normalizedLabel === 'silence') return false;
-
-        return true;
-      }
-    );
   }, []);
 
   const currentAvatar =
@@ -538,48 +516,14 @@ function PrayPageInner() {
   }
 
   function toggleFeeling(feeling: string) {
-    setSelectedFeelings((prev) =>
-      prev.includes(feeling)
-        ? prev.filter((item) => item !== feeling)
-        : [...prev, feeling]
-    );
-  }
+    setSelectedFeelings((prev) => {
+      if (prev.includes(feeling)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((item) => item !== feeling);
+      }
 
-  function switchTradition(trad: Tradition) {
-    stopSpeaking();
-    stopGenerating();
-
-    const key = String(trad).toLowerCase();
-    const avatar = AVATARS[trad];
-    const label = String(avatar?.label || '').toLowerCase();
-    const quietSelection =
-      key === 'quiet' || key === 'silence' || label === 'silence';
-
-    if (quietSelection) {
-      router.push('/quiet');
-      return;
-    }
-
-    const nextCatalogKey = normalizeCatalogKey(trad);
-    const nextFreeOptions = getFreePrayerOptions(nextCatalogKey);
-
-    setSelectedTradition(trad);
-    setActiveCatalogKey(nextCatalogKey);
-
-    // Sidebar switching always goes to free mode so feelings remain available.
-    setMode('free');
-
-    setPrayer('');
-    setError('');
-    setHasSubmitted(false);
-    setShowSaveModal(false);
-
-    setInput('');
-    setIntention('');
-    setSelectedFeelings([]);
-    setSelectedPrayerLabel('');
-    setSelectedPrayerKind('type');
-    setSelectedPrayerType(nextFreeOptions[0]?.label || '');
+      return [...prev, feeling];
+    });
   }
 
   const effectivePrayerForName = prayerForName.trim() || userName || '';
@@ -681,7 +625,7 @@ function PrayPageInner() {
       setIntention('');
     } else {
       setInput('');
-      setSelectedFeelings([]);
+      setSelectedFeelings([DEFAULT_FEELING]);
       setSelectedPrayerType(freePrayerOptions[0]?.label || '');
     }
   }
@@ -972,11 +916,11 @@ function PrayPageInner() {
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
-            href={fromPath}
+            href="/"
             className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm backdrop-blur transition hover:bg-white"
           >
             <ArrowLeft className="h-4 w-4" />
-            {fromPath.startsWith('/choose') ? 'Back to tradition' : 'Back home'}
+            Back home
           </Link>
 
           <div className="rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm text-zinc-900 shadow-sm backdrop-blur">
@@ -1014,6 +958,24 @@ function PrayPageInner() {
                 <p className="mt-4 max-w-2xl text-sm text-black">
                   {preparedMetaLine}
                 </p>
+
+                <button
+                  type="button"
+                  onClick={handleReadAloud}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                >
+                  {isSpeaking ? (
+                    <>
+                      <Square className="h-4 w-4" />
+                      Stop Reading
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4" />
+                      Read Aloud
+                    </>
+                  )}
+                </button>
               </div>
 
               <div className="rounded-[1.75rem] border border-amber-200 bg-gradient-to-b from-white via-amber-100/70 to-orange-200/70 px-6 py-8 shadow-sm sm:px-8 sm:py-10">
@@ -1079,6 +1041,14 @@ function PrayPageInner() {
                     <Printer className="h-4 w-4" />
                     Print
                   </button>
+
+                  <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-zinc-50"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Change tradition
+                  </Link>
                 </div>
 
                 {shareFeedback ? (
@@ -1143,80 +1113,56 @@ function PrayPageInner() {
             </div>
           </section>
         ) : (
-          <section className="grid gap-6 lg:grid-cols-[360px_1fr]">
-            <aside className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl">
-              <div className="mb-5 flex items-center gap-3">
+          <section className="mx-auto max-w-4xl">
+            <section className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-8">
+              <div className="mb-8 rounded-[1.75rem] border border-amber-100 bg-gradient-to-b from-white to-amber-50/70 p-5 shadow-sm">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-100 bg-white shadow-sm">
+                      <GuideAvatar avatar={currentAvatar} />
+                    </div>
+
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+                        Selected tradition
+                      </div>
+                      <h2 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">
+                        {currentAvatar?.label || 'Grace'}
+                      </h2>
+                      <p className="mt-1 text-sm text-zinc-900">
+                        {getGuideSubLabel(selectedTradition, currentAvatar)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-zinc-900 shadow-sm sm:max-w-xs">
+                    Tradition is locked on this page. Return home to choose another path.
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-8 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
                   <Sparkles className="h-5 w-5" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-                    Pray
+                  <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
+                    {isClassic ? 'Traditional prayer path' : 'What would you like prayer for?'}
                   </h1>
-                  <p className="text-sm text-zinc-900">
+                  <p className="mt-2 max-w-2xl text-zinc-900">
                     {isClassic
-                      ? 'You selected a traditional prayer path.'
-                      : 'Choose a guide, share your heart, and receive a prayer.'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-6 rounded-3xl border border-amber-100 bg-gradient-to-b from-white to-amber-50/70 p-5 text-center">
-                <GuideAvatar avatar={currentAvatar} />
-                <div className="mt-4">
-                  <h2 className="text-lg font-semibold text-zinc-900">
-                    {currentAvatar?.label || 'Grace'}
-                  </h2>
-                  <p className="mt-1 text-sm text-zinc-900">
-                    {getGuideSubLabel(selectedTradition, currentAvatar)}
+                      ? 'You chose a traditional prayer or prayer type. You can add a personal intention, then generate a tradition-faithful rendition.'
+                      : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
                   </p>
                 </div>
               </div>
 
               {userName ? (
-                <div className="mb-6 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-900">
+                <div className="mb-8 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-900">
                   Personal name{' '}
                   <span className="font-semibold text-zinc-900">{userName}</span>
                 </div>
               ) : null}
-
-              <div>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                  Spiritual guide
-                </h3>
-                <div className="grid gap-3">
-                  {traditions.map(([key, avatar]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => switchTradition(key)}
-                      className={`rounded-2xl border px-4 py-3 text-left transition ${
-                        selectedTradition === key
-                          ? 'border-sky-400 bg-sky-100 shadow-sm'
-                          : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
-                      }`}
-                    >
-                      <div className="font-medium text-zinc-900">{avatar.label}</div>
-                      <div className="mt-1 text-sm text-zinc-900">
-                        {getGuideSubLabel(key, avatar)}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </aside>
-
-            <section className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-8">
-              <div className="mb-8">
-                <h2 className="text-3xl font-semibold tracking-tight text-zinc-900">
-                  {isClassic ? 'Traditional prayer path' : 'What would you like prayer for?'}
-                </h2>
-                <p className="mt-2 max-w-2xl text-zinc-900">
-                  {isClassic
-                    ? 'You chose a traditional prayer or prayer type. You can add a personal intention, then generate a tradition-faithful rendition.'
-                    : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
-                </p>
-              </div>
 
               <div className="mb-8">
                 <label
@@ -1376,6 +1322,9 @@ function PrayPageInner() {
                         );
                       })}
                     </div>
+                    <p className="mt-3 text-sm text-zinc-900">
+                      One feeling is always kept selected so you can begin quickly.
+                    </p>
                   </div>
                 </>
               )}
@@ -1418,6 +1367,14 @@ function PrayPageInner() {
                     Reset
                   </button>
                 )}
+
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Change tradition
+                </Link>
               </div>
 
               {(error || isReflecting || (hasSubmitted && !prayer)) && (
