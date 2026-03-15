@@ -218,7 +218,15 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
         : 'This is a newly formed prayer inspired by Jewish tradition. It is not presented as scripture, formal liturgy, or an authoritative translation.';
 
     case 'catholic':
+      return isClassic
+        ? 'This is a tradition-faithful rendering inspired by the selected Catholic prayer or prayer type. It is not a verbatim sacred text or official published liturgical form.'
+        : 'This is a newly formed prayer inspired by Catholic tradition. It is not an official liturgical text or authoritative translation of sacred scripture.';
+
     case 'protestant':
+      return isClassic
+        ? 'This is a tradition-faithful rendering inspired by the selected Protestant prayer or prayer type. It is not a verbatim sacred text or official published liturgical form.'
+        : 'This is a newly formed prayer inspired by Protestant tradition. It is not an official liturgical text or authoritative translation of sacred scripture.';
+
     case 'christian':
       return isClassic
         ? 'This is a tradition-faithful rendering inspired by the selected Christian prayer or prayer type. It is not a verbatim sacred text or official published liturgical form.'
@@ -526,6 +534,14 @@ function PrayPageInner() {
     });
   }
 
+  function scrollToCustomPrayerForm() {
+    if (typeof window === 'undefined') return;
+    const form = document.getElementById('custom-prayer-form');
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   const effectivePrayerForName = prayerForName.trim() || userName || '';
 
   async function handleGeneratePrayer() {
@@ -540,6 +556,10 @@ function PrayPageInner() {
     }
 
     const timeContext = getLocalTimeContext();
+    const effectiveFreePrayerType =
+      selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer';
+    const effectiveFeelings =
+      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
 
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -565,9 +585,9 @@ function PrayPageInner() {
               tradition: selectedTradition,
               mode: 'free' as const,
               avatarLabel: currentAvatar?.label ?? 'Grace',
-              prayerType: selectedPrayerType,
+              prayerType: effectiveFreePrayerType,
               userName: effectivePrayerForName || null,
-              feelings: selectedFeelings,
+              feelings: effectiveFeelings,
               input: input.trim(),
               ...timeContext,
             };
@@ -611,6 +631,10 @@ function PrayPageInner() {
         }
       }, 100);
     }
+  }
+
+  function handleQuickPrayer() {
+    void handleGeneratePrayer();
   }
 
   function handleReset() {
@@ -851,7 +875,10 @@ function PrayPageInner() {
 
   const resultTitle = isClassic
     ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'
-    : selectedFreePrayerEntry?.display || selectedPrayerType || 'Prayer';
+    : selectedFreePrayerEntry?.display ||
+      freePrayerOptions[0]?.display ||
+      selectedPrayerType ||
+      'Prayer';
 
   const resultSubtitle = pathDisplayLabel;
 
@@ -1139,9 +1166,43 @@ function PrayPageInner() {
                     Tradition is locked on this page. Return home to choose another path.
                   </div>
                 </div>
+
+                {!isClassic ? (
+                  <div className="mt-5 border-t border-amber-100 pt-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <button
+                        type="button"
+                        onClick={handleQuickPrayer}
+                        disabled={isReflecting}
+                        title="Scroll down to form a custom prayer"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                      >
+                        {isReflecting ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            Reflecting...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-4 w-4" />
+                            Quick Prayer
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={scrollToCustomPrayerForm}
+                        className="text-left text-sm text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
+                      >
+                        Or scroll down to form a custom prayer.
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
-              <div className="mb-8 flex items-center gap-3">
+              <div id="custom-prayer-form" className="mb-8 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
                   <Sparkles className="h-5 w-5" />
                 </div>

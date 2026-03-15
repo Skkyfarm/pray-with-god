@@ -1,112 +1,122 @@
-// lib/prayerCatalog.ts
+// /lib/prayerCatalog.ts
 
-export type PrayerKind = "type" | "named";
+export type TraditionKey =
+  | 'grace'
+  | 'catholic'
+  | 'protestant'
+  | 'jewish'
+  | 'muslim'
+  | 'hindu'
+  | 'buddhist';
 
-export type PrayerEntry = {
+export type PrayerKind = 'type' | 'named';
+
+export type PrayerCatalogItem = {
   id: string;
-  label: string;
-  gloss: string;
-  display: string;
+  label: string; // keep exact wording
   kind: PrayerKind;
 };
 
-export type TraditionKey =
-  | "grace"
-  | "catholic"
-  | "protestant"
-  | "jewish"
-  | "muslim"
-  | "hindu"
-  | "buddhist";
+export type PrayerEntry = PrayerCatalogItem & {
+  gloss: string;
+  display: string;
+};
 
-function makePrayer(
-  id: string,
-  label: string,
-  gloss: string,
-  kind: PrayerKind = "type"
-): PrayerEntry {
-  return {
-    id,
-    label,
-    gloss,
-    display: `${label} (${gloss})`,
-    kind,
-  };
-}
-
-export const PRAYER_CATALOG: Record<TraditionKey, PrayerEntry[]> = {
-  grace: [
-    makePrayer("praise", "Praise", "Worship"),
-    makePrayer("confession", "Confession", "Repentance"),
-    makePrayer("thanksgiving", "Thanksgiving", "Gratitude"),
-    makePrayer("petition", "Petition", "Personal Request"),
-    makePrayer("intercession", "Intercession", "Prayer for Others"),
-  ],
+export const PRAYER_CATALOG: Record<TraditionKey, PrayerCatalogItem[]> = {
+  grace: [],
 
   catholic: [
-    makePrayer("adoration", "Adoration", "Worship"),
-    makePrayer("confession", "Confession", "Repentance"),
-    makePrayer("thanksgiving", "Thanksgiving", "Gratitude"),
-    makePrayer("supplication", "Supplication", "Personal Request"),
-    makePrayer("intercession", "Intercession", "Prayer for Others"),
-    makePrayer("praise", "Praise", "Exaltation"),
-    makePrayer("lectio-divina", "Lectio Divina", "Sacred Reflection"),
-    makePrayer("examen", "Examen", "Daily Reflection"),
+    { id: 'catholic_thanksgiving', label: 'Thanksgiving', kind: 'type' },
+    { id: 'catholic_adoration', label: 'Adoration', kind: 'type' },
+    { id: 'catholic_supplication', label: 'Supplication', kind: 'type' },
+    { id: 'catholic_confession', label: 'Confession', kind: 'type' },
+    { id: 'catholic_lords_prayer', label: 'The Lord’s Prayer', kind: 'named' },
+    { id: 'catholic_jabez', label: 'The Prayer of Jabez', kind: 'named' },
+    { id: 'catholic_serenity', label: 'The Serenity Prayer', kind: 'named' },
+    { id: 'catholic_st_francis', label: 'The Prayer of St. Francis', kind: 'named' },
+    { id: 'catholic_hannah', label: 'The Prayer of Hannah', kind: 'named' },
+    { id: 'catholic_king_solomon', label: 'The Prayer of King Solomon', kind: 'named' },
+    {
+      id: 'catholic_mary_mother_of_jesus',
+      label: 'The Prayer of Mary, the mother of Jesus',
+      kind: 'named',
+    },
+    { id: 'catholic_st_augustine', label: 'The Prayer of St. Augustine', kind: 'named' },
+    {
+      id: 'catholic_st_ignatius',
+      label: 'The Prayer of St. Ignatius of Loyola',
+      kind: 'named',
+    },
+    {
+      id: 'catholic_st_therese',
+      label: 'The Prayer of St. Therese of Lisieux',
+      kind: 'named',
+    },
   ],
 
   protestant: [
-    makePrayer("confessional-prayers", "Confessional Prayers", "Repentance"),
-    makePrayer("thanksgiving-prayers", "Thanksgiving Prayers", "Gratitude"),
-    makePrayer("intercessory-prayers", "Intercessory Prayers", "Prayer for Others"),
-    makePrayer("petitionary-prayers", "Petitionary Prayers", "Personal Request"),
-    makePrayer("adoration-prayers", "Adoration Prayers", "Worship"),
-    makePrayer("praise-prayers", "Praise Prayers", "Exaltation"),
-    makePrayer("lamentation-prayers", "Lamentation Prayers", "Sorrow / Complaint"),
-    makePrayer("prayers-of-penitence", "Prayers of Penitence", "Contrition"),
-    makePrayer("meditative-prayers", "Meditative Prayers", "Quiet Reflection"),
+    { id: 'protestant_thanksgiving', label: 'Thanksgiving Prayers', kind: 'type' },
+    { id: 'protestant_meditative', label: 'Meditative Prayers', kind: 'type' },
+    { id: 'protestant_intercessory', label: 'Intercessory Prayers', kind: 'type' },
+    { id: 'protestant_petitionary', label: 'Petitionary Prayers', kind: 'type' },
+    { id: 'protestant_praise', label: 'Praise Prayers', kind: 'type' },
+    { id: 'protestant_adoration', label: 'Adoration Prayers', kind: 'type' },
+    { id: 'protestant_liturgical', label: 'Liturgical Prayers', kind: 'type' },
+    { id: 'protestant_lamentation', label: 'Lamentation Prayers', kind: 'type' },
+    { id: 'protestant_confessional', label: 'Confessional Prayers', kind: 'type' },
+    { id: 'protestant_penitence', label: 'Prayers of Penitence', kind: 'type' },
   ],
 
   jewish: [
-    makePrayer("bakashah", "Bakashah", "Personal Request"),
-    makePrayer("hodaah", "Hoda'ah", "Gratitude"),
-    makePrayer("teshuvah", "Teshuvah", "Return / Repentance"),
-    makePrayer("rachamim", "Rachamim", "Mercy"),
-    makePrayer("shalom", "Shalom", "Peace"),
-    makePrayer("refuah", "Refuah", "Healing"),
-    makePrayer("kavanah", "Kavanah", "Sacred Intention"),
+    { id: 'jewish_shacharit', label: 'Shacharit', kind: 'type' },
+    { id: 'jewish_mincha', label: 'Mincha', kind: 'type' },
+    { id: 'jewish_maariv', label: 'Maariv', kind: 'type' },
+    { id: 'jewish_hallel', label: 'Hallel', kind: 'type' },
+    { id: 'jewish_tehillim', label: 'Tehillim', kind: 'type' },
+    { id: 'jewish_birkat_hamazon', label: 'Birkat Hamazon', kind: 'type' },
+    { id: 'jewish_tefilat_haderech', label: 'Tefilat Haderech', kind: 'type' },
+    { id: 'jewish_kabbalat_shabbat', label: 'Kabbalat Shabbat', kind: 'type' },
+    { id: 'jewish_mussaf', label: 'Mussaf', kind: 'type' },
+    { id: 'jewish_tashlich', label: 'Tashlich', kind: 'type' },
+    { id: 'jewish_selichot', label: 'Selichot', kind: 'type' },
+    { id: 'jewish_vidui', label: 'Vidui', kind: 'type' },
   ],
 
   muslim: [
-    makePrayer("dua", "Dua", "Personal Supplication"),
-    makePrayer("shukr", "Shukr", "Gratitude"),
-    makePrayer("tawbah", "Tawbah", "Repentance"),
-    makePrayer("sabr", "Sabr", "Patience"),
-    makePrayer("hidayah", "Hidayah", "Guidance"),
-    makePrayer("rahmah", "Rahmah", "Mercy"),
-    makePrayer("shifa", "Shifa", "Healing"),
+    { id: 'muslim_fajr', label: 'Fajr Prayer', kind: 'type' },
+    { id: 'muslim_dhuhr', label: 'Dhuhr Prayer', kind: 'type' },
+    { id: 'muslim_asr', label: 'Asr Prayer', kind: 'type' },
+    { id: 'muslim_maghrib', label: 'Maghrib Prayer', kind: 'type' },
+    { id: 'muslim_isha', label: 'Isha Prayer', kind: 'type' },
   ],
 
   hindu: [
-    makePrayer("bhakti", "Bhakti", "Devotion"),
-    makePrayer("stuti", "Stuti", "Praise"),
-    makePrayer("prarthana", "Prarthana", "Personal Request"),
-    makePrayer("sankalpa", "Sankalpa", "Intention Setting"),
-    makePrayer("shanti-prarthana", "Shanti Prarthana", "Peace Prayer"),
-    makePrayer("kshama-prarthana", "Kshama Prarthana", "Forgiveness"),
-    makePrayer("dhyana", "Dhyana", "Meditative Reflection"),
+    { id: 'hindu_shanti_path', label: 'Shanti Path (Peace Prayer)', kind: 'type' },
+    { id: 'hindu_gratitude_offering', label: 'Gratitude / Offering', kind: 'type' },
+    { id: 'hindu_bhakti', label: 'Bhakti Devotional', kind: 'type' },
+    { id: 'hindu_sankalpa', label: 'Sankalpa (Intention Setting)', kind: 'type' },
+    { id: 'hindu_stuti', label: 'Stuti (Praise)', kind: 'type' },
+    { id: 'hindu_prarthana', label: 'Prarthana (Personal Request)', kind: 'type' },
+    { id: 'hindu_gayatri', label: 'Gayatri / Sacred Mantra', kind: 'type' },
+    { id: 'hindu_kshama', label: 'Kshama Prarthana (Forgiveness)', kind: 'type' },
   ],
 
   buddhist: [
-    makePrayer("metta", "Metta", "Loving-Kindness"),
-    makePrayer("karuna", "Karuna", "Compassion"),
-    makePrayer("mudita", "Mudita", "Joy in Others' Good"),
-    makePrayer("upekkha", "Upekkha", "Equanimity"),
-    makePrayer("aspiration", "Aspiration", "Sacred Wish"),
-    makePrayer("repentance", "Repentance", "Purification"),
-    makePrayer("gratitude", "Gratitude", "Thankful Reflection"),
+    { id: 'buddhist_metta', label: 'Metta (Loving Kindness)', kind: 'type' },
+    { id: 'buddhist_karuna', label: 'Karuna (Compassion)', kind: 'type' },
+    { id: 'buddhist_mindfulness', label: 'Mindfulness Reflection', kind: 'type' },
+    { id: 'buddhist_equanimity', label: 'Equanimity Practice', kind: 'type' },
+    { id: 'buddhist_letting_go', label: 'Letting Go / Release', kind: 'type' },
+    { id: 'buddhist_forgiveness', label: 'Forgiveness Reflection', kind: 'type' },
+    { id: 'buddhist_merit', label: 'Dedication of Merit', kind: 'type' },
+    { id: 'buddhist_refuge', label: 'Refuge / Protection', kind: 'type' },
   ],
 };
 
 export function getPrayerOptions(tradition: TraditionKey): PrayerEntry[] {
-  return PRAYER_CATALOG[tradition] ?? [];
+  return (PRAYER_CATALOG[tradition] ?? []).map((item) => ({
+    ...item,
+    gloss: item.label,
+    display: item.label,
+  }));
 }
