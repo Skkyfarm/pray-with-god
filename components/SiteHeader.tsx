@@ -10,24 +10,32 @@ export default function SiteHeader() {
   const [supportOpen, setSupportOpen] = useState(false);
   const [shareFeedback, setShareFeedback] = useState("");
 
-  const shareRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const supportRef = useRef<HTMLDivElement | null>(null);
 
+  const siteUrl = "https://praywithgod.ai";
+
+  const sharePath =
+    typeof window !== "undefined"
+      ? `${window.location.pathname}${window.location.search}${window.location.hash}`
+      : "";
+
+  const shareUrl = `${siteUrl}${sharePath || ""}`;
+
   useEffect(() => {
-    function onDocMouseDown(e: MouseEvent) {
-      const target = e.target as Node;
+    function onDocPointerDown(e: PointerEvent) {
+      const target = e.target as Node | null;
+      if (!target) return;
 
-      if (shareRef.current && !shareRef.current.contains(target)) {
+      if (headerRef.current && !headerRef.current.contains(target)) {
         setShareOpen(false);
-      }
-
-      if (supportRef.current && !supportRef.current.contains(target)) {
         setSupportOpen(false);
+        setMobileOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", onDocMouseDown);
-    return () => document.removeEventListener("mousedown", onDocMouseDown);
+    document.addEventListener("pointerdown", onDocPointerDown);
+    return () => document.removeEventListener("pointerdown", onDocPointerDown);
   }, []);
 
   useEffect(() => {
@@ -49,15 +57,6 @@ export default function SiteHeader() {
     return () => clearTimeout(timer);
   }, [shareFeedback]);
 
-  const siteUrl = "https://praywithgod.ai";
-
-  const sharePath =
-    typeof window !== "undefined"
-      ? `${window.location.pathname}${window.location.search}${window.location.hash}`
-      : "";
-
-  const shareUrl = `${siteUrl}${sharePath || ""}`;
-
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("PrayWithGod");
     const body = encodeURIComponent(
@@ -67,29 +66,55 @@ export default function SiteHeader() {
     return `mailto:?subject=${subject}&body=${body}`;
   }, [shareUrl]);
 
+  async function copyToClipboard(text: string) {
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    const success = document.execCommand("copy");
+    document.body.removeChild(textarea);
+
+    if (!success) {
+      throw new Error("Clipboard copy failed");
+    }
+  }
+
   async function handleShareSite() {
     const shareData = {
       title: "PrayWithGod",
-      text: `PrayWithGod — thoughtful, personalized prayer across spiritual traditions.\n\n${shareUrl}`,
+      text: "PrayWithGod — thoughtful, personalized prayer across spiritual traditions.",
       url: shareUrl,
     };
 
-    try {
-      if (navigator.share) {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
         await navigator.share(shareData);
         setShareFeedback("Shared");
         return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          setShareFeedback("");
+          return;
+        }
       }
+    }
 
-      await navigator.clipboard.writeText(shareUrl);
+    try {
+      await copyToClipboard(shareUrl);
       setShareFeedback("Link copied");
     } catch {
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareFeedback("Link copied");
-      } catch {
-        setShareFeedback("Unable to share");
-      }
+      setShareFeedback("Unable to share");
     }
   }
 
@@ -100,7 +125,10 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-sky-200/85 backdrop-blur">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-black/10 bg-sky-200/85 backdrop-blur"
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-5">
         <Link
           href="/"
@@ -121,7 +149,7 @@ export default function SiteHeader() {
             </Link>
           ))}
 
-          <div className="relative" ref={shareRef}>
+          <div className="relative">
             <button
               type="button"
               onClick={() => {
