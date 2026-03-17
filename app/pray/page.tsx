@@ -13,6 +13,10 @@ import {
   type PrayerEntry,
 } from '@/lib/prayerCatalog';
 import {
+  detectPrayerSafety,
+  type PrayerSafetyNotice,
+} from '@/lib/safety';
+import {
   ArrowLeft,
   Sparkles,
   Heart,
@@ -27,14 +31,18 @@ import {
   X,
   XCircle,
   Share2,
+  ShieldAlert,
 } from 'lucide-react';
 
 type PrayerResponse = {
   prayer?: string;
   error?: string;
+  safetyNotice?: PrayerSafetyNotice;
 };
 
 type PrayMode = 'free' | 'classic';
+
+const PRAYER_REQUEST_MAX = 500;
 
 const FEELING_OPTIONS = [
   'Grateful',
@@ -300,6 +308,66 @@ function getLocalTimeContext() {
   }
 }
 
+function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
+  const isCrisis = notice.level === 'crisis';
+
+  return (
+    <div
+      className={`rounded-[1.5rem] border px-5 py-4 shadow-sm ${
+        isCrisis
+          ? 'border-red-200 bg-red-50'
+          : 'border-amber-200 bg-amber-50'
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${
+            isCrisis ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+          }`}
+        >
+          <ShieldAlert className="h-5 w-5" />
+        </div>
+
+        <div className="min-w-0">
+          <div
+            className={`text-sm font-semibold uppercase tracking-[0.18em] ${
+              isCrisis ? 'text-red-800' : 'text-amber-800'
+            }`}
+          >
+            Safety support
+          </div>
+
+          <h3
+            className={`mt-2 text-lg font-semibold ${
+              isCrisis ? 'text-red-900' : 'text-amber-900'
+            }`}
+          >
+            {notice.title}
+          </h3>
+
+          <p
+            className={`mt-2 text-sm leading-7 ${
+              isCrisis ? 'text-red-900' : 'text-amber-900'
+            }`}
+          >
+            {notice.body}
+          </p>
+
+          <ul
+            className={`mt-3 space-y-1 text-sm leading-7 ${
+              isCrisis ? 'text-red-900' : 'text-amber-900'
+            }`}
+          >
+            {notice.resources.map((resource) => (
+              <li key={resource}>• {resource}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -330,6 +398,7 @@ function PrayPageInner() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [shareFeedback, setShareFeedback] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [safetyNotice, setSafetyNotice] = useState<PrayerSafetyNotice | null>(null);
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
@@ -378,6 +447,7 @@ function PrayPageInner() {
     setHasSubmitted(false);
     setIsReflecting(false);
     setShowSaveModal(false);
+    setSafetyNotice(null);
 
     const mappedTradition = mapPathToTradition(pathParam);
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
@@ -498,6 +568,17 @@ function PrayPageInner() {
     return freePrayerOptions.find((item) => item.label === selectedPrayerType) || null;
   }, [freePrayerOptions, selectedPrayerType]);
 
+  const liveSafetyNotice = useMemo(() => {
+    if (mode !== 'free') return null;
+    if (!input.trim()) return null;
+
+    return detectPrayerSafety([input]).safetyNotice || null;
+  }, [mode, input]);
+
+  const prayerRequestLength = input.length;
+  const prayerRequestRemaining = PRAYER_REQUEST_MAX - prayerRequestLength;
+  const prayerRequestNearLimit = prayerRequestRemaining <= 60;
+
   useEffect(() => {
     if (mode !== 'free') return;
 
@@ -561,6 +642,7 @@ function PrayPageInner() {
     setError('');
     setPrayer('');
     setShowSaveModal(false);
+    setSafetyNotice(null);
 
     if (mode === 'classic' && !selectedPrayerLabel.trim()) {
       setError('Please choose a traditional prayer first.');
@@ -617,7 +699,8 @@ function PrayPageInner() {
         throw new Error(data?.error || 'Something went wrong while generating your prayer.');
       }
 
-      setPrayer(data.prayer || 'Your prayer could not be generated.');
+      setSafetyNotice(data.safetyNotice || null);
+      setPrayer(data.prayer || '');
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
         setError('');
@@ -656,6 +739,7 @@ function PrayPageInner() {
     setError('');
     setHasSubmitted(false);
     setShowSaveModal(false);
+    setSafetyNotice(null);
 
     if (mode === 'classic') {
       setIntention('');
@@ -673,6 +757,7 @@ function PrayPageInner() {
     setError('');
     setHasSubmitted(false);
     setShowSaveModal(false);
+    setSafetyNotice(null);
   }
 
   function handleReadAloud() {
@@ -1016,6 +1101,12 @@ function PrayPageInner() {
                   )}
                 </button>
               </div>
+
+              {safetyNotice ? (
+                <div className="mb-6">
+                  <SafetyNoticeCard notice={safetyNotice} />
+                </div>
+              ) : null}
 
               <div className="rounded-[1.75rem] border border-amber-200 bg-gradient-to-b from-white via-amber-100/70 to-orange-200/70 px-6 py-8 shadow-sm sm:px-8 sm:py-10">
                 <div className="whitespace-pre-wrap font-serif text-[1.08rem] italic leading-8 text-black sm:text-[1.12rem]">
@@ -1365,10 +1456,36 @@ function PrayPageInner() {
                     <textarea
                       id="prayer-input"
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
+                      onChange={(e) => setInput(e.target.value.slice(0, PRAYER_REQUEST_MAX))}
+                      maxLength={PRAYER_REQUEST_MAX}
+                      aria-describedby="prayer-input-help prayer-input-counter prayer-input-safety"
                       placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. This field is optional."
                       className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                     />
+
+                    <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                      <p
+                        id="prayer-input-help"
+                        className="text-sm text-zinc-900"
+                      >
+                        Keep it brief so the prayer stays focused and readable.
+                      </p>
+
+                      <div
+                        id="prayer-input-counter"
+                        className={`text-sm font-medium ${
+                          prayerRequestNearLimit ? 'text-amber-700' : 'text-zinc-700'
+                        }`}
+                      >
+                        {prayerRequestLength}/{PRAYER_REQUEST_MAX}
+                      </div>
+                    </div>
+
+                    {liveSafetyNotice ? (
+                      <div id="prayer-input-safety" className="mt-4" aria-live="polite">
+                        <SafetyNoticeCard notice={liveSafetyNotice} />
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="mb-8">
@@ -1450,13 +1567,20 @@ function PrayPageInner() {
                 </Link>
               </div>
 
-              {(error || isReflecting || (hasSubmitted && !prayer)) && (
+              {(error ||
+                isReflecting ||
+                safetyNotice ||
+                (hasSubmitted && !prayer && !safetyNotice)) && (
                 <div id="prayer-output" className="mt-10">
                   {error && (
                     <div className="rounded-3xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
                       {error}
                     </div>
                   )}
+
+                  {safetyNotice && !prayer && !isReflecting ? (
+                    <SafetyNoticeCard notice={safetyNotice} />
+                  ) : null}
 
                   {isReflecting && !error && (
                     <div className="rounded-[2rem] border border-amber-200 bg-gradient-to-b from-amber-50 to-white px-6 py-8 shadow-sm">

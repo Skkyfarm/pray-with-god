@@ -5,6 +5,7 @@ import {
   postProcessPrayer,
 } from "@/lib/prayerStructure";
 import type { Tradition } from "@/lib/avatars";
+import { detectPrayerSafety } from "@/lib/safety";
 
 export const runtime = "nodejs";
 
@@ -35,6 +36,8 @@ type PrayBody = {
   localDateTime?: string | null;
   dayPart?: DayPart | null;
 };
+
+const PRAYER_REQUEST_MAX = 500;
 
 function pickExactPhrase(input: string) {
   const cleaned = String(input || "").replace(/\s+/g, " ").trim();
@@ -317,6 +320,23 @@ export async function POST(req: Request) {
     const selectedPrayerKind = normalizeKind(body?.selectedPrayerKind);
     const intention = String(body?.intention || "").trim();
 
+    if (input.length > PRAYER_REQUEST_MAX) {
+      return NextResponse.json(
+        {
+          error: `Please keep your prayer request under ${PRAYER_REQUEST_MAX} characters.`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const safety = detectPrayerSafety([input, intention]);
+
+    if (safety.level === "crisis" && safety.safetyNotice) {
+      return NextResponse.json({
+        safetyNotice: safety.safetyNotice,
+      });
+    }
+
     if (mode === "free") {
       if (!input && feelings.length === 0) {
         return NextResponse.json(
@@ -499,7 +519,10 @@ Do not mention rules or instructions.
 
     text = stripGenericOpeners(text);
 
-    return NextResponse.json({ prayer: text });
+    return NextResponse.json({
+      prayer: text,
+      safetyNotice: safety.safetyNotice,
+    });
   } catch (err: any) {
     console.error("API /api/pray error:", err);
 
