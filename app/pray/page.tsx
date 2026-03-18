@@ -44,6 +44,7 @@ type PrayerResponse = {
 };
 
 type PrayMode = 'free' | 'classic';
+type ProtestantView = 'quick' | 'free' | 'classic';
 type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
 type PrayerRequestPayload = {
@@ -408,6 +409,7 @@ function PrayPageInner() {
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
   const [activeCatalogKey, setActiveCatalogKey] = useState<TraditionKey | null>('grace');
   const [mode, setMode] = useState<PrayMode>('free');
+  const [protestantView, setProtestantView] = useState<ProtestantView>('quick');
 
   const [selectedPrayerType, setSelectedPrayerType] = useState('');
   const [selectedPrayerLabel, setSelectedPrayerLabel] = useState('');
@@ -486,11 +488,25 @@ function PrayPageInner() {
       requestedMode === 'classic' &&
       ['christian', 'catholic'].includes(String(mappedTradition).toLowerCase());
 
-    const nextMode: PrayMode = protestantPrayerTypeLink
-      ? 'classic'
-      : christianClassicDisabled
-        ? 'free'
-        : requestedMode;
+    const nextProtestantView: ProtestantView =
+      mappedCatalogKey === 'protestant'
+        ? protestantPrayerTypeLink
+          ? 'classic'
+          : modeParam === 'classic'
+            ? 'classic'
+            : modeParam === 'free'
+              ? 'free'
+              : 'quick'
+        : 'free';
+
+    const nextMode: PrayMode =
+      mappedCatalogKey === 'protestant'
+        ? nextProtestantView === 'classic'
+          ? 'classic'
+          : 'free'
+        : christianClassicDisabled
+          ? 'free'
+          : requestedMode;
 
     if (pathParam) {
       setSelectedTradition(mappedTradition);
@@ -509,6 +525,7 @@ function PrayPageInner() {
     }
 
     setMode(nextMode);
+    setProtestantView(nextProtestantView);
 
     if (nextMode === 'classic') {
       const initialClassicLabel =
@@ -605,6 +622,7 @@ function PrayPageInner() {
   const isProtestantPrayerPath = activeCatalogKey === 'protestant';
   const showClassicModeToggle = isProtestantPrayerPath;
   const isProtestantPersonalMode = mode === 'free' && isProtestantPrayerPath;
+  const showExpandedPrayerPanel = !isProtestantPrayerPath || protestantView !== 'quick';
 
   const selectedTraditionalEntry = useMemo(() => {
     return (
@@ -704,9 +722,7 @@ function PrayPageInner() {
     }
   }
 
-  function switchPrayerMode(nextMode: PrayMode) {
-    if (nextMode === mode) return;
-
+  function openCustomizePrayer() {
     stopSpeaking();
     stopGenerating();
     setPrayer('');
@@ -715,24 +731,8 @@ function PrayPageInner() {
     setShowSaveModal(false);
     setSafetyNotice(null);
 
-    if (nextMode === 'classic') {
-      setMode('classic');
-
-      if (!selectedPrayerLabel) {
-        const firstClassic =
-          traditionalOptions.find((item) => item.kind === 'type') || traditionalOptions[0];
-
-        if (firstClassic) {
-          setSelectedPrayerLabel(firstClassic.label);
-          setSelectedPrayerKind(firstClassic.kind);
-        }
-      }
-
-      setSelectedFeelings([]);
-      return;
-    }
-
     setMode('free');
+    setProtestantView('free');
     setSelectedPrayerLabel('');
     setSelectedPrayerKind('type');
     setSelectedPrayerType(
@@ -741,6 +741,30 @@ function PrayPageInner() {
         : freePrayerOptions[0]?.label || ''
     );
     setSelectedFeelings((prev) => (prev.length > 0 ? prev : [DEFAULT_FEELING]));
+  }
+
+  function openClassicPrayer() {
+    stopSpeaking();
+    stopGenerating();
+    setPrayer('');
+    setError('');
+    setHasSubmitted(false);
+    setShowSaveModal(false);
+    setSafetyNotice(null);
+
+    setMode('classic');
+    setProtestantView('classic');
+    setSelectedFeelings([]);
+
+    if (!selectedPrayerLabel) {
+      const firstClassic =
+        traditionalOptions.find((item) => item.kind === 'type') || traditionalOptions[0];
+
+      if (firstClassic) {
+        setSelectedPrayerLabel(firstClassic.label);
+        setSelectedPrayerKind(firstClassic.kind);
+      }
+    }
   }
 
   const effectivePrayerForName = prayerForName.trim() || userName || '';
@@ -845,6 +869,8 @@ function PrayPageInner() {
     const timeContext = getLocalTimeContext();
     const quickFeelings =
       selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
+
+    setProtestantView('quick');
 
     if (mode !== 'free') {
       setMode('free');
@@ -1193,6 +1219,13 @@ function PrayPageInner() {
     },
   ];
 
+  const launcherButtonClass = (active: boolean) =>
+    `rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70 ${
+      active
+        ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
+        : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
+    }`;
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
@@ -1436,16 +1469,16 @@ function PrayPageInner() {
                           type="button"
                           onClick={handleQuickPrayer}
                           disabled={isReflecting}
-                          className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                          className={launcherButtonClass(protestantView === 'quick')}
                         >
-                          {isReflecting ? (
+                          {isReflecting && protestantView === 'quick' ? (
                             <>
-                              <RefreshCw className="h-4 w-4 animate-spin" />
+                              <RefreshCw className="mr-2 inline h-4 w-4 animate-spin" />
                               Reflecting...
                             </>
                           ) : (
                             <>
-                              <Sparkles className="h-4 w-4" />
+                              <Sparkles className="mr-2 inline h-4 w-4" />
                               Quick Prayer
                             </>
                           )}
@@ -1453,32 +1486,30 @@ function PrayPageInner() {
 
                         <button
                           type="button"
-                          onClick={() => switchPrayerMode('free')}
-                          className={`rounded-full px-5 py-3 text-sm font-semibold transition ${
-                            !isClassic
-                              ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
-                              : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
-                          }`}
+                          onClick={openCustomizePrayer}
+                          disabled={isReflecting}
+                          className={launcherButtonClass(protestantView === 'free')}
                         >
                           Customize a Prayer
                         </button>
 
                         <button
                           type="button"
-                          onClick={() => switchPrayerMode('classic')}
-                          className={`rounded-full px-5 py-3 text-sm font-semibold transition ${
-                            isClassic
-                              ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
-                              : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
-                          }`}
+                          onClick={openClassicPrayer}
+                          disabled={isReflecting}
+                          className={launcherButtonClass(protestantView === 'classic')}
                         >
                           Classic Prayer
                         </button>
                       </div>
 
-                      {!isClassic ? (
+                      {protestantView === 'quick' ? (
                         <p className="text-sm text-zinc-900">
-                          Quick Prayer uses a hidden petitionary base. Customize a Prayer lets you shape the recipient, feelings, and request before generating.
+                          Quick Prayer generates immediately. Choose Customize or Classic to open more options.
+                        </p>
+                      ) : protestantView === 'free' ? (
+                        <p className="text-sm text-zinc-900">
+                          Customize a Prayer opens the personal prayer form below.
                         </p>
                       ) : (
                         <p className="text-sm text-zinc-900">
@@ -1522,318 +1553,322 @@ function PrayPageInner() {
                 ) : null}
               </div>
 
-              <div id="custom-prayer-form" className="mb-8 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-                    {isClassic
-                      ? 'Classic prayer path'
-                      : isProtestantPersonalMode
-                        ? 'Customize a Prayer'
-                        : 'What would you like prayer for?'}
-                  </h1>
-                  <p className="mt-2 max-w-2xl text-zinc-900">
-                    {isClassic
-                      ? 'Choose a classic prayer type, then add a personal intention if you want one woven into the tradition-shaped prayer.'
-                      : isProtestantPersonalMode
-                        ? 'For Protestant prayer, customize the recipient, your feelings, and your request here. Visible prayer types live in Classic Prayer mode.'
-                        : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
-                  </p>
-                </div>
-              </div>
-
-              {userName ? (
-                <div className="mb-8 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-900">
-                  Personal name{' '}
-                  <span className="font-semibold text-zinc-900">{userName}</span>
-                </div>
-              ) : null}
-
-              <div className="mb-8">
-                <label
-                  htmlFor="prayer-for-name"
-                  className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
-                >
-                  Who is this prayer for? (optional)
-                </label>
-
-                <input
-                  id="prayer-for-name"
-                  type="text"
-                  value={prayerForName}
-                  onChange={(e) => setPrayerForName(e.target.value)}
-                  placeholder={
-                    userName
-                      ? `Leave blank to use your saved name, ${userName}.`
-                      : 'Example: Mom, Michael, my family, or myself'
-                  }
-                  className="w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
-                />
-
-                <p className="mt-2 text-sm text-zinc-900">
-                  This does not change your saved name. It only applies to this prayer.
-                </p>
-              </div>
-
-              {isClassic ? (
+              {showExpandedPrayerPanel ? (
                 <>
-                  <div className="mb-8">
-                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                      Traditional prayers & prayer types
+                  <div id="custom-prayer-form" className="mb-8 flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+                      <Sparkles className="h-5 w-5" />
                     </div>
-
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {traditionalOptions.map((item) => {
-                        const active =
-                          selectedPrayerLabel === item.label &&
-                          selectedPrayerKind === item.kind;
-                        const aboutHref = getPrayerTypeDefinitionHref(
-                          activeCatalogKey || selectedTradition,
-                          item.label
-                        );
-
-                        return (
-                          <div
-                            key={`${item.kind}-${item.label}`}
-                            className={`rounded-2xl border px-4 py-4 transition ${
-                              active
-                                ? 'border-sky-400 bg-sky-100 shadow-sm'
-                                : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
-                            }`}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedPrayerLabel(item.label);
-                                setSelectedPrayerKind(item.kind);
-                              }}
-                              className="w-full text-left"
-                            >
-                              <div className="font-medium text-zinc-900">{item.display}</div>
-                            </button>
-
-                            {aboutHref ? (
-                              <div className="mt-2">
-                                <Link
-                                  href={aboutHref}
-                                  className="text-sm font-semibold text-sky-700 transition hover:text-sky-800"
-                                >
-                                  Read more →
-                                </Link>
-                              </div>
-                            ) : null}
-                          </div>
-                        );
-                      })}
+                    <div>
+                      <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
+                        {isClassic
+                          ? 'Classic prayer path'
+                          : isProtestantPersonalMode
+                            ? 'Customize a Prayer'
+                            : 'What would you like prayer for?'}
+                      </h1>
+                      <p className="mt-2 max-w-2xl text-zinc-900">
+                        {isClassic
+                          ? 'Choose a classic prayer type, then add a personal intention if you want one woven into the tradition-shaped prayer.'
+                          : isProtestantPersonalMode
+                            ? 'For Protestant prayer, customize the recipient, your feelings, and your request here. Visible prayer types live in Classic Prayer mode.'
+                            : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="mb-8 rounded-[1.75rem] border border-sky-300 bg-gradient-to-b from-white to-sky-100 px-5 py-5 shadow-sm">
-                    <div className="mb-2 flex items-center gap-2 text-sky-800">
-                      <Bookmark className="h-4 w-4" />
-                      <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-                        Selected tradition item
-                      </span>
+                  {userName ? (
+                    <div className="mb-8 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm text-zinc-900">
+                      Personal name{' '}
+                      <span className="font-semibold text-zinc-900">{userName}</span>
                     </div>
-                    <div className="text-xl font-semibold text-zinc-900">
-                      {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'}
-                    </div>
-                    {selectedPrayerKind === 'named' ? (
-                      <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
-                    ) : null}
-                  </div>
+                  ) : null}
 
                   <div className="mb-8">
                     <label
-                      htmlFor="intention-input"
+                      htmlFor="prayer-for-name"
                       className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
                     >
-                      Personal intention (optional)
+                      Who is this prayer for? (optional)
                     </label>
-                    <textarea
-                      id="intention-input"
-                      value={intention}
-                      onChange={(e) => setIntention(e.target.value)}
-                      placeholder="Example: Please weave in peace for my family, wisdom for a difficult decision, and strength for the week ahead."
-                      className="min-h-[160px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  {isProtestantPersonalMode ? (
-                    <div className="mb-8 rounded-[1.75rem] border border-sky-200 bg-sky-50/80 px-5 py-5 shadow-sm">
-                      <div className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-800">
-                        Personal prayer path
-                      </div>
-                      <p className="mt-2 text-sm leading-7 text-zinc-900">
-                        Protestant Customize mode uses a hidden petitionary base, so you can focus on the person, the feeling, and the prayer request instead of choosing a visible prayer type.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="mb-8">
-                      <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                        Prayer type
-                      </div>
-                      <div className="flex flex-wrap gap-4">
-                        {freePrayerOptions.map((item) => {
-                          const active = selectedPrayerType === item.label;
-                          const aboutHref = getPrayerTypeDefinitionHref(
-                            activeCatalogKey || selectedTradition,
-                            item.label
-                          );
 
-                          return (
-                            <div key={item.id} className="flex flex-col items-start gap-1">
+                    <input
+                      id="prayer-for-name"
+                      type="text"
+                      value={prayerForName}
+                      onChange={(e) => setPrayerForName(e.target.value)}
+                      placeholder={
+                        userName
+                          ? `Leave blank to use your saved name, ${userName}.`
+                          : 'Example: Mom, Michael, my family, or myself'
+                      }
+                      className="w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+                    />
+
+                    <p className="mt-2 text-sm text-zinc-900">
+                      This does not change your saved name. It only applies to this prayer.
+                    </p>
+                  </div>
+
+                  {isClassic ? (
+                    <>
+                      <div className="mb-8">
+                        <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
+                          Traditional prayers & prayer types
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {traditionalOptions.map((item) => {
+                            const active =
+                              selectedPrayerLabel === item.label &&
+                              selectedPrayerKind === item.kind;
+                            const aboutHref = getPrayerTypeDefinitionHref(
+                              activeCatalogKey || selectedTradition,
+                              item.label
+                            );
+
+                            return (
+                              <div
+                                key={`${item.kind}-${item.label}`}
+                                className={`rounded-2xl border px-4 py-4 transition ${
+                                  active
+                                    ? 'border-sky-400 bg-sky-100 shadow-sm'
+                                    : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
+                                }`}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedPrayerLabel(item.label);
+                                    setSelectedPrayerKind(item.kind);
+                                  }}
+                                  className="w-full text-left"
+                                >
+                                  <div className="font-medium text-zinc-900">{item.display}</div>
+                                </button>
+
+                                {aboutHref ? (
+                                  <div className="mt-2">
+                                    <Link
+                                      href={aboutHref}
+                                      className="text-sm font-semibold text-sky-700 transition hover:text-sky-800"
+                                    >
+                                      Read more →
+                                    </Link>
+                                  </div>
+                                ) : null}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="mb-8 rounded-[1.75rem] border border-sky-300 bg-gradient-to-b from-white to-sky-100 px-5 py-5 shadow-sm">
+                        <div className="mb-2 flex items-center gap-2 text-sky-800">
+                          <Bookmark className="h-4 w-4" />
+                          <span className="text-sm font-semibold uppercase tracking-[0.18em]">
+                            Selected tradition item
+                          </span>
+                        </div>
+                        <div className="text-xl font-semibold text-zinc-900">
+                          {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'}
+                        </div>
+                        {selectedPrayerKind === 'named' ? (
+                          <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-8">
+                        <label
+                          htmlFor="intention-input"
+                          className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
+                        >
+                          Personal intention (optional)
+                        </label>
+                        <textarea
+                          id="intention-input"
+                          value={intention}
+                          onChange={(e) => setIntention(e.target.value)}
+                          placeholder="Example: Please weave in peace for my family, wisdom for a difficult decision, and strength for the week ahead."
+                          className="min-h-[160px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {isProtestantPersonalMode ? (
+                        <div className="mb-8 rounded-[1.75rem] border border-sky-200 bg-sky-50/80 px-5 py-5 shadow-sm">
+                          <div className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-800">
+                            Personal prayer path
+                          </div>
+                          <p className="mt-2 text-sm leading-7 text-zinc-900">
+                            Protestant Customize mode uses a hidden petitionary base, so you can focus on the person, the feeling, and the prayer request instead of choosing a visible prayer type.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="mb-8">
+                          <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
+                            Prayer type
+                          </div>
+                          <div className="flex flex-wrap gap-4">
+                            {freePrayerOptions.map((item) => {
+                              const active = selectedPrayerType === item.label;
+                              const aboutHref = getPrayerTypeDefinitionHref(
+                                activeCatalogKey || selectedTradition,
+                                item.label
+                              );
+
+                              return (
+                                <div key={item.id} className="flex flex-col items-start gap-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedPrayerType(item.label)}
+                                    className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                                      active
+                                        ? 'border-sky-400 bg-sky-100 text-zinc-900'
+                                        : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
+                                    }`}
+                                  >
+                                    {item.display}
+                                  </button>
+
+                                  {aboutHref ? (
+                                    <Link
+                                      href={aboutHref}
+                                      className="pl-2 text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
+                                    >
+                                      About this prayer type
+                                    </Link>
+                                  ) : null}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="mb-8">
+                        <label
+                          htmlFor="prayer-input"
+                          className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
+                        >
+                          Your prayer request (optional)
+                        </label>
+                        <textarea
+                          id="prayer-input"
+                          value={input}
+                          onChange={(e) => setInput(e.target.value.slice(0, PRAYER_REQUEST_MAX))}
+                          maxLength={PRAYER_REQUEST_MAX}
+                          aria-describedby="prayer-input-help prayer-input-counter prayer-input-safety"
+                          placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. This field is optional."
+                          className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+                        />
+
+                        <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                          <p
+                            id="prayer-input-help"
+                            className="text-sm text-zinc-900"
+                          >
+                            Keep it brief so the prayer stays focused and readable.
+                          </p>
+
+                          <div
+                            id="prayer-input-counter"
+                            className={`text-sm font-medium ${
+                              prayerRequestNearLimit ? 'text-amber-700' : 'text-zinc-700'
+                            }`}
+                          >
+                            {prayerRequestLength}/{PRAYER_REQUEST_MAX}
+                          </div>
+                        </div>
+
+                        {liveSafetyNotice ? (
+                          <div id="prayer-input-safety" className="mt-4" aria-live="polite">
+                            <SafetyNoticeCard notice={liveSafetyNotice} />
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-8">
+                        <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
+                          <Heart className="h-4 w-4" />
+                          How are you feeling?
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          {FEELING_OPTIONS.map((feeling) => {
+                            const active = selectedFeelings.includes(feeling);
+                            return (
                               <button
+                                key={feeling}
                                 type="button"
-                                onClick={() => setSelectedPrayerType(item.label)}
+                                onClick={() => toggleFeeling(feeling)}
                                 className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
                                   active
                                     ? 'border-sky-400 bg-sky-100 text-zinc-900'
                                     : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
                                 }`}
                               >
-                                {item.display}
+                                {feeling}
                               </button>
-
-                              {aboutHref ? (
-                                <Link
-                                  href={aboutHref}
-                                  className="pl-2 text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
-                                >
-                                  About this prayer type
-                                </Link>
-                              ) : null}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
+                        <p className="mt-3 text-sm text-zinc-900">
+                          One feeling is always kept selected so you can begin quickly.
+                        </p>
                       </div>
-                    </div>
+                    </>
                   )}
 
-                  <div className="mb-8">
-                    <label
-                      htmlFor="prayer-input"
-                      className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900"
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={handleGeneratePrayer}
+                      disabled={isReflecting}
+                      className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                      Your prayer request (optional)
-                    </label>
-                    <textarea
-                      id="prayer-input"
-                      value={input}
-                      onChange={(e) => setInput(e.target.value.slice(0, PRAYER_REQUEST_MAX))}
-                      maxLength={PRAYER_REQUEST_MAX}
-                      aria-describedby="prayer-input-help prayer-input-counter prayer-input-safety"
-                      placeholder="Example: Please pray for peace in my family, wisdom for a difficult decision, and strength for the week ahead. This field is optional."
-                      className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
-                    />
+                      {isReflecting ? (
+                        <>
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          Reflecting...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4" />
+                          {isClassic ? 'Generate classic prayer' : 'Generate prayer'}
+                        </>
+                      )}
+                    </button>
 
-                    <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                      <p
-                        id="prayer-input-help"
-                        className="text-sm text-zinc-900"
+                    {isReflecting ? (
+                      <button
+                        type="button"
+                        onClick={stopGenerating}
+                        className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white px-6 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-50"
                       >
-                        Keep it brief so the prayer stays focused and readable.
-                      </p>
-
-                      <div
-                        id="prayer-input-counter"
-                        className={`text-sm font-medium ${
-                          prayerRequestNearLimit ? 'text-amber-700' : 'text-zinc-700'
-                        }`}
+                        <XCircle className="h-4 w-4" />
+                        Stop
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleReset}
+                        className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-sky-200"
                       >
-                        {prayerRequestLength}/{PRAYER_REQUEST_MAX}
-                      </div>
-                    </div>
+                        Reset
+                      </button>
+                    )}
 
-                    {liveSafetyNotice ? (
-                      <div id="prayer-input-safety" className="mt-4" aria-live="polite">
-                        <SafetyNoticeCard notice={liveSafetyNotice} />
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="mb-8">
-                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                      <Heart className="h-4 w-4" />
-                      How are you feeling?
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                      {FEELING_OPTIONS.map((feeling) => {
-                        const active = selectedFeelings.includes(feeling);
-                        return (
-                          <button
-                            key={feeling}
-                            type="button"
-                            onClick={() => toggleFeeling(feeling)}
-                            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                              active
-                                ? 'border-sky-400 bg-sky-100 text-zinc-900'
-                                : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
-                            }`}
-                          >
-                            {feeling}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <p className="mt-3 text-sm text-zinc-900">
-                      One feeling is always kept selected so you can begin quickly.
-                    </p>
+                    <Link
+                      href="/"
+                      className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Change tradition
+                    </Link>
                   </div>
                 </>
-              )}
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={handleGeneratePrayer}
-                  disabled={isReflecting}
-                  className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isReflecting ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      Reflecting...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4" />
-                      {isClassic ? 'Generate classic prayer' : 'Generate prayer'}
-                    </>
-                  )}
-                </button>
-
-                {isReflecting ? (
-                  <button
-                    type="button"
-                    onClick={stopGenerating}
-                    className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white px-6 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-50"
-                  >
-                    <XCircle className="h-4 w-4" />
-                    Stop
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-sky-200"
-                  >
-                    Reset
-                  </button>
-                )}
-
-                <Link
-                  href="/"
-                  className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Change tradition
-                </Link>
-              </div>
+              ) : null}
 
               {(error ||
                 isReflecting ||
