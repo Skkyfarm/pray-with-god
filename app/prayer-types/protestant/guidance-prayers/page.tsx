@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Guidance Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what guidance prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer for wisdom, discernment, and direction.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/guidance-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Seeking God’s direction",
+  "Wisdom and discernment",
+  "Clarity in decisions",
+  "Trust in God’s leading",
+  "Patience while waiting",
+  "Faithful next steps",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When you need to make an important decision",
+  "When you feel uncertain about what to do next",
+  "When you are asking God for wisdom rather than impulse",
+  "When you are waiting for clarity in a confusing season",
+  "When you want to move forward with humility and trust",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is a guidance prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "A guidance prayer is a prayer that asks God for wisdom, discernment, clarity, and direction. It is a way of seeking His help when facing decisions, uncertainty, or the need for a faithful next step.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "Is a guidance prayer only for major life decisions?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "No. Guidance prayers can be used for major decisions such as work, relationships, health, or calling, but they are also appropriate for everyday choices, conversations, priorities, and spiritual direction.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "Does guidance prayer always bring an immediate answer?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "Not always. In Protestant prayer life, guidance often includes both asking and waiting. A person may receive clarity quickly, or may need patience, Scripture, counsel, and steady trust while direction unfolds over time.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantGuidancePrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,60 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Guidance Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Guidance prayers are prayers for wisdom, discernment, and direction.
+            In Protestant life, they help believers seek God’s leading when
+            facing uncertainty, important choices, or seasons where the next
+            step is not yet clear.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">What is a guidance prayer?</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                A guidance prayer is a prayer that asks God for wisdom and
+                direction. It may be prayed when someone needs help making a
+                decision, understanding a situation, choosing between paths, or
+                simply knowing how to move forward faithfully.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                In Protestant practice, guidance prayer reflects trust that God
+                is not distant or silent to those who seek Him. It is a prayer
+                of dependence that says, in effect, “Lord, show me the way, and
+                help me walk in it.”
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How guidance prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Guidance prayers are common in personal devotion, family life,
+                ministry, work, relationships, and times of transition. They
+                help believers slow down, resist impulsive decisions, and place
+                real choices before God with humility.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                In Protestant life, guidance is often sought through prayer
+                alongside Scripture, wise counsel, honest self-examination, and
+                patience. Guidance prayer is not only about getting an instant
+                answer. It is also about becoming the kind of person who listens
+                and responds faithfully.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">When to pray a guidance prayer</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +124,17 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  Someone may pray a guidance prayer when choosing between job
+                  paths, making a family decision, deciding whether to move,
+                  seeking wisdom in a relationship, facing a medical choice, or
+                  trying to know how best to respond in a difficult situation.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Guidance prayers are also useful in ordinary life. A believer
+                  may pray for wisdom in conversation, patience with timing,
+                  discernment about a next step, or clarity about where their
+                  energy and attention should be given.
                 </p>
               </div>
             </section>
@@ -143,15 +143,16 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on wisdom, discernment, and
+                direction, PrayWithGod.ai can help you generate a
+                Protestant-style guidance prayer in clear, thoughtful, modern
+                language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you feel uncertain, are
+                carrying a major decision, or want a more focused way to ask God
+                for clarity and faithful next steps.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +205,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Guidance prayers naturally connect with petitionary prayers,
+                protection prayers, morning prayers, and confession prayers,
+                especially when someone is seeking a faithful path forward.
               </p>
 
               <div className="mt-6">
@@ -223,9 +224,8 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Guidance prayers help believers ask God for wisdom and direction.
+                They are prayers of trust for the next faithful step.
               </p>
             </section>
           </aside>

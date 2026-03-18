@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Thanksgiving Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what thanksgiving prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer of gratitude and praise.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/thanksgiving-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Gratitude to God",
+  "Recognition of God’s provision",
+  "Thankfulness in daily life",
+  "Remembering answered prayer",
+  "Joy and humility",
+  "Trust in God’s ongoing care",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When you want to thank God for a blessing, provision, or answered prayer",
+  "When you are reflecting on the good things in your life",
+  "When you want to begin or end the day with gratitude",
+  "When you want to shift your focus from stress to thankfulness",
+  "When you want prayer to reflect joy, humility, and appreciation",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is a thanksgiving prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "A thanksgiving prayer is a prayer that expresses gratitude to God for His goodness, mercy, provision, faithfulness, and care. It focuses on giving thanks rather than asking for something new.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "Is thanksgiving prayer the same as praise?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "They are closely related, but thanksgiving usually emphasizes gratitude for what God has done, while praise more broadly celebrates who God is. Many prayers naturally contain both.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "Can I pray thanksgiving prayers even in a hard season?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "Yes. In Protestant practice, thanksgiving is not limited to easy seasons. Many believers give thanks for God’s presence, strength, and faithfulness even in times of grief, uncertainty, or struggle.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantThanksgivingPrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,63 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Thanksgiving Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Thanksgiving prayers are prayers of gratitude. In Protestant life,
+            they help believers pause, remember God’s goodness, and respond with
+            sincere thanks for His provision, mercy, faithfulness, and care.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">
+                What is a thanksgiving prayer?
+              </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                A thanksgiving prayer is a prayer that focuses on gratitude to
+                God. It expresses appreciation for blessings received, needs met,
+                prayers answered, strength given, and the steady presence of God
+                in everyday life.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                In Protestant practice, thanksgiving is often woven naturally
+                into personal prayer, family prayer, church worship, mealtime
+                prayer, and private devotion. It helps believers become more
+                aware of grace instead of rushing past it.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How thanksgiving prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Thanksgiving prayers remind Christians that prayer is not only
+                about bringing needs before God. It is also about noticing,
+                remembering, and honoring His goodness. Gratitude helps form a
+                healthier spiritual rhythm by making room for joy, humility, and
+                trust.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                These prayers can be simple and brief, or they can become deeply
+                personal reflections on how God has sustained someone through a
+                specific season. They are often especially meaningful after an
+                answered prayer, a recovery, a provision, or a moment of peace.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">
+                When to pray a thanksgiving prayer
+              </h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +127,17 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  Someone may pray a thanksgiving prayer after receiving good
+                  news, making it through a difficult week, seeing a loved one
+                  improve, finding unexpected help, or simply noticing the quiet
+                  gifts of ordinary life.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Thanksgiving prayers can also be powerful during hardship.
+                  They do not deny pain. Instead, they help the believer hold
+                  onto God’s faithfulness even while life is unfinished,
+                  uncertain, or heavy.
                 </p>
               </div>
             </section>
@@ -143,15 +146,16 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on gratitude, appreciation, and
+                recognition of God’s goodness, PrayWithGod.ai can help you
+                generate a Protestant-style thanksgiving prayer in clear, modern
+                language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you feel thankful but want a
+                more complete, beautiful, or focused way to express that
+                gratitude in prayer.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +208,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Thanksgiving prayers naturally connect with praise prayers and
+                adoration prayers. They can also be paired with guidance or
+                healing prayers when gratitude and need are both present.
               </p>
 
               <div className="mt-6">
@@ -223,9 +227,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Thanksgiving prayers help believers stop, notice grace, and say
+                thank you. They train the heart to remember that God’s goodness
+                is worth naming, not just feeling.
               </p>
             </section>
           </aside>

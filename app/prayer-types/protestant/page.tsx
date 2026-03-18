@@ -14,6 +14,7 @@ type PrayerTypeCard = {
   title: string;
   slug: string;
   shortDescription: string;
+  href?: string;
 };
 
 const prayerTypes: PrayerTypeCard[] = [
@@ -22,6 +23,7 @@ const prayerTypes: PrayerTypeCard[] = [
     slug: "adoration-prayers",
     shortDescription:
       "Prayers centered on worship, reverence, awe, and the greatness of God.",
+    href: "/prayer-types/protestant/adoration-prayers",
   },
   {
     title: "Confession Prayers",
@@ -34,6 +36,7 @@ const prayerTypes: PrayerTypeCard[] = [
     slug: "thanksgiving-prayers",
     shortDescription:
       "Prayers that express gratitude for God’s goodness, provision, mercy, and care.",
+    href: "/prayer-types/protestant/thanksgiving-prayers",
   },
   {
     title: "Intercessory Prayers",
@@ -131,24 +134,50 @@ export default function ProtestantPrayerTypesPage() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {prayerTypes.map((item) => (
-            <div
-              key={item.slug}
-              className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <h2 className="text-2xl font-semibold">{item.title}</h2>
+          {prayerTypes.map((item) => {
+            const cardInner = (
+              <>
+                <h2 className="text-2xl font-semibold">{item.title}</h2>
 
-              <p className="mt-4 text-base leading-7 text-slate-700">
-                {item.shortDescription}
-              </p>
+                <p className="mt-4 text-base leading-7 text-slate-700">
+                  {item.shortDescription}
+                </p>
 
-              <div className="mt-6">
-                <span className="inline-flex items-center text-sm font-semibold text-slate-500">
-                  Detailed page coming next
-                </span>
+                <div className="mt-6">
+                  {item.href ? (
+                    <span className="inline-flex items-center text-sm font-semibold text-sky-700">
+                      Read more →
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center text-sm font-semibold text-slate-500">
+                      Detailed page coming next
+                    </span>
+                  )}
+                </div>
+              </>
+            );
+
+            if (item.href) {
+              return (
+                <Link
+                  key={item.slug}
+                  href={item.href}
+                  className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+                >
+                  {cardInner}
+                </Link>
+              );
+            }
+
+            return (
+              <div
+                key={item.slug}
+                className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm"
+              >
+                {cardInner}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
@@ -165,7 +194,7 @@ export default function ProtestantPrayerTypesPage() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/pray"
+              href="/pray?path=protestant"
               className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
               Go to Prayer Experience

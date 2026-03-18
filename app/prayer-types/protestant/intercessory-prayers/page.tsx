@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Intercessory Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what intercessory prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer for others with care and compassion.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/intercessory-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Praying for others",
+  "Compassion and concern",
+  "Lifting needs before God",
+  "Love expressed through prayer",
+  "Faith for another person’s situation",
+  "Standing in the gap",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When a loved one is sick, grieving, or under stress",
+  "When a friend asks for prayer",
+  "When a family member is facing a hard decision",
+  "When a church, community, or nation is hurting",
+  "When you feel led to pray for someone besides yourself",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is an intercessory prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "An intercessory prayer is a prayer offered on behalf of someone else. It brings another person’s needs, struggles, burdens, or hopes before God with care, compassion, and faith.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "How is intercessory prayer different from petitionary prayer?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "Petitionary prayer usually refers to bringing your own needs before God, while intercessory prayer focuses on praying for others. Many believers practice both regularly.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "Do intercessory prayers have to be long or formal?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "No. An intercessory prayer can be brief and simple or longer and more detailed. What matters most is sincere concern for the person or situation being lifted to God.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantIntercessoryPrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,64 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Intercessory Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Intercessory prayers are prayers for other people. In Protestant
+            life, they are one of the clearest expressions of love, compassion,
+            and shared faith. Instead of focusing on personal needs,
+            intercessory prayer turns outward and lifts someone else before God.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">
+                What is an intercessory prayer?
+              </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                An intercessory prayer is a prayer offered on behalf of someone
+                else. It may be for healing, comfort, guidance, peace,
+                protection, repentance, provision, or strength. In Protestant
+                practice, intercession reflects the belief that believers can
+                lovingly bring the needs of others before God in trust and hope.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                These prayers can be deeply personal, such as praying for a
+                friend or family member, or much broader, such as praying for a
+                church, a neighborhood, a country, or people suffering in a
+                crisis.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How intercessory prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Intercessory prayer is common in personal devotion, church
+                gatherings, Bible studies, pastoral care, and informal prayer
+                among friends. It is one of the most practical ways Christians
+                express care for one another.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                In many Protestant settings, intercession is not treated as a
+                rare or elite practice. It is simply part of everyday
+                discipleship: hearing someone’s burden, caring about it, and
+                bringing it honestly before God.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">
+                When to pray an intercessory prayer
+              </h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +128,17 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  A person may pray an intercessory prayer for a parent in the
+                  hospital, a child going through a difficult season, a friend
+                  facing anxiety, a neighbor who lost work, or a church member
+                  carrying grief.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Intercessory prayer can also extend beyond personal circles.
+                  Many Protestants pray this way for pastors, teachers, leaders,
+                  missionaries, first responders, communities in crisis, and
+                  people affected by war, disaster, or injustice.
                 </p>
               </div>
             </section>
@@ -143,15 +147,15 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on someone else’s need,
+                PrayWithGod.ai can help you generate a Protestant-style
+                intercessory prayer in clear, compassionate, modern language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you care deeply about a
+                person or situation but want a more focused, thoughtful, or
+                complete way to express that concern in prayer.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +208,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Intercessory prayers naturally connect with healing prayers,
+                protection prayers, guidance prayers, and lament prayers,
+                depending on the situation being carried before God.
               </p>
 
               <div className="mt-6">
@@ -223,9 +227,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Intercessory prayers help believers carry one another before
+                God. They are one of the clearest ways prayer becomes an act of
+                love.
               </p>
             </section>
           </aside>

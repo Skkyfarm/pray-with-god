@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Morning Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what morning prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer to begin the day with peace, gratitude, and trust.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/morning-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Beginning the day with God",
+  "Gratitude for a new day",
+  "Guidance and wisdom",
+  "Strength for daily responsibilities",
+  "Peace before the day unfolds",
+  "Trust in God’s presence",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When you want to begin the day with prayer and focus",
+  "When you need peace before work, family duties, or appointments",
+  "When you want to place the day in God’s hands",
+  "When you are seeking wisdom and steadiness for what lies ahead",
+  "When you want your first attention to be turned toward God",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is a morning prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "A morning prayer is a prayer offered at the start of the day. It often expresses gratitude for a new day, asks God for wisdom and strength, and places the coming hours under His care.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "Does a morning prayer have to be long or formal?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "No. In Protestant practice, morning prayers may be brief and simple or longer and more reflective. What matters most is beginning the day with sincerity and trust.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "Why are morning prayers important?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "Morning prayers help set the tone for the day. They can quiet anxiety, focus the mind, encourage gratitude, and remind believers that they do not face the day alone.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantMorningPrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,60 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Morning Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Morning prayers are prayers that begin the day with God. In
+            Protestant life, they help believers start with gratitude, seek
+            guidance for the hours ahead, and place the day under God’s care
+            before its demands begin to crowd in.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">What is a morning prayer?</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                A morning prayer is a prayer offered at the beginning of the
+                day. It may thank God for life and breath, ask for wisdom,
+                strength, peace, and protection, and place the coming day into
+                His hands.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                In Protestant practice, morning prayer is often simple,
+                personal, and direct. It is a way of saying that the day is not
+                only a schedule to manage but a life to be lived in God’s
+                presence.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How morning prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Morning prayers help believers orient themselves before the day
+                becomes noisy or hurried. They can create a steady rhythm of
+                gratitude, dependence, and peace, especially when life feels
+                crowded or uncertain.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                In Protestant life, morning prayer may happen in a quiet chair,
+                over coffee, at the kitchen table, in the car before work, or
+                during a few still moments before the demands of the day fully
+                begin. It is less about ceremony and more about faithful
+                attention.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">When to pray a morning prayer</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +124,17 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  Someone may pray a morning prayer before going to work, before
+                  caring for family, before a medical appointment, before
+                  traveling, or before facing a difficult conversation later in
+                  the day.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Morning prayers are also valuable on quiet days. Even when the
+                  schedule is ordinary, a believer may begin with prayer to ask
+                  for patience, clarity, kindness, and a heart that remains
+                  aware of God throughout the day.
                 </p>
               </div>
             </section>
@@ -143,15 +143,16 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on beginning the day with peace,
+                gratitude, wisdom, and trust, PrayWithGod.ai can help you
+                generate a Protestant-style morning prayer in clear, uplifting,
+                modern language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you want to start the day
+                well but need stronger wording, clearer structure, or a more
+                focused spiritual starting point.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +205,10 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Morning prayers naturally connect with guidance prayers,
+                protection prayers, praise prayers, and thanksgiving prayers,
+                especially when a believer wants to begin the day with worship
+                and steady trust.
               </p>
 
               <div className="mt-6">
@@ -223,9 +225,8 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Morning prayers help believers begin the day with God. They are
+                prayers of gratitude, direction, and peace for the hours ahead.
               </p>
             </section>
           </aside>

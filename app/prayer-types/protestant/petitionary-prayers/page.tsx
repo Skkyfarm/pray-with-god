@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Petitionary Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what petitionary prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer for your own needs, burdens, and hopes.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/petitionary-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Bringing personal needs to God",
+  "Dependence on God",
+  "Honest requests",
+  "Trust and surrender",
+  "Help in weakness",
+  "Faith in God’s care",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When you need help, strength, or comfort",
+  "When you are facing uncertainty or pressure",
+  "When you need wisdom for a decision",
+  "When you are carrying fear, grief, or stress",
+  "When you want to ask God plainly for provision, healing, or peace",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is a petitionary prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "A petitionary prayer is a prayer in which a person brings personal needs, concerns, burdens, or hopes before God. It is a direct and honest request for help, guidance, strength, provision, healing, or peace.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "How is petitionary prayer different from intercessory prayer?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "Petitionary prayer usually focuses on your own needs, while intercessory prayer focuses on praying for others. Both are common and important in Protestant prayer life.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "Is it selfish to pray petitionary prayers?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "Not when they are offered with sincerity, humility, and trust. Protestant prayer has long included bringing personal needs to God. Honest dependence on God is not selfishness; it is part of faith.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantPetitionaryPrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,63 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Petitionary Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Petitionary prayers are prayers that ask God for help. In Protestant
+            life, they are a natural expression of dependence, trust, and
+            honesty. Instead of hiding need, petitionary prayer brings it
+            directly before God.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">
+                What is a petitionary prayer?
+              </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                A petitionary prayer is a prayer in which someone brings their
+                own needs, concerns, burdens, hopes, or desires before God. It
+                may ask for guidance, healing, provision, courage, wisdom,
+                forgiveness, peace, endurance, or help in a specific situation.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                In Protestant practice, petitionary prayer reflects a direct and
+                personal relationship with God. The believer does not have to
+                pretend to be strong, polished, or self-sufficient. Petitionary
+                prayer says plainly, “Lord, I need help.”
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How petitionary prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Petitionary prayer is woven through personal devotion, church
+                life, family prayer, and spontaneous daily faith. It is one of
+                the most common forms of prayer because real life regularly
+                confronts people with limits, fear, uncertainty, and need.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                In Protestant prayer, asking God for help is not treated as a
+                lesser form of prayer. It is part of living honestly before God.
+                Petitionary prayer trains the heart to rely on Him rather than
+                carrying every burden alone.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">
+                When to pray a petitionary prayer
+              </h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +127,18 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  A person may pray a petitionary prayer when they are worried
+                  about money, facing a diagnosis, feeling anxious about a
+                  relationship, trying to make a difficult decision, searching
+                  for work, asking for strength to endure, or simply needing
+                  peace for the day ahead.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Petitionary prayer can also be deeply ordinary. Someone may
+                  ask God for patience, wisdom in conversation, help with a
+                  temptation, steadiness in fear, or grace to take the next
+                  faithful step.
                 </p>
               </div>
             </section>
@@ -143,15 +147,15 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on your own need, burden, or hope,
+                PrayWithGod.ai can help you generate a Protestant-style
+                petitionary prayer in clear, thoughtful, modern language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you know what you need to
+                bring before God but want stronger wording, better structure, or
+                a more focused starting point for prayer.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +208,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Petitionary prayers naturally connect with guidance prayers,
+                healing prayers, protection prayers, and confession prayers,
+                depending on what the believer is carrying before God.
               </p>
 
               <div className="mt-6">
@@ -223,9 +227,8 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Petitionary prayers help believers bring their real needs to
+                God. They are honest prayers of dependence, trust, and hope.
               </p>
             </section>
           </aside>

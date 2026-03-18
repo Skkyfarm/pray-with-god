@@ -2,50 +2,50 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Adoration Prayers | Protestant Prayer Types | PrayWithGod.ai",
+  title: "Praise Prayers | Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Learn what adoration prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a reverent prayer of worship and awe.",
+    "Learn what praise prayers are in Protestant practice, when to pray them, and how PrayWithGod.ai can help you generate a prayer centered on God’s character, power, and faithfulness.",
   alternates: {
-    canonical: "/prayer-types/protestant/adoration-prayers",
+    canonical: "/prayer-types/protestant/praise-prayers",
   },
 };
 
 const keyThemes = [
-  "God’s holiness",
-  "God’s greatness",
-  "Worship and reverence",
-  "Wonder and awe",
-  "Love for God",
-  "Humility before God",
+  "Celebrating God’s character",
+  "Joy and worship",
+  "God’s faithfulness",
+  "God’s power and goodness",
+  "Exalting God",
+  "Delight in who God is",
 ];
 
 const commonMoments = [
-  "When you want to focus on God rather than your own requests",
-  "When you feel grateful, awed, or deeply moved in prayer",
-  "When you want to begin prayer with worship and reverence",
-  "When you need to re-center your heart on who God is",
-  "When words of praise come more naturally than words of request",
+  "When you feel moved to celebrate God’s goodness",
+  "When you want to begin prayer with joy and worship",
+  "When you want to focus more on God than on your problems",
+  "When you are reflecting on God’s faithfulness in your life",
+  "When your heart needs lifting toward hope, gratitude, and worship",
 ];
 
 const faqItems = [
   {
-    question: "What is an adoration prayer?",
+    question: "What is a praise prayer?",
     answer:
-      "An adoration prayer is a prayer of worship that focuses on who God is rather than on what we want God to do. It expresses reverence, awe, love, and honor toward God.",
+      "A praise prayer is a prayer that celebrates God for who He is. It honors His goodness, faithfulness, power, mercy, wisdom, and love, and it lifts the heart in worship.",
   },
   {
-    question: "Is adoration the same as praise?",
+    question: "How is praise different from thanksgiving?",
     answer:
-      "They are closely related, but adoration usually leans more toward reverence, awe, and the holiness of God, while praise often emphasizes gratitude and celebration of what God has done.",
+      "Thanksgiving usually emphasizes gratitude for what God has done, while praise emphasizes God’s character and worthiness whether or not a specific blessing is in view. Many prayers include both.",
   },
   {
-    question: "Do adoration prayers ask for anything?",
+    question: "How is praise different from adoration?",
     answer:
-      "Usually the main emphasis is not on asking. Adoration prayers are centered on worship. Still, many Christians begin with adoration before moving into confession, thanksgiving, or petition.",
+      "Praise and adoration are closely related. Adoration often leans more toward reverence and awe before God’s holiness, while praise often has a slightly more joyful, celebratory tone focused on God’s greatness and goodness.",
   },
 ];
 
-export default function ProtestantAdorationPrayersPage() {
+export default function ProtestantPraisePrayersPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
       <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -55,60 +55,60 @@ export default function ProtestantAdorationPrayersPage() {
           </p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Adoration Prayers
+            Praise Prayers
           </h1>
 
           <p className="mt-6 text-lg leading-8 text-slate-700">
-            Adoration prayers are prayers of worship. In Protestant life, they
-            turn the heart toward the greatness, holiness, love, and majesty of
-            God. Instead of beginning with requests, an adoration prayer begins
-            with reverence.
+            Praise prayers are prayers that celebrate God’s greatness and
+            goodness. In Protestant life, they help believers lift their hearts
+            in joyful worship and remember that God is worthy of praise in every
+            season.
           </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
             <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What is an adoration prayer?</h2>
+              <h2 className="text-2xl font-semibold">What is a praise prayer?</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                An adoration prayer is a prayer that focuses on who God is. It
-                is less about personal needs and more about worship, awe,
-                humility, and delight in God’s character. In Protestant
-                practice, adoration often highlights God’s holiness, goodness,
-                faithfulness, mercy, power, and eternal nature.
+                A praise prayer is a prayer that honors God for who He is. It
+                celebrates His faithfulness, love, holiness, strength, wisdom,
+                mercy, and power. Instead of beginning with need or confession,
+                a praise prayer begins with the greatness of God.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This kind of prayer helps a believer step out of the rush of
-                daily life and remember that prayer is not only about asking for
-                help. It is also about honoring God, loving God, and drawing
-                near in wonder.
+                In Protestant practice, praise is not limited to music or church
+                services. It can be deeply personal and appear in quiet prayer,
+                spoken devotion, daily reflection, or spontaneous moments of
+                gratitude and worship.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
               <h2 className="text-2xl font-semibold">
-                How adoration prayers function in Protestant prayer life
+                How praise prayers function in Protestant prayer life
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Many Protestants naturally weave adoration into personal prayer,
-                church prayer, devotional reading, and spontaneous worship.
-                Adoration helps place everything else in the right order. Before
-                confession, before petition, before asking for guidance, the
-                soul remembers who God is.
+                Praise prayers help believers turn attention away from constant
+                self-focus and back toward God. They create spiritual balance by
+                reminding the heart that prayer is not only about asking for
+                help but also about honoring the One who is worthy of worship.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                In that sense, adoration prayers can calm anxiety, deepen trust,
-                and restore perspective. They remind the believer that God is
-                worthy of worship even before any specific request is answered.
+                In many Protestant settings, praise is woven naturally into
+                personal devotion, group prayer, public worship, and daily life.
+                It strengthens joy, reinforces trust, and helps believers
+                remember that God remains good and faithful even when life feels
+                unsettled.
               </p>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">When to pray an adoration prayer</h2>
+              <h2 className="text-2xl font-semibold">When to pray a praise prayer</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
                 {commonMoments.map((item) => (
@@ -124,17 +124,17 @@ export default function ProtestantAdorationPrayersPage() {
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
                 <p>
-                  A person may pray an adoration prayer at sunrise, during a
-                  quiet devotional time, after reading Scripture, after being
-                  struck by the beauty of creation, or during a season when they
-                  want to grow in worship rather than only in request-driven
-                  prayer.
+                  Someone may pray a praise prayer after an answered prayer,
+                  during a church service, while reading Scripture, after
+                  noticing beauty in creation, or during a moment of deep
+                  gratitude and spiritual joy.
                 </p>
 
                 <p>
-                  It can also be a healthy starting place for someone who feels
-                  overwhelmed. Adoration shifts attention from fear and pressure
-                  toward the steady character of God.
+                  Praise can also be powerful in hard seasons. A believer may
+                  not feel cheerful, but may still choose to praise God for His
+                  unchanging character, His presence, and His faithfulness in
+                  the middle of uncertainty.
                 </p>
               </div>
             </section>
@@ -143,15 +143,15 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                If you want a prayer centered on reverence, worship, awe, and
-                the greatness of God, PrayWithGod.ai can help you generate a
-                Protestant-style adoration prayer in clear, modern language.
+                If you want a prayer centered on joy, worship, and celebration
+                of God’s goodness, PrayWithGod.ai can help you generate a
+                Protestant-style praise prayer in clear, modern language.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This can be especially helpful when you know you want to pray,
-                but you would like a gentle structure, stronger wording, or a
-                more focused starting point.
+                This can be especially helpful when you feel moved to honor God
+                but want stronger wording, better structure, or a more focused
+                expression of worship.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -204,9 +204,9 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers naturally connect with other forms of
-                Protestant prayer, especially praise prayers and thanksgiving
-                prayers.
+                Praise prayers naturally connect with adoration prayers and
+                thanksgiving prayers. They also pair well with morning prayers
+                when a believer wants to begin the day with worship.
               </p>
 
               <div className="mt-6">
@@ -223,9 +223,8 @@ export default function ProtestantAdorationPrayersPage() {
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                Adoration prayers help believers stop, look up, and worship.
-                They are not mainly about getting something from God. They are
-                about loving, honoring, and glorifying God for who He is.
+                Praise prayers help believers lift their eyes and honor God.
+                They are joyful prayers of worship that celebrate who God is.
               </p>
             </section>
           </aside>
