@@ -1,3 +1,5 @@
+// app/pray/page.tsx
+
 'use client';
 
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
@@ -42,8 +44,26 @@ type PrayerResponse = {
 };
 
 type PrayMode = 'free' | 'classic';
+type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
+
+type PrayerRequestPayload = {
+  tradition: Tradition;
+  mode: PrayMode;
+  avatarLabel?: string;
+  userName?: string | null;
+  feelings?: string[];
+  input?: string;
+  prayerType?: string;
+  selectedPrayerLabel?: string;
+  selectedPrayerKind?: PrayerKind;
+  intention?: string;
+  timezone?: string | null;
+  localDateTime?: string | null;
+  dayPart?: DayPart | null;
+};
 
 const PRAYER_REQUEST_MAX = 500;
+const PROTESTANT_PERSONAL_BASE = 'Petitionary Prayers';
 
 const FEELING_OPTIONS = [
   'Grateful',
@@ -261,7 +281,11 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   }
 }
 
-function getLocalTimeContext() {
+function getLocalTimeContext(): {
+  timezone: string | null;
+  localDateTime: string | null;
+  dayPart: DayPart | null;
+} {
   try {
     const now = new Date();
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null;
@@ -274,7 +298,7 @@ function getLocalTimeContext() {
       }).format(now)
     );
 
-    const dayPart =
+    const dayPart: DayPart =
       hour24 < 5
         ? 'night'
         : hour24 < 12
@@ -455,13 +479,18 @@ function PrayPageInner() {
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
     const requestedMode = normalizeMode(modeParam);
 
+    const protestantPrayerTypeLink =
+      mappedCatalogKey === 'protestant' && Boolean(prayerTypeParam?.trim());
+
     const christianClassicDisabled =
       requestedMode === 'classic' &&
-      ['christian', 'catholic', 'protestant'].includes(
-        String(mappedTradition).toLowerCase()
-      );
+      ['christian', 'catholic'].includes(String(mappedTradition).toLowerCase());
 
-    const nextMode: PrayMode = christianClassicDisabled ? 'free' : requestedMode;
+    const nextMode: PrayMode = protestantPrayerTypeLink
+      ? 'classic'
+      : christianClassicDisabled
+        ? 'free'
+        : requestedMode;
 
     if (pathParam) {
       setSelectedTradition(mappedTradition);
@@ -482,14 +511,21 @@ function PrayPageInner() {
     setMode(nextMode);
 
     if (nextMode === 'classic') {
-      setSelectedPrayerLabel(prayerLabelParam || '');
-      setSelectedPrayerKind(normalizePrayerKind(prayerKindParam));
+      const initialClassicLabel =
+        prayerLabelParam || (protestantPrayerTypeLink ? prayerTypeParam || '' : '');
+
+      setSelectedPrayerLabel(initialClassicLabel);
+      setSelectedPrayerKind(prayerLabelParam ? normalizePrayerKind(prayerKindParam) : 'type');
       setSelectedPrayerType('');
       setSelectedFeelings([]);
     } else {
       setSelectedPrayerLabel('');
       setSelectedPrayerKind('type');
-      setSelectedPrayerType(prayerTypeParam || '');
+      setSelectedPrayerType(
+        mappedCatalogKey === 'protestant'
+          ? PROTESTANT_PERSONAL_BASE
+          : prayerTypeParam || ''
+      );
       setSelectedFeelings([DEFAULT_FEELING]);
     }
   }, [
@@ -566,6 +602,10 @@ function PrayPageInner() {
     return getPrayerOptions(activeCatalogKey);
   }, [activeCatalogKey]);
 
+  const isProtestantPrayerPath = activeCatalogKey === 'protestant';
+  const showClassicModeToggle = isProtestantPrayerPath;
+  const isProtestantPersonalMode = mode === 'free' && isProtestantPrayerPath;
+
   const selectedTraditionalEntry = useMemo(() => {
     return (
       traditionalOptions.find(
@@ -593,6 +633,11 @@ function PrayPageInner() {
   useEffect(() => {
     if (mode !== 'free') return;
 
+    if (activeCatalogKey === 'protestant') {
+      setSelectedPrayerType(PROTESTANT_PERSONAL_BASE);
+      return;
+    }
+
     const requestedPrayerType = prayerTypeParam?.trim() || '';
 
     if (
@@ -610,7 +655,7 @@ function PrayPageInner() {
 
       return freePrayerOptions[0]?.label || '';
     });
-  }, [mode, freePrayerOptions, prayerTypeParam]);
+  }, [mode, activeCatalogKey, freePrayerOptions, prayerTypeParam]);
 
   useEffect(() => {
     if (mode !== 'classic') return;
@@ -659,25 +704,53 @@ function PrayPageInner() {
     }
   }
 
+  function switchPrayerMode(nextMode: PrayMode) {
+    if (nextMode === mode) return;
+
+    stopSpeaking();
+    stopGenerating();
+    setPrayer('');
+    setError('');
+    setHasSubmitted(false);
+    setShowSaveModal(false);
+    setSafetyNotice(null);
+
+    if (nextMode === 'classic') {
+      setMode('classic');
+
+      if (!selectedPrayerLabel) {
+        const firstClassic =
+          traditionalOptions.find((item) => item.kind === 'type') || traditionalOptions[0];
+
+        if (firstClassic) {
+          setSelectedPrayerLabel(firstClassic.label);
+          setSelectedPrayerKind(firstClassic.kind);
+        }
+      }
+
+      setSelectedFeelings([]);
+      return;
+    }
+
+    setMode('free');
+    setSelectedPrayerLabel('');
+    setSelectedPrayerKind('type');
+    setSelectedPrayerType(
+      isProtestantPrayerPath
+        ? PROTESTANT_PERSONAL_BASE
+        : freePrayerOptions[0]?.label || ''
+    );
+    setSelectedFeelings((prev) => (prev.length > 0 ? prev : [DEFAULT_FEELING]));
+  }
+
   const effectivePrayerForName = prayerForName.trim() || userName || '';
 
-  async function handleGeneratePrayer() {
+  async function requestPrayer(payload: PrayerRequestPayload) {
     stopSpeaking();
     setError('');
     setPrayer('');
     setShowSaveModal(false);
     setSafetyNotice(null);
-
-    if (mode === 'classic' && !selectedPrayerLabel.trim()) {
-      setError('Please choose a traditional prayer first.');
-      return;
-    }
-
-    const timeContext = getLocalTimeContext();
-    const effectiveFreePrayerType =
-      selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer';
-    const effectiveFeelings =
-      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
 
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -687,29 +760,6 @@ function PrayPageInner() {
     setIsReflecting(true);
 
     try {
-      const payload =
-        mode === 'classic'
-          ? {
-              tradition: selectedTradition,
-              mode: 'classic' as const,
-              avatarLabel: currentAvatar?.label ?? 'Grace',
-              userName: effectivePrayerForName || null,
-              selectedPrayerLabel,
-              selectedPrayerKind,
-              intention: intention.trim(),
-              ...timeContext,
-            }
-          : {
-              tradition: selectedTradition,
-              mode: 'free' as const,
-              avatarLabel: currentAvatar?.label ?? 'Grace',
-              prayerType: effectiveFreePrayerType,
-              userName: effectivePrayerForName || null,
-              feelings: effectiveFeelings,
-              input: input.trim(),
-              ...timeContext,
-            };
-
       const res = await fetch('/api/pray', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -752,8 +802,74 @@ function PrayPageInner() {
     }
   }
 
-  function handleQuickPrayer() {
-    void handleGeneratePrayer();
+  async function handleGeneratePrayer() {
+    if (mode === 'classic' && !selectedPrayerLabel.trim()) {
+      setError('Please choose a traditional prayer first.');
+      return;
+    }
+
+    const timeContext = getLocalTimeContext();
+    const effectiveFreePrayerType = isProtestantPrayerPath
+      ? PROTESTANT_PERSONAL_BASE
+      : selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer';
+    const effectiveFeelings =
+      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
+
+    const payload: PrayerRequestPayload =
+      mode === 'classic'
+        ? {
+            tradition: selectedTradition,
+            mode: 'classic',
+            avatarLabel: currentAvatar?.label ?? 'Grace',
+            userName: effectivePrayerForName || null,
+            selectedPrayerLabel,
+            selectedPrayerKind,
+            intention: intention.trim(),
+            ...timeContext,
+          }
+        : {
+            tradition: selectedTradition,
+            mode: 'free',
+            avatarLabel: currentAvatar?.label ?? 'Grace',
+            prayerType: effectiveFreePrayerType,
+            userName: effectivePrayerForName || null,
+            feelings: effectiveFeelings,
+            input: input.trim(),
+            ...timeContext,
+          };
+
+    await requestPrayer(payload);
+  }
+
+  async function handleQuickPrayer() {
+    const timeContext = getLocalTimeContext();
+    const quickFeelings =
+      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
+
+    if (mode !== 'free') {
+      setMode('free');
+    }
+
+    if (isProtestantPrayerPath) {
+      setSelectedPrayerLabel('');
+      setSelectedPrayerKind('type');
+      setSelectedPrayerType(PROTESTANT_PERSONAL_BASE);
+    }
+
+    const payload: PrayerRequestPayload = {
+      tradition: selectedTradition,
+      mode: 'free',
+      avatarLabel: currentAvatar?.label ?? 'Grace',
+      prayerType: isProtestantPrayerPath
+        ? PROTESTANT_PERSONAL_BASE
+        : selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer',
+      userName: effectivePrayerForName || null,
+      feelings: quickFeelings,
+      input: input.trim(),
+      ...timeContext,
+    };
+
+    await requestPrayer(payload);
   }
 
   function handleReset() {
@@ -770,7 +886,11 @@ function PrayPageInner() {
     } else {
       setInput('');
       setSelectedFeelings([DEFAULT_FEELING]);
-      setSelectedPrayerType(freePrayerOptions[0]?.label || '');
+      setSelectedPrayerType(
+        isProtestantPrayerPath
+          ? PROTESTANT_PERSONAL_BASE
+          : freePrayerOptions[0]?.label || ''
+      );
     }
   }
 
@@ -996,10 +1116,12 @@ function PrayPageInner() {
 
   const resultTitle = isClassic
     ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'
-    : selectedFreePrayerEntry?.display ||
-      freePrayerOptions[0]?.display ||
-      selectedPrayerType ||
-      'Prayer';
+    : isProtestantPersonalMode
+      ? 'Personal Prayer'
+      : selectedFreePrayerEntry?.display ||
+        freePrayerOptions[0]?.display ||
+        selectedPrayerType ||
+        'Prayer';
 
   const resultSubtitle = pathDisplayLabel;
 
@@ -1020,6 +1142,18 @@ function PrayPageInner() {
   const feelingsSummary = selectedFeelings.length
     ? selectedFeelings.join(', ')
     : 'Not provided';
+
+  const savePathLabel = isClassic
+    ? 'Prayer type'
+    : isProtestantPersonalMode
+      ? 'Prayer path'
+      : 'Prayer type';
+
+  const savePathValue = isClassic
+    ? resultTitle
+    : isProtestantPersonalMode
+      ? 'Personal prayer'
+      : resultTitle;
 
   const saveChecklistItems = [
     {
@@ -1043,9 +1177,9 @@ function PrayPageInner() {
       checked: Boolean(pathDisplayLabel),
     },
     {
-      label: 'Prayer type',
-      value: resultTitle,
-      checked: Boolean(resultTitle),
+      label: savePathLabel,
+      value: savePathValue,
+      checked: Boolean(savePathValue),
     },
     {
       label: 'Prayer request',
@@ -1294,14 +1428,73 @@ function PrayPageInner() {
                   </div>
                 </div>
 
-                {!isClassic ? (
+                {showClassicModeToggle ? (
+                  <div className="mt-5 border-t border-amber-100 pt-5">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={handleQuickPrayer}
+                          disabled={isReflecting}
+                          className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                          {isReflecting ? (
+                            <>
+                              <RefreshCw className="h-4 w-4 animate-spin" />
+                              Reflecting...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4" />
+                              Quick Prayer
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => switchPrayerMode('free')}
+                          className={`rounded-full px-5 py-3 text-sm font-semibold transition ${
+                            !isClassic
+                              ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
+                              : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
+                          }`}
+                        >
+                          Customize a Prayer
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => switchPrayerMode('classic')}
+                          className={`rounded-full px-5 py-3 text-sm font-semibold transition ${
+                            isClassic
+                              ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
+                              : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
+                          }`}
+                        >
+                          Classic Prayer
+                        </button>
+                      </div>
+
+                      {!isClassic ? (
+                        <p className="text-sm text-zinc-900">
+                          Quick Prayer uses a hidden petitionary base. Customize a Prayer lets you shape the recipient, feelings, and request before generating.
+                        </p>
+                      ) : (
+                        <p className="text-sm text-zinc-900">
+                          Choose a classic Protestant prayer type below. Use Read more → for the definition pages.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : !isClassic ? (
                   <div className="mt-5 border-t border-amber-100 pt-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <button
                         type="button"
                         onClick={handleQuickPrayer}
                         disabled={isReflecting}
-                        title="Scroll down to form a custom prayer"
+                        title="Generate a prayer now"
                         className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
                       >
                         {isReflecting ? (
@@ -1335,12 +1528,18 @@ function PrayPageInner() {
                 </div>
                 <div>
                   <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-                    {isClassic ? 'Traditional prayer path' : 'What would you like prayer for?'}
+                    {isClassic
+                      ? 'Classic prayer path'
+                      : isProtestantPersonalMode
+                        ? 'Customize a Prayer'
+                        : 'What would you like prayer for?'}
                   </h1>
                   <p className="mt-2 max-w-2xl text-zinc-900">
                     {isClassic
-                      ? 'You chose a traditional prayer or prayer type. You can add a personal intention, then generate a tradition-faithful rendition.'
-                      : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
+                      ? 'Choose a classic prayer type, then add a personal intention if you want one woven into the tradition-shaped prayer.'
+                      : isProtestantPersonalMode
+                        ? 'For Protestant prayer, customize the recipient, your feelings, and your request here. Visible prayer types live in Classic Prayer mode.'
+                        : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
                   </p>
                 </div>
               </div>
@@ -1390,23 +1589,42 @@ function PrayPageInner() {
                         const active =
                           selectedPrayerLabel === item.label &&
                           selectedPrayerKind === item.kind;
+                        const aboutHref = getPrayerTypeDefinitionHref(
+                          activeCatalogKey || selectedTradition,
+                          item.label
+                        );
 
                         return (
-                          <button
+                          <div
                             key={`${item.kind}-${item.label}`}
-                            type="button"
-                            onClick={() => {
-                              setSelectedPrayerLabel(item.label);
-                              setSelectedPrayerKind(item.kind);
-                            }}
-                            className={`rounded-2xl border px-4 py-4 text-left transition ${
+                            className={`rounded-2xl border px-4 py-4 transition ${
                               active
                                 ? 'border-sky-400 bg-sky-100 shadow-sm'
                                 : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
                             }`}
                           >
-                            <div className="font-medium text-zinc-900">{item.display}</div>
-                          </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedPrayerLabel(item.label);
+                                setSelectedPrayerKind(item.kind);
+                              }}
+                              className="w-full text-left"
+                            >
+                              <div className="font-medium text-zinc-900">{item.display}</div>
+                            </button>
+
+                            {aboutHref ? (
+                              <div className="mt-2">
+                                <Link
+                                  href={aboutHref}
+                                  className="text-sm font-semibold text-sky-700 transition hover:text-sky-800"
+                                >
+                                  Read more →
+                                </Link>
+                              </div>
+                            ) : null}
+                          </div>
                         );
                       })}
                     </div>
@@ -1445,45 +1663,56 @@ function PrayPageInner() {
                 </>
               ) : (
                 <>
-                  <div className="mb-8">
-                    <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                      Prayer type
+                  {isProtestantPersonalMode ? (
+                    <div className="mb-8 rounded-[1.75rem] border border-sky-200 bg-sky-50/80 px-5 py-5 shadow-sm">
+                      <div className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-800">
+                        Personal prayer path
+                      </div>
+                      <p className="mt-2 text-sm leading-7 text-zinc-900">
+                        Protestant Customize mode uses a hidden petitionary base, so you can focus on the person, the feeling, and the prayer request instead of choosing a visible prayer type.
+                      </p>
                     </div>
-                    <div className="flex flex-wrap gap-4">
-                      {freePrayerOptions.map((item) => {
-                        const active = selectedPrayerType === item.label;
-                        const aboutHref = getPrayerTypeDefinitionHref(
-                          activeCatalogKey || selectedTradition,
-                          item.label
-                        );
+                  ) : (
+                    <div className="mb-8">
+                      <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
+                        Prayer type
+                      </div>
+                      <div className="flex flex-wrap gap-4">
+                        {freePrayerOptions.map((item) => {
+                          const active = selectedPrayerType === item.label;
+                          const aboutHref = getPrayerTypeDefinitionHref(
+                            activeCatalogKey || selectedTradition,
+                            item.label
+                          );
 
-                        return (
-                          <div key={item.id} className="flex flex-col items-start gap-1">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedPrayerType(item.label)}
-                              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                                active
-                                  ? 'border-sky-400 bg-sky-100 text-zinc-900'
-                                  : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
-                              }`}
-                            >
-                              {item.display}
-                            </button>
-
-                            {aboutHref ? (
-                              <Link
-                                href={aboutHref}
-                                className="pl-2 text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
+                          return (
+                            <div key={item.id} className="flex flex-col items-start gap-1">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedPrayerType(item.label)}
+                                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                                  active
+                                    ? 'border-sky-400 bg-sky-100 text-zinc-900'
+                                    : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
+                                }`}
                               >
-                                About this prayer type
-                              </Link>
-                            ) : null}
-                          </div>
-                        );
-                      })}
+                                {item.display}
+                              </button>
+
+                              {aboutHref ? (
+                                <Link
+                                  href={aboutHref}
+                                  className="pl-2 text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
+                                >
+                                  About this prayer type
+                                </Link>
+                              ) : null}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="mb-8">
                     <label
@@ -1573,7 +1802,7 @@ function PrayPageInner() {
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      {isClassic ? 'Generate rendition' : 'Generate prayer'}
+                      {isClassic ? 'Generate classic prayer' : 'Generate prayer'}
                     </>
                   )}
                 </button>

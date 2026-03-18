@@ -1,3 +1,5 @@
+// app/api/pray/route.ts
+
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import {
@@ -206,6 +208,132 @@ CLASSIC MODE BOUNDARY FOR PRAYER TYPE:
     `.trim();
 }
 
+function buildClassicTypeGuidance(
+  tradition: Tradition,
+  selectedPrayerLabel: string,
+  selectedPrayerKind: PrayerKind
+) {
+  if (selectedPrayerKind !== "type") return "";
+
+  const traditionKey = String(tradition).toLowerCase();
+  const label = selectedPrayerLabel.toLowerCase().trim();
+
+  if (traditionKey !== "protestant") return "";
+
+  switch (label) {
+    case "adoration prayers":
+      return `
+PROTESTANT TYPE-SHAPING: ADORATION PRAYERS
+- Lead with reverence, awe, majesty, holiness, and the greatness of God.
+- Keep personal requests minimal or absent.
+- Let worship come before comfort.
+- Tone should feel humble, lifted, and God-centered rather than need-centered.
+      `.trim();
+
+    case "confession prayers":
+      return `
+PROTESTANT TYPE-SHAPING: CONFESSION PRAYERS
+- Use honest, reverent language about sin, failure, drift, or wrongdoing.
+- Include repentance, mercy, cleansing, forgiveness, and renewed obedience.
+- Do not become theatrical, self-crushing, or melodramatic.
+- Let grace and return to God be clearly present.
+      `.trim();
+
+    case "thanksgiving prayers":
+      return `
+PROTESTANT TYPE-SHAPING: THANKSGIVING PRAYERS
+- Center gratitude, remembrance, provision, mercy, and answered care.
+- Name blessings or forms of grace concretely where natural.
+- Keep the prayer focused more on thanks than on new requests.
+- Let joy and humility both be present.
+      `.trim();
+
+    case "intercessory prayers":
+      return `
+PROTESTANT TYPE-SHAPING: INTERCESSORY PRAYERS
+- Focus primarily on the needs of other people rather than the speaker's own needs.
+- Sound compassionate, carrying, and outward-facing.
+- If a personal intention is given, weave it in as prayer for others.
+- Let the prayer feel like loving advocacy before God.
+      `.trim();
+
+    case "petitionary prayers":
+      return `
+PROTESTANT TYPE-SHAPING: PETITIONARY PRAYERS
+- Focus on bringing personal needs, burdens, hopes, and requests before God.
+- Use direct but reverent asking language.
+- Let dependence, trust, and honesty be central.
+- This prayer may include guidance, provision, peace, healing, strength, or help.
+      `.trim();
+
+    case "praise prayers":
+      return `
+PROTESTANT TYPE-SHAPING: PRAISE PRAYERS
+- Emphasize the character of God: goodness, faithfulness, power, wisdom, mercy, and love.
+- Keep the tone joyful, worshipful, and God-focused.
+- Do not make the prayer mostly about the speaker's problems.
+- Let celebration and delight in God be clear.
+      `.trim();
+
+    case "lament prayers":
+      return `
+PROTESTANT TYPE-SHAPING: LAMENT PRAYERS
+- Allow sorrow, grief, confusion, strain, or protest to be spoken honestly before God.
+- Do not rush into brightness or easy reassurance.
+- Let faith remain present even when the tone is heavy.
+- A truthful ending is better than a forced happy ending.
+      `.trim();
+
+    case "morning prayers":
+      return `
+PROTESTANT TYPE-SHAPING: MORNING PRAYERS
+- Shape the prayer toward the beginning of the day: gratitude, guidance, peace, strength, and faithful attention.
+- If time-of-day context supports it, let the prayer feel like a beginning.
+- Tone should feel clear, steady, and forward-facing.
+- Avoid sounding like an evening or bedtime prayer.
+      `.trim();
+
+    case "evening prayers":
+      return `
+PROTESTANT TYPE-SHAPING: EVENING PRAYERS
+- Shape the prayer toward reflection, release, peace, rest, and trust through the night.
+- If time-of-day context supports it, let the prayer feel like a closing of the day.
+- Include rest, surrender, and release where natural.
+- Avoid sounding like a morning launch prayer.
+      `.trim();
+
+    case "healing prayers":
+      return `
+PROTESTANT TYPE-SHAPING: HEALING PRAYERS
+- Focus on healing, restoration, comfort, strength, endurance, and mercy.
+- Healing may be physical, emotional, mental, or spiritual.
+- Let the tone be compassionate and steady, not shallow or falsely triumphant.
+- It is acceptable to pray both for healing and for sustaining grace.
+      `.trim();
+
+    case "guidance prayers":
+      return `
+PROTESTANT TYPE-SHAPING: GUIDANCE PRAYERS
+- Emphasize wisdom, discernment, clarity, patience, and faithful next steps.
+- Avoid pretending certainty where the situation is unclear.
+- Let the prayer ask for direction as well as the grace to wait well.
+- Tone should feel thoughtful, grounded, and trusting.
+      `.trim();
+
+    case "protection prayers":
+      return `
+PROTESTANT TYPE-SHAPING: PROTECTION PRAYERS
+- Focus on safety, peace, courage, steadiness, covering, and God's watchful care.
+- This may include protection for self, loved ones, travel, uncertainty, or inner vulnerability.
+- Avoid panic, paranoia, or apocalyptic intensity.
+- Let trust and peace be as important as safety itself.
+      `.trim();
+
+    default:
+      return "";
+  }
+}
+
 function buildFeelingToneGuidance(feelings: string[]) {
   const normalized = Array.from(
     new Set(
@@ -406,7 +534,7 @@ DEPTH REQUIREMENTS:
 - Avoid repetition of common AI constructions.
 
 ANTI-GENERIC ENFORCEMENT:
-- Never open with: "Divine Presence", "Beloved", "In this sacred moment", "We come before you".
+- Never open with: "Divine Presence", "Beloved", "In this sacred moment", "We come before you". 
 - Do not sound like a template.
 - Do not sound like generic mindfulness.
 - Do not preach.
@@ -468,10 +596,18 @@ Do not mention rules or instructions.
     }
 
     if (mode === "classic") {
+      const classicTypeGuidance = buildClassicTypeGuidance(
+        tradition,
+        selectedPrayerLabel,
+        selectedPrayerKind
+      );
+
       systemInstruction = `
 ${baseSystem}
 
 ${buildClassicBoundaryNotes(selectedPrayerLabel, selectedPrayerKind)}
+
+${classicTypeGuidance ? `${classicTypeGuidance}\n` : ""}
 
 CLASSIC PRAYER MODE:
 - You are creating a tradition-faithful devotional rendering inspired by a known prayer or prayer type.
@@ -480,6 +616,7 @@ CLASSIC PRAYER MODE:
 - Do NOT say you "looked it up" or cite sources.
 - Keep it respectful, recognizable in spirit, and consistent with the tradition.
 - If the selected item is too well-known or sacred-text-adjacent, favor an original meditation on its themes rather than a close rendition.
+- Let the selected prayer type strongly shape tone, emphasis, posture, and structure.
 
 Write the prayer now.
       `.trim();
