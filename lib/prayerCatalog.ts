@@ -55,16 +55,18 @@ export const PRAYER_CATALOG: Record<TraditionKey, PrayerCatalogItem[]> = {
   ],
 
   protestant: [
+    { id: 'protestant_adoration', label: 'Adoration Prayers', kind: 'type' },
+    { id: 'protestant_confession', label: 'Confession Prayers', kind: 'type' },
     { id: 'protestant_thanksgiving', label: 'Thanksgiving Prayers', kind: 'type' },
-    { id: 'protestant_meditative', label: 'Meditative Prayers', kind: 'type' },
     { id: 'protestant_intercessory', label: 'Intercessory Prayers', kind: 'type' },
     { id: 'protestant_petitionary', label: 'Petitionary Prayers', kind: 'type' },
     { id: 'protestant_praise', label: 'Praise Prayers', kind: 'type' },
-    { id: 'protestant_adoration', label: 'Adoration Prayers', kind: 'type' },
-    { id: 'protestant_liturgical', label: 'Liturgical Prayers', kind: 'type' },
-    { id: 'protestant_lamentation', label: 'Lamentation Prayers', kind: 'type' },
-    { id: 'protestant_confessional', label: 'Confessional Prayers', kind: 'type' },
-    { id: 'protestant_penitence', label: 'Prayers of Penitence', kind: 'type' },
+    { id: 'protestant_lament', label: 'Lament Prayers', kind: 'type' },
+    { id: 'protestant_morning', label: 'Morning Prayers', kind: 'type' },
+    { id: 'protestant_evening', label: 'Evening Prayers', kind: 'type' },
+    { id: 'protestant_healing', label: 'Healing Prayers', kind: 'type' },
+    { id: 'protestant_guidance', label: 'Guidance Prayers', kind: 'type' },
+    { id: 'protestant_protection', label: 'Protection Prayers', kind: 'type' },
   ],
 
   jewish: [

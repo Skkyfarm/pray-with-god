@@ -16,6 +16,7 @@ import {
   detectPrayerSafety,
   type PrayerSafetyNotice,
 } from '@/lib/safety';
+import { getPrayerTypeDefinitionHref } from '@/lib/prayerTypeLinks';
 import {
   ArrowLeft,
   Sparkles,
@@ -377,6 +378,7 @@ function PrayPageInner() {
   const modeParam = searchParams.get('mode');
   const prayerLabelParam = searchParams.get('prayerLabel');
   const prayerKindParam = searchParams.get('prayerKind');
+  const prayerTypeParam = searchParams.get('prayerType');
 
   const [userName, setUserName] = useState<string | null>(null);
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
@@ -482,13 +484,22 @@ function PrayPageInner() {
     if (nextMode === 'classic') {
       setSelectedPrayerLabel(prayerLabelParam || '');
       setSelectedPrayerKind(normalizePrayerKind(prayerKindParam));
+      setSelectedPrayerType('');
       setSelectedFeelings([]);
     } else {
       setSelectedPrayerLabel('');
       setSelectedPrayerKind('type');
+      setSelectedPrayerType(prayerTypeParam || '');
       setSelectedFeelings([DEFAULT_FEELING]);
     }
-  }, [pathParam, modeParam, prayerLabelParam, prayerKindParam, router]);
+  }, [
+    pathParam,
+    modeParam,
+    prayerLabelParam,
+    prayerKindParam,
+    prayerTypeParam,
+    router,
+  ]);
 
   useEffect(() => {
     localStorage.setItem('pwg_tradition', selectedTradition);
@@ -582,11 +593,24 @@ function PrayPageInner() {
   useEffect(() => {
     if (mode !== 'free') return;
 
+    const requestedPrayerType = prayerTypeParam?.trim() || '';
+
+    if (
+      requestedPrayerType &&
+      freePrayerOptions.some((item) => item.label === requestedPrayerType)
+    ) {
+      setSelectedPrayerType(requestedPrayerType);
+      return;
+    }
+
     setSelectedPrayerType((prev) => {
-      if (prev && freePrayerOptions.some((item) => item.label === prev)) return prev;
+      if (prev && freePrayerOptions.some((item) => item.label === prev)) {
+        return prev;
+      }
+
       return freePrayerOptions[0]?.label || '';
     });
-  }, [mode, freePrayerOptions]);
+  }, [mode, freePrayerOptions, prayerTypeParam]);
 
   useEffect(() => {
     if (mode !== 'classic') return;
@@ -1425,22 +1449,37 @@ function PrayPageInner() {
                     <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
                       Prayer type
                     </div>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-4">
                       {freePrayerOptions.map((item) => {
                         const active = selectedPrayerType === item.label;
+                        const aboutHref = getPrayerTypeDefinitionHref(
+                          activeCatalogKey || selectedTradition,
+                          item.label
+                        );
+
                         return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setSelectedPrayerType(item.label)}
-                            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                              active
-                                ? 'border-sky-400 bg-sky-100 text-zinc-900'
-                                : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
-                            }`}
-                          >
-                            {item.display}
-                          </button>
+                          <div key={item.id} className="flex flex-col items-start gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPrayerType(item.label)}
+                              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                                active
+                                  ? 'border-sky-400 bg-sky-100 text-zinc-900'
+                                  : 'border-zinc-200 bg-white text-zinc-900 hover:border-sky-300 hover:bg-sky-50'
+                              }`}
+                            >
+                              {item.display}
+                            </button>
+
+                            {aboutHref ? (
+                              <Link
+                                href={aboutHref}
+                                className="pl-2 text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
+                              >
+                                About this prayer type
+                              </Link>
+                            ) : null}
+                          </div>
                         );
                       })}
                     </div>
