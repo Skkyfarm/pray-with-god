@@ -1,3 +1,5 @@
+// app/prayer-types/protestant/thanksgiving-prayers/page.tsx
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPrayerTypePrayHref } from "@/lib/prayerTypeLinks";

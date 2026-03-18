@@ -19,6 +19,14 @@ const PROTESTANT_PRAYER_TYPE_SLUGS: Record<string, string> = {
   'Intercessory Prayers': 'intercessory-prayers',
   'Petitionary Prayers': 'petitionary-prayers',
   'Praise Prayers': 'praise-prayers',
+  'Confession Prayers': 'confession-prayers',
+  'Adoration Prayers': 'adoration-prayers',
+  'Evening Prayers': 'evening-prayers',
+  'Guidance Prayers': 'guidance-prayers',
+  'Healing Prayers': 'healing-prayers',
+  'Lament Prayers': 'lament-prayers',
+  'Morning Prayers': 'morning-prayers',
+  'Protection Prayers': 'protection-prayers',
 };
 
 export function normalizePrayerTypeLinkTradition(

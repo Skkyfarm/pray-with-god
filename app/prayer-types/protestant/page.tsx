@@ -1,3 +1,5 @@
+// app/prayer-types/protestant/page.tsx
+
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -30,6 +32,7 @@ const prayerTypes: PrayerTypeCard[] = [
     slug: "confession-prayers",
     shortDescription:
       "Prayers of repentance, honesty, grace, forgiveness, and spiritual renewal.",
+    href: "/prayer-types/protestant/confession-prayers",
   },
   {
     title: "Thanksgiving Prayers",
@@ -43,54 +46,63 @@ const prayerTypes: PrayerTypeCard[] = [
     slug: "intercessory-prayers",
     shortDescription:
       "Prayers offered on behalf of other people, families, communities, and needs.",
+    href: "/prayer-types/protestant/intercessory-prayers",
   },
   {
     title: "Petitionary Prayers",
     slug: "petitionary-prayers",
     shortDescription:
       "Prayers that bring personal needs, requests, burdens, and hopes before God.",
+    href: "/prayer-types/protestant/petitionary-prayers",
   },
   {
     title: "Praise Prayers",
     slug: "praise-prayers",
     shortDescription:
       "Prayers that celebrate God’s character, faithfulness, power, and love.",
+    href: "/prayer-types/protestant/praise-prayers",
   },
   {
     title: "Lament Prayers",
     slug: "lament-prayers",
     shortDescription:
       "Prayers of sorrow, grief, struggle, and faith offered in times of pain.",
+    href: "/prayer-types/protestant/lament-prayers",
   },
   {
     title: "Morning Prayers",
     slug: "morning-prayers",
     shortDescription:
       "Prayers to begin the day with gratitude, direction, peace, and trust.",
+    href: "/prayer-types/protestant/morning-prayers",
   },
   {
     title: "Evening Prayers",
     slug: "evening-prayers",
     shortDescription:
       "Prayers for reflection, release, peace, protection, and rest at day’s end.",
+    href: "/prayer-types/protestant/evening-prayers",
   },
   {
     title: "Healing Prayers",
     slug: "healing-prayers",
     shortDescription:
       "Prayers for physical, emotional, mental, and spiritual healing and restoration.",
+    href: "/prayer-types/protestant/healing-prayers",
   },
   {
     title: "Guidance Prayers",
     slug: "guidance-prayers",
     shortDescription:
       "Prayers for wisdom, discernment, direction, and clarity in decision-making.",
+    href: "/prayer-types/protestant/guidance-prayers",
   },
   {
     title: "Protection Prayers",
     slug: "protection-prayers",
     shortDescription:
       "Prayers asking for safety, covering, strength, and God’s watchful care.",
+    href: "/prayer-types/protestant/protection-prayers",
   },
 ];
 
@@ -144,15 +156,13 @@ export default function ProtestantPrayerTypesPage() {
                 </p>
 
                 <div className="mt-6">
-                  {item.href ? (
-                    <span className="inline-flex items-center text-sm font-semibold text-sky-700">
-                      Read more →
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center text-sm font-semibold text-slate-500">
-                      Detailed page coming next
-                    </span>
-                  )}
+                  <span
+                    className={`inline-flex items-center text-sm font-semibold ${
+                      item.href ? "text-sky-700" : "text-slate-500"
+                    }`}
+                  >
+                    Read more →
+                  </span>
                 </div>
               </>
             );

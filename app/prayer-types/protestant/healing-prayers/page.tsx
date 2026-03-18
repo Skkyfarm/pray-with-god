@@ -1,5 +1,8 @@
+// app/prayer-types/protestant/healing-prayers/page.tsx
+
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getPrayerTypePrayHref } from "@/lib/prayerTypeLinks";
 
 export const metadata: Metadata = {
   title: "Healing Prayers | Protestant Prayer Types | PrayWithGod.ai",
@@ -156,7 +159,7 @@ export default function ProtestantHealingPrayersPage() {
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href="/pray?path=protestant"
+                  href={getPrayerTypePrayHref("protestant", "Healing Prayers")}
                   className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
                 >
                   Generate a Prayer
