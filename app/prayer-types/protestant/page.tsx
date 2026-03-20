@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PROTESTANT_PRAYER_TYPES } from "@/lib/protestantPrayerTypes";
 
 export const metadata: Metadata = {
   title: "Protestant Prayer Types | PrayWithGod.ai",
@@ -11,100 +12,6 @@ export const metadata: Metadata = {
     canonical: "/prayer-types/protestant",
   },
 };
-
-type PrayerTypeCard = {
-  title: string;
-  slug: string;
-  shortDescription: string;
-  href?: string;
-};
-
-const prayerTypes: PrayerTypeCard[] = [
-  {
-    title: "Adoration Prayers",
-    slug: "adoration-prayers",
-    shortDescription:
-      "Prayers centered on worship, reverence, awe, and the greatness of God.",
-    href: "/prayer-types/protestant/adoration-prayers",
-  },
-  {
-    title: "Confession Prayers",
-    slug: "confession-prayers",
-    shortDescription:
-      "Prayers of repentance, honesty, grace, forgiveness, and spiritual renewal.",
-    href: "/prayer-types/protestant/confession-prayers",
-  },
-  {
-    title: "Thanksgiving Prayers",
-    slug: "thanksgiving-prayers",
-    shortDescription:
-      "Prayers that express gratitude for God’s goodness, provision, mercy, and care.",
-    href: "/prayer-types/protestant/thanksgiving-prayers",
-  },
-  {
-    title: "Intercessory Prayers",
-    slug: "intercessory-prayers",
-    shortDescription:
-      "Prayers offered on behalf of other people, families, communities, and needs.",
-    href: "/prayer-types/protestant/intercessory-prayers",
-  },
-  {
-    title: "Petitionary Prayers",
-    slug: "petitionary-prayers",
-    shortDescription:
-      "Prayers that bring personal needs, requests, burdens, and hopes before God.",
-    href: "/prayer-types/protestant/petitionary-prayers",
-  },
-  {
-    title: "Praise Prayers",
-    slug: "praise-prayers",
-    shortDescription:
-      "Prayers that celebrate God’s character, faithfulness, power, and love.",
-    href: "/prayer-types/protestant/praise-prayers",
-  },
-  {
-    title: "Lament Prayers",
-    slug: "lament-prayers",
-    shortDescription:
-      "Prayers of sorrow, grief, struggle, and faith offered in times of pain.",
-    href: "/prayer-types/protestant/lament-prayers",
-  },
-  {
-    title: "Morning Prayers",
-    slug: "morning-prayers",
-    shortDescription:
-      "Prayers to begin the day with gratitude, direction, peace, and trust.",
-    href: "/prayer-types/protestant/morning-prayers",
-  },
-  {
-    title: "Evening Prayers",
-    slug: "evening-prayers",
-    shortDescription:
-      "Prayers for reflection, release, peace, protection, and rest at day’s end.",
-    href: "/prayer-types/protestant/evening-prayers",
-  },
-  {
-    title: "Healing Prayers",
-    slug: "healing-prayers",
-    shortDescription:
-      "Prayers for physical, emotional, mental, and spiritual healing and restoration.",
-    href: "/prayer-types/protestant/healing-prayers",
-  },
-  {
-    title: "Guidance Prayers",
-    slug: "guidance-prayers",
-    shortDescription:
-      "Prayers for wisdom, discernment, direction, and clarity in decision-making.",
-    href: "/prayer-types/protestant/guidance-prayers",
-  },
-  {
-    title: "Protection Prayers",
-    slug: "protection-prayers",
-    shortDescription:
-      "Prayers asking for safety, covering, strength, and God’s watchful care.",
-    href: "/prayer-types/protestant/protection-prayers",
-  },
-];
 
 export default function ProtestantPrayerTypesPage() {
   return (
@@ -146,57 +53,34 @@ export default function ProtestantPrayerTypesPage() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {prayerTypes.map((item) => {
-            const cardInner = (
-              <>
-                <h2 className="text-2xl font-semibold">{item.title}</h2>
+          {PROTESTANT_PRAYER_TYPES.map((item) => (
+            <Link
+              key={item.slug}
+              href={`/prayer-types/protestant/${item.slug}`}
+              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+            >
+              <h2 className="text-2xl font-semibold">{item.title}</h2>
 
-                <p className="mt-4 text-base leading-7 text-slate-700">
-                  {item.shortDescription}
-                </p>
+              <p className="mt-4 text-base leading-7 text-slate-700">
+                {item.shortDescription}
+              </p>
 
-                <div className="mt-6">
-                  <span
-                    className={`inline-flex items-center text-sm font-semibold ${
-                      item.href ? "text-sky-700" : "text-slate-500"
-                    }`}
-                  >
-                    Read more →
-                  </span>
-                </div>
-              </>
-            );
-
-            if (item.href) {
-              return (
-                <Link
-                  key={item.slug}
-                  href={item.href}
-                  className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
-                >
-                  {cardInner}
-                </Link>
-              );
-            }
-
-            return (
-              <div
-                key={item.slug}
-                className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-sm"
-              >
-                {cardInner}
+              <div className="mt-6">
+                <span className="inline-flex items-center text-sm font-semibold text-sky-700">
+                  Read more →
+                </span>
               </div>
-            );
-          })}
+            </Link>
+          ))}
         </div>
 
         <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
           <h2 className="text-2xl font-semibold">
-            Use PrayWithGod.ai to generate a prayer
+            Use PrayWithGod.ai as a prayer companion
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
-            If you already know what kind of prayer you want, you can go
+            If you already know what kind of prayer support you want, you can go
             directly to the prayer experience and choose the Protestant
             tradition. If you are still exploring, these pages will help you
             decide which prayer type best matches your need.
