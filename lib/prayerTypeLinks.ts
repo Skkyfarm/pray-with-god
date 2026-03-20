@@ -1,3 +1,5 @@
+// lib/prayerTypeLinks.ts
+
 export type PrayerTypeLinkTradition =
   | 'protestant'
   | 'catholic'
@@ -40,11 +42,11 @@ const PRAYER_TYPE_SLUGS_BY_TRADITION: Partial<
   },
 
   catholic: {
-    'Adoration': 'adoration',
-    'Contrition': 'contrition',
-    'Thanksgiving': 'thanksgiving',
-    'Petition': 'petition',
-    'Intercession': 'intercession',
+    Adoration: 'adoration',
+    Contrition: 'contrition',
+    Thanksgiving: 'thanksgiving',
+    Petition: 'petition',
+    Intercession: 'intercession',
     'Marian Devotion': 'marian-devotion',
     'Eucharistic Devotion': 'eucharistic-devotion',
     'Prayers for Mercy': 'prayers-for-mercy',
@@ -60,6 +62,21 @@ const PRAYER_TYPE_SLUGS_BY_TRADITION: Partial<
     'Lenten Prayers': 'lenten-prayers',
     'Easter Prayers': 'easter-prayers',
     'Saint-inspired Prayers': 'saint-inspired-prayers',
+  },
+
+  jewish: {
+    Shacharit: 'shacharit',
+    Mincha: 'mincha',
+    Maariv: 'maariv',
+    Hallel: 'hallel',
+    Tehillim: 'tehillim',
+    'Birkat Hamazon': 'birkat-hamazon',
+    'Tefilat Haderech': 'tefilat-haderech',
+    'Kabbalat Shabbat': 'kabbalat-shabbat',
+    Mussaf: 'mussaf',
+    Tashlich: 'tashlich',
+    Selichot: 'selichot',
+    Vidui: 'vidui',
   },
 };
 

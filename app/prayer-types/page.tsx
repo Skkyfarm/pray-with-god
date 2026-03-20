@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+// app/prayer-types/page.tsx
+
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "Prayer Types by Tradition | PrayWithGod.ai",
+  title: 'Prayer Types by Tradition | PrayWithGod.ai',
   description:
-    "Explore prayer types by tradition on PrayWithGod.ai, including Protestant and Catholic prayer categories, with additional tradition-specific guides growing over time.",
+    'Explore prayer types by tradition on PrayWithGod.ai, including Protestant, Catholic, and Jewish prayer categories, with additional tradition-specific guides growing over time.',
   alternates: {
-    canonical: "/prayer-types",
+    canonical: '/prayer-types',
   },
 };
 
@@ -19,46 +21,46 @@ type TraditionCard = {
 
 const traditions: TraditionCard[] = [
   {
-    title: "Protestant",
+    title: 'Protestant',
     description:
-      "Explore Protestant prayer types such as adoration, confession, thanksgiving, intercession, petition, praise, lament, and more.",
-    href: "/prayer-types/protestant",
+      'Explore Protestant prayer types such as adoration, confession, thanksgiving, intercession, petition, praise, lament, and more.',
+    href: '/prayer-types/protestant',
   },
   {
-    title: "Catholic",
+    title: 'Catholic',
     description:
-      "Explore Catholic prayer types such as adoration, contrition, thanksgiving, petition, intercession, Marian devotion, Eucharistic devotion, seasonal prayers, and more.",
-    href: "/prayer-types/catholic",
+      'Explore Catholic prayer types such as adoration, contrition, thanksgiving, petition, intercession, Marian devotion, Eucharistic devotion, seasonal prayers, and more.',
+    href: '/prayer-types/catholic',
   },
   {
-    title: "Jewish",
+    title: 'Jewish',
     description:
-      "Prayer type guidance for Jewish tradition will be added in a future phase.",
-    status: "Coming soon",
+      'Explore Jewish prayer forms such as Shacharit, Mincha, Maariv, Hallel, Tehillim, Birkat Hamazon, Tefilat Haderech, Kabbalat Shabbat, Mussaf, Tashlich, Selichot, and Vidui.',
+    href: '/prayer-types/jewish',
   },
   {
-    title: "Muslim",
+    title: 'Muslim',
     description:
-      "Prayer type guidance for Muslim tradition will be added in a future phase.",
-    status: "Coming soon",
+      'Prayer type guidance for Muslim tradition will be added in a future phase.',
+    status: 'Coming soon',
   },
   {
-    title: "Hindu",
+    title: 'Hindu',
     description:
-      "Prayer type guidance for Hindu tradition will be added in a future phase.",
-    status: "Coming soon",
+      'Prayer type guidance for Hindu tradition will be added in a future phase.',
+    status: 'Coming soon',
   },
   {
-    title: "Buddhist",
+    title: 'Buddhist',
     description:
-      "Prayer type guidance for Buddhist tradition will be added in a future phase.",
-    status: "Coming soon",
+      'Prayer type guidance for Buddhist tradition will be added in a future phase.',
+    status: 'Coming soon',
   },
   {
-    title: "Exploring",
+    title: 'Exploring',
     description:
-      "A welcoming path for visitors who are exploring prayer and spiritual reflection will be added in a future phase.",
-    status: "Coming soon",
+      'A welcoming path for visitors who are exploring prayer and spiritual reflection will be added in a future phase.',
+    status: 'Coming soon',
   },
 ];
 
@@ -156,8 +158,15 @@ export default function PrayerTypesPage() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/prayer-types/catholic"
+              href="/prayer-types/jewish"
               className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
+            >
+              Explore Jewish Prayer Types
+            </Link>
+
+            <Link
+              href="/prayer-types/catholic"
+              className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
             >
               Explore Catholic Prayer Types
             </Link>
