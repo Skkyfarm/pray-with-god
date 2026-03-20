@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Prayer Types by Tradition | PrayWithGod.ai",
   description:
-    "Explore prayer types by tradition on PrayWithGod.ai, including Protestant prayer categories and future tradition-specific prayer guides.",
+    "Explore prayer types by tradition on PrayWithGod.ai, including Protestant and Catholic prayer categories, with additional tradition-specific guides growing over time.",
   alternates: {
     canonical: "/prayer-types",
   },
@@ -27,13 +27,19 @@ const traditions: TraditionCard[] = [
   {
     title: "Catholic",
     description:
-      "Tradition-specific prayer type pages for Catholic visitors will be added in a future phase.",
-    status: "Coming soon",
+      "Explore Catholic prayer types such as adoration, contrition, thanksgiving, petition, intercession, Marian devotion, Eucharistic devotion, seasonal prayers, and more.",
+    href: "/prayer-types/catholic",
   },
   {
     title: "Jewish",
     description:
       "Prayer type guidance for Jewish tradition will be added in a future phase.",
+    status: "Coming soon",
+  },
+  {
+    title: "Muslim",
+    description:
+      "Prayer type guidance for Muslim tradition will be added in a future phase.",
     status: "Coming soon",
   },
   {
@@ -142,12 +148,25 @@ export default function PrayerTypesPage() {
             and more helpful for real visitors.
           </p>
 
+          <p className="mt-4 text-base leading-7 text-slate-700">
+            It also lets PrayWithGod.ai act more like a prayer companion than a
+            generic tool. Visitors can understand the shape of prayer first,
+            then step into the experience with better direction.
+          </p>
+
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/prayer-types/protestant"
+              href="/prayer-types/catholic"
               className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
-              Start with Protestant Prayer Types
+              Explore Catholic Prayer Types
+            </Link>
+
+            <Link
+              href="/prayer-types/protestant"
+              className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+            >
+              Explore Protestant Prayer Types
             </Link>
 
             <Link
