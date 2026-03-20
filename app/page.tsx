@@ -1,3 +1,4 @@
+// app/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -72,7 +73,7 @@ export default function Home() {
             </p>
 
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-5xl">
-              Thoughtful, personalized prayer across spiritual traditions.
+              Personalized Prayer Companion across spiritual traditions
             </h1>
 
             <p className="text-sm leading-relaxed text-black md:text-base">

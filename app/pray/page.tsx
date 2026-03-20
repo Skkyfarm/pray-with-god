@@ -44,7 +44,7 @@ type PrayerResponse = {
 };
 
 type PrayMode = 'free' | 'classic';
-type ProtestantView = 'quick' | 'free' | 'classic';
+type LauncherView = 'quick' | 'free' | 'classic';
 type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
 type PrayerRequestPayload = {
@@ -409,7 +409,7 @@ function PrayPageInner() {
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
   const [activeCatalogKey, setActiveCatalogKey] = useState<TraditionKey | null>('grace');
   const [mode, setMode] = useState<PrayMode>('free');
-  const [protestantView, setProtestantView] = useState<ProtestantView>('quick');
+  const [launcherView, setLauncherView] = useState<LauncherView>('free');
 
   const [selectedPrayerType, setSelectedPrayerType] = useState('');
   const [selectedPrayerLabel, setSelectedPrayerLabel] = useState('');
@@ -481,32 +481,33 @@ function PrayPageInner() {
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
     const requestedMode = normalizeMode(modeParam);
 
+    const hasStructuredLauncher = Boolean(
+      mappedCatalogKey && mappedCatalogKey !== 'grace'
+    );
+
+    const hasPrayerTypeSelection =
+      Boolean(prayerTypeParam?.trim()) && hasStructuredLauncher;
+
     const protestantPrayerTypeLink =
       mappedCatalogKey === 'protestant' && Boolean(prayerTypeParam?.trim());
 
-    const christianClassicDisabled =
-      requestedMode === 'classic' &&
-      ['christian', 'catholic'].includes(String(mappedTradition).toLowerCase());
-
-    const nextProtestantView: ProtestantView =
-      mappedCatalogKey === 'protestant'
-        ? protestantPrayerTypeLink
+    const nextLauncherView: LauncherView = hasStructuredLauncher
+      ? protestantPrayerTypeLink
+        ? 'classic'
+        : modeParam === 'classic'
           ? 'classic'
-          : modeParam === 'classic'
-            ? 'classic'
-            : modeParam === 'free'
+          : modeParam === 'free'
+            ? 'free'
+            : hasPrayerTypeSelection
               ? 'free'
               : 'quick'
-        : 'free';
+      : 'free';
 
-    const nextMode: PrayMode =
-      mappedCatalogKey === 'protestant'
-        ? nextProtestantView === 'classic'
-          ? 'classic'
-          : 'free'
-        : christianClassicDisabled
-          ? 'free'
-          : requestedMode;
+    const nextMode: PrayMode = hasStructuredLauncher
+      ? nextLauncherView === 'classic'
+        ? 'classic'
+        : 'free'
+      : requestedMode;
 
     if (pathParam) {
       setSelectedTradition(mappedTradition);
@@ -525,7 +526,7 @@ function PrayPageInner() {
     }
 
     setMode(nextMode);
-    setProtestantView(nextProtestantView);
+    setLauncherView(nextLauncherView);
 
     if (nextMode === 'classic') {
       const initialClassicLabel =
@@ -619,10 +620,12 @@ function PrayPageInner() {
     return getPrayerOptions(activeCatalogKey);
   }, [activeCatalogKey]);
 
+  const isStructuredPrayerPath =
+    activeCatalogKey !== null && activeCatalogKey !== 'grace';
   const isProtestantPrayerPath = activeCatalogKey === 'protestant';
-  const showClassicModeToggle = isProtestantPrayerPath;
+  const showClassicModeToggle = isStructuredPrayerPath;
   const isProtestantPersonalMode = mode === 'free' && isProtestantPrayerPath;
-  const showExpandedPrayerPanel = !isProtestantPrayerPath || protestantView !== 'quick';
+  const showExpandedPrayerPanel = !isStructuredPrayerPath || launcherView !== 'quick';
 
   const selectedTraditionalEntry = useMemo(() => {
     return (
@@ -732,7 +735,7 @@ function PrayPageInner() {
     setSafetyNotice(null);
 
     setMode('free');
-    setProtestantView('free');
+    setLauncherView('free');
     setSelectedPrayerLabel('');
     setSelectedPrayerKind('type');
     setSelectedPrayerType(
@@ -753,7 +756,7 @@ function PrayPageInner() {
     setSafetyNotice(null);
 
     setMode('classic');
-    setProtestantView('classic');
+    setLauncherView('classic');
     setSelectedFeelings([]);
 
     if (!selectedPrayerLabel) {
@@ -828,7 +831,7 @@ function PrayPageInner() {
 
   async function handleGeneratePrayer() {
     if (mode === 'classic' && !selectedPrayerLabel.trim()) {
-      setError('Please choose a traditional prayer first.');
+      setError('Please choose a prayer type first.');
       return;
     }
 
@@ -870,7 +873,7 @@ function PrayPageInner() {
     const quickFeelings =
       selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
 
-    setProtestantView('quick');
+    setLauncherView('quick');
 
     if (mode !== 'free') {
       setMode('free');
@@ -1141,7 +1144,7 @@ function PrayPageInner() {
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
   const resultTitle = isClassic
-    ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'
+    ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer type'
     : isProtestantPersonalMode
       ? 'Personal Prayer'
       : selectedFreePrayerEntry?.display ||
@@ -1430,6 +1433,16 @@ function PrayPageInner() {
                     {disclosureNote}
                   </p>
                 </div>
+
+                <div className="mt-2 flex justify-center">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Return Home
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
@@ -1469,9 +1482,9 @@ function PrayPageInner() {
                           type="button"
                           onClick={handleQuickPrayer}
                           disabled={isReflecting}
-                          className={launcherButtonClass(protestantView === 'quick')}
+                          className={launcherButtonClass(launcherView === 'quick')}
                         >
-                          {isReflecting && protestantView === 'quick' ? (
+                          {isReflecting && launcherView === 'quick' ? (
                             <>
                               <RefreshCw className="mr-2 inline h-4 w-4 animate-spin" />
                               Reflecting...
@@ -1488,7 +1501,7 @@ function PrayPageInner() {
                           type="button"
                           onClick={openCustomizePrayer}
                           disabled={isReflecting}
-                          className={launcherButtonClass(protestantView === 'free')}
+                          className={launcherButtonClass(launcherView === 'free')}
                         >
                           Customize a Prayer
                         </button>
@@ -1497,23 +1510,25 @@ function PrayPageInner() {
                           type="button"
                           onClick={openClassicPrayer}
                           disabled={isReflecting}
-                          className={launcherButtonClass(protestantView === 'classic')}
+                          className={launcherButtonClass(launcherView === 'classic')}
                         >
-                          Classic Prayer
+                          Prayer by Type
                         </button>
                       </div>
 
-                      {protestantView === 'quick' ? (
+                      {launcherView === 'quick' ? (
                         <p className="text-sm text-zinc-900">
-                          Quick Prayer generates immediately. Choose Customize or Classic to open more options.
+                          Quick Prayer generates immediately. Choose Customize or Prayer by Type to open more options.
                         </p>
-                      ) : protestantView === 'free' ? (
+                      ) : launcherView === 'free' ? (
                         <p className="text-sm text-zinc-900">
-                          Customize a Prayer opens the personal prayer form below.
+                          {isProtestantPrayerPath
+                            ? 'Customize a Prayer opens the personal prayer form below.'
+                            : 'Customize a Prayer opens the guided prayer form below.'}
                         </p>
                       ) : (
                         <p className="text-sm text-zinc-900">
-                          Choose a classic Protestant prayer type below. Use Read more → for the definition pages.
+                          Choose a {pathDisplayLabel} prayer type below. Use Read more → for the definition pages.
                         </p>
                       )}
                     </div>
@@ -1562,17 +1577,19 @@ function PrayPageInner() {
                     <div>
                       <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
                         {isClassic
-                          ? 'Classic prayer path'
-                          : isProtestantPersonalMode
+                          ? 'Prayer by Type'
+                          : showClassicModeToggle
                             ? 'Customize a Prayer'
                             : 'What would you like prayer for?'}
                       </h1>
                       <p className="mt-2 max-w-2xl text-zinc-900">
                         {isClassic
-                          ? 'Choose a classic prayer type, then add a personal intention if you want one woven into the tradition-shaped prayer.'
+                          ? 'Choose a prayer type, then add a personal intention if you want one woven into the tradition-shaped prayer.'
                           : isProtestantPersonalMode
-                            ? 'For Protestant prayer, customize the recipient, your feelings, and your request here. Visible prayer types live in Classic Prayer mode.'
-                            : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
+                            ? 'Customize the recipient, your feelings, and your request here. Use Prayer by Type if you want a type-first shortcut.'
+                            : showClassicModeToggle
+                              ? 'Choose a prayer type, name the person, add your request, and describe how you feel. Use Prayer by Type if you want a type-first shortcut.'
+                              : 'You can describe your situation, name the people involved, mention your hopes, or simply choose how you feel right now.'}
                       </p>
                     </div>
                   </div>
@@ -1614,7 +1631,7 @@ function PrayPageInner() {
                     <>
                       <div className="mb-8">
                         <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                          Traditional prayers & prayer types
+                          Prayer types
                         </div>
 
                         <div className="grid gap-3 sm:grid-cols-2">
@@ -1667,11 +1684,11 @@ function PrayPageInner() {
                         <div className="mb-2 flex items-center gap-2 text-sky-800">
                           <Bookmark className="h-4 w-4" />
                           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-                            Selected tradition item
+                            Selected prayer option
                           </span>
                         </div>
                         <div className="text-xl font-semibold text-zinc-900">
-                          {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Traditional prayer'}
+                          {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer type'}
                         </div>
                         {selectedPrayerKind === 'named' ? (
                           <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
@@ -1835,7 +1852,7 @@ function PrayPageInner() {
                       ) : (
                         <>
                           <Send className="h-4 w-4" />
-                          {isClassic ? 'Generate classic prayer' : 'Generate prayer'}
+                          {isClassic ? 'Generate prayer by type' : 'Generate prayer'}
                         </>
                       )}
                     </button>
