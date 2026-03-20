@@ -26,7 +26,6 @@ const PRAYER_TYPE_SLUGS_BY_TRADITION: Partial<
 > = {
   protestant: {
     'Thanksgiving Prayers': 'thanksgiving-prayers',
-    'Meditative Prayers': 'meditative-prayers',
     'Intercessory Prayers': 'intercessory-prayers',
     'Petitionary Prayers': 'petitionary-prayers',
     'Praise Prayers': 'praise-prayers',
