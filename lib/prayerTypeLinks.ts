@@ -20,8 +20,8 @@ const DEFINITION_BASES: Record<PrayerTypeLinkTradition, string> = {
 };
 
 /**
- * Map only the prayer-type pages that actually exist right now.
- * Add more entries here as you create more definition pages.
+ * Map only the prayer-type pages that actually exist right now,
+ * or that we are actively wiring for live use.
  */
 const PRAYER_TYPE_SLUGS_BY_TRADITION: Partial<
   Record<PrayerTypeLinkTradition, Record<string, string>>
@@ -77,6 +77,36 @@ const PRAYER_TYPE_SLUGS_BY_TRADITION: Partial<
     Tashlich: 'tashlich',
     Selichot: 'selichot',
     Vidui: 'vidui',
+  },
+
+  muslim: {
+    'Fajr Prayer': 'fajr-prayer',
+    'Dhuhr Prayer': 'dhuhr-prayer',
+    'Asr Prayer': 'asr-prayer',
+    'Maghrib Prayer': 'maghrib-prayer',
+    'Isha Prayer': 'isha-prayer',
+  },
+
+  hindu: {
+    'Shanti Path (Peace Prayer)': 'shanti-path-peace-prayer',
+    'Gratitude / Offering': 'gratitude-offering',
+    'Bhakti Devotional': 'bhakti-devotional',
+    'Sankalpa (Intention Setting)': 'sankalpa-intention-setting',
+    'Stuti (Praise)': 'stuti-praise',
+    'Prarthana (Personal Request)': 'prarthana-personal-request',
+    'Gayatri / Sacred Mantra': 'gayatri-sacred-mantra',
+    'Kshama Prarthana (Forgiveness)': 'kshama-prarthana-forgiveness',
+  },
+
+  buddhist: {
+    'Metta (Loving Kindness)': 'metta-loving-kindness',
+    'Karuna (Compassion)': 'karuna-compassion',
+    'Mindfulness Reflection': 'mindfulness-reflection',
+    'Equanimity Practice': 'equanimity-practice',
+    'Letting Go / Release': 'letting-go-release',
+    'Forgiveness Reflection': 'forgiveness-reflection',
+    'Dedication of Merit': 'dedication-of-merit',
+    'Refuge / Protection': 'refuge-protection',
   },
 };
 
