@@ -1,3 +1,4 @@
+// /app/report/page.tsx
 import Link from "next/link";
 
 export default function ReportIssuePage() {
@@ -24,21 +25,37 @@ export default function ReportIssuePage() {
 
         <div className="mt-6 rounded-xl border border-black/10 bg-white p-4">
           <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-700">
+            Support email
+          </div>
+          <p className="mt-2 text-sm text-gray-800">
+            For bugs, technical issues, or anything not working as expected,
+            please email:
+          </p>
+          <a
+            href="mailto:support@praywithgod.ai"
+            className="mt-2 inline-block text-sm font-medium text-gray-950 underline underline-offset-4 hover:text-gray-700"
+          >
+            support@praywithgod.ai
+          </a>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-black/10 bg-white p-4">
+          <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-700">
             Status
           </div>
           <p className="mt-2 text-sm text-gray-800">
-            This is a placeholder report page. Next we can wire a real form that
-            sends to your inbox (or saves to an admin dashboard).
+            This page currently routes issue reporting through email so the
+            PrayWithGod.ai team can review problems directly.
           </p>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/support"
+          <a
+            href="mailto:support@praywithgod.ai?subject=PWG%20Issue%20Report"
             className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
           >
-            Support
-          </Link>
+            Email Support
+          </a>
           <Link
             href="/contact"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"

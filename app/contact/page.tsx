@@ -1,3 +1,4 @@
+// /app/contact/page.tsx
 import Link from "next/link";
 
 export default function ContactPage() {
@@ -12,21 +13,36 @@ export default function ContactPage() {
       <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
         <h2 className="text-lg font-semibold">Get in touch</h2>
         <p className="mt-2 text-gray-800">
-          For questions, feedback, support, or partnership inquiries, please
-          email us directly.
+          For general questions, feedback, or partnership inquiries, email us
+          directly. For bugs or technical help, please use the support address
+          below.
         </p>
 
-        <div className="mt-6 space-y-3 text-sm text-gray-800">
+        <div className="mt-6 space-y-5 text-sm text-gray-800">
           <div>
             <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-700">
-              Email
+              General contact
             </div>
             <div className="mt-1">
               <a
-                href="mailto:skkyfarmpublishingllc@gmail.com"
+                href="mailto:contact@praywithgod.ai"
                 className="font-medium text-gray-950 underline underline-offset-4 hover:text-gray-700"
               >
-                skkyfarmpublishingllc@gmail.com
+                contact@praywithgod.ai
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.22em] font-semibold text-gray-700">
+              Support
+            </div>
+            <div className="mt-1">
+              <a
+                href="mailto:support@praywithgod.ai"
+                className="font-medium text-gray-950 underline underline-offset-4 hover:text-gray-700"
+              >
+                support@praywithgod.ai
               </a>
             </div>
           </div>
@@ -54,10 +70,10 @@ export default function ContactPage() {
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/support"
+            href="/report"
             className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
           >
-            Support
+            Report Issue
           </Link>
           <Link
             href="/faq"
@@ -74,8 +90,7 @@ export default function ContactPage() {
         </div>
 
         <p className="mt-4 text-xs text-gray-600">
-          This email address is currently the best way to reach the PrayWithGod.ai
-          team.
+          Email is currently the best way to reach the PrayWithGod.ai team.
         </p>
       </div>
     </main>

@@ -1,3 +1,5 @@
+// /lib/sitelinks.ts
+
 export type NavLink = { label: string; href: string };
 export type FooterLink = { label: string; href?: string }; // href optional = non-clickable
 
@@ -12,6 +14,8 @@ export const supportLinks: NavLink[] = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Report Issue", href: "/report" },
+  { label: "Email Support", href: "mailto:support@praywithgod.ai" },
+  { label: "General Contact", href: "mailto:contact@praywithgod.ai" },
 ];
 
 export const footerColumns: { title: string; links: FooterLink[] }[] = [
@@ -40,6 +44,8 @@ export const footerColumns: { title: string; links: FooterLink[] }[] = [
       { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
       { label: "Report Issue", href: "/report" },
+      { label: "Email Support", href: "mailto:support@praywithgod.ai" },
+      { label: "General Contact", href: "mailto:contact@praywithgod.ai" },
     ],
   },
 ];

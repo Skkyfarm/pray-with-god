@@ -1,3 +1,4 @@
+// /components/footerLinkArray.tsx
 "use client";
 
 import Link from "next/link";
@@ -40,16 +41,30 @@ export default function FooterLinkArray() {
                 </div>
 
                 <ul className="space-y-1 text-[13px] leading-snug">
-                  {col.links.map((item) => (
-                    <li key={item.label}>
-                      <Link
-                        className="text-black/70 hover:text-black"
-                        href={item.href as string}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {col.links.map((item) => {
+                    const href = item.href as string;
+                    const isMailto = href.startsWith("mailto:");
+
+                    return (
+                      <li key={item.label}>
+                        {isMailto ? (
+                          <a
+                            className="text-black/70 hover:text-black"
+                            href={href}
+                          >
+                            {item.label}
+                          </a>
+                        ) : (
+                          <Link
+                            className="text-black/70 hover:text-black"
+                            href={href}
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );
@@ -64,10 +79,16 @@ export default function FooterLinkArray() {
           <div className="flex flex-col items-start gap-1 text-[11px] text-black/60 md:items-end">
             <div>© {new Date().getFullYear()} Skky Farm Publishing LLC</div>
             <a
-              href="mailto:skkyfarmpublishingllc@gmail.com"
+              href="mailto:contact@praywithgod.ai"
               className="hover:text-black"
             >
-              skkyfarmpublishingllc@gmail.com
+              contact@praywithgod.ai
+            </a>
+            <a
+              href="mailto:support@praywithgod.ai"
+              className="hover:text-black"
+            >
+              support@praywithgod.ai
             </a>
           </div>
         </div>
