@@ -1,6 +1,8 @@
+// /components/SiteHeader.tsx
 "use client";
 
 import Link from "next/link";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { headerLinks, supportLinks } from "@/lib/siteLinks";
 
@@ -124,6 +126,44 @@ export default function SiteHeader() {
     setMobileOpen(false);
   }
 
+  function renderSupportItem(
+    item: { label: string; href?: string },
+    mobile = false
+  ) {
+    if (!item.href) return null;
+
+    const isMailto = item.href.startsWith("mailto:");
+    const className = mobile
+      ? "py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:text-black"
+      : "block px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:bg-black/5 hover:text-black";
+
+    if (isMailto) {
+      return (
+        <a
+          key={`${item.label}-${item.href}`}
+          href={item.href}
+          role={mobile ? undefined : "menuitem"}
+          onClick={closeAllMenus}
+          className={className}
+        >
+          {item.label}
+        </a>
+      );
+    }
+
+    return (
+      <Link
+        key={`${item.label}-${item.href}`}
+        href={item.href}
+        role={mobile ? undefined : "menuitem"}
+        onClick={closeAllMenus}
+        className={className}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
   return (
     <header
       ref={headerRef}
@@ -148,6 +188,23 @@ export default function SiteHeader() {
               {item.label}
             </Link>
           ))}
+
+          <SignedIn>
+            <>
+              <Link
+                href="/dashboard"
+                className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
+              >
+                DASHBOARD
+              </Link>
+              <Link
+                href="/account"
+                className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
+              >
+                ACCOUNT
+              </Link>
+            </>
+          </SignedIn>
 
           <div className="relative">
             <button
@@ -209,19 +266,9 @@ export default function SiteHeader() {
             {supportOpen ? (
               <div
                 role="menu"
-                className="absolute right-0 mt-2 w-44 overflow-hidden rounded-xl border border-black/10 bg-sky-50/95 shadow-lg backdrop-blur"
+                className="absolute right-0 mt-2 w-52 overflow-hidden rounded-xl border border-black/10 bg-sky-50/95 shadow-lg backdrop-blur"
               >
-                {supportLinks.map((it) => (
-                  <Link
-                    key={it.href}
-                    href={it.href}
-                    role="menuitem"
-                    onClick={() => setSupportOpen(false)}
-                    className="block px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:bg-black/5 hover:text-black"
-                  >
-                    {it.label}
-                  </Link>
-                ))}
+                {supportLinks.map((item) => renderSupportItem(item))}
               </div>
             ) : null}
           </div>
@@ -234,19 +281,27 @@ export default function SiteHeader() {
             </span>
           ) : null}
 
-          <Link
-            href="/signin"
-            className="hidden text-[11px] font-semibold tracking-[0.18em] text-black/70 hover:text-black md:inline"
-          >
-            Sign In
-          </Link>
+          <SignedOut>
+            <Link
+              href="/signin"
+              className="hidden text-[11px] font-semibold tracking-[0.18em] text-black/70 hover:text-black md:inline"
+            >
+              Sign In
+            </Link>
 
-          <Link
-            href="/join"
-            className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
-          >
-            JOIN FREE
-          </Link>
+            <Link
+              href="/signin"
+              className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
+            >
+              JOIN FREE
+            </Link>
+          </SignedOut>
+
+          <SignedIn>
+            <div className="hidden md:flex md:items-center md:gap-2">
+              <UserButton />
+            </div>
+          </SignedIn>
 
           <button
             type="button"
@@ -283,6 +338,25 @@ export default function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
+
+              <SignedIn>
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={closeAllMenus}
+                    className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
+                  >
+                    DASHBOARD
+                  </Link>
+                  <Link
+                    href="/account"
+                    onClick={closeAllMenus}
+                    className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
+                  >
+                    ACCOUNT
+                  </Link>
+                </>
+              </SignedIn>
 
               <button
                 type="button"
@@ -323,24 +397,34 @@ export default function SiteHeader() {
                 SUPPORT
               </div>
 
-              {supportLinks.map((it) => (
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  onClick={closeAllMenus}
-                  className="py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:text-black"
-                >
-                  {it.label}
-                </Link>
-              ))}
+              {supportLinks.map((item) => renderSupportItem(item, true))}
 
-              <Link
-                href="/signin"
-                onClick={closeAllMenus}
-                className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
-              >
-                Sign In
-              </Link>
+              <SignedOut>
+                <Link
+                  href="/signin"
+                  onClick={closeAllMenus}
+                  className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
+                >
+                  Sign In
+                </Link>
+
+                <Link
+                  href="/signin"
+                  onClick={closeAllMenus}
+                  className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
+                >
+                  Join Free
+                </Link>
+              </SignedOut>
+
+              <SignedIn>
+                <div className="flex items-center gap-3 py-2">
+                  <span className="text-[11px] font-semibold tracking-[0.18em] text-black/80">
+                    Account
+                  </span>
+                  <UserButton />
+                </div>
+              </SignedIn>
 
               {shareFeedback ? (
                 <div className="pt-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-black/60">
