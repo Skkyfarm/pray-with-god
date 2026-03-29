@@ -41,11 +41,24 @@ type PrayerResponse = {
   prayer?: string;
   error?: string;
   safetyNotice?: PrayerSafetyNotice;
+  generatedPrayerId?: string;
+  generated_prayer_id?: string;
+  generatedPrayer?: { id?: string | null } | null;
+  generated_prayer?: { id?: string | null } | null;
+};
+
+type SavePrayerResponse = {
+  ok?: boolean;
+  error?: string;
+  details?: string;
+  alreadySaved?: boolean;
+  savedPrayerId?: string;
 };
 
 type PrayMode = 'free' | 'classic';
 type LauncherView = 'quick' | 'free' | 'classic';
 type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
+type SaveFeedbackTone = 'neutral' | 'success' | 'error';
 
 type PrayerRequestPayload = {
   tradition: Tradition;
@@ -334,6 +347,17 @@ function getLocalTimeContext(): {
   }
 }
 
+function getGeneratedPrayerIdFromResponse(data: PrayerResponse) {
+  const candidate =
+    data.generatedPrayerId ||
+    data.generated_prayer_id ||
+    data.generatedPrayer?.id ||
+    data.generated_prayer?.id ||
+    '';
+
+  return typeof candidate === 'string' ? candidate.trim() : '';
+}
+
 function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
   const isCrisis = notice.level === 'crisis';
 
@@ -422,16 +446,27 @@ function PrayPageInner() {
 
   const [isReflecting, setIsReflecting] = useState(false);
   const [prayer, setPrayer] = useState('');
+  const [generatedPrayerId, setGeneratedPrayerId] = useState('');
   const [error, setError] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [shareFeedback, setShareFeedback] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [isSavingPrayer, setIsSavingPrayer] = useState(false);
+  const [saveFeedback, setSaveFeedback] = useState('');
+  const [saveFeedbackTone, setSaveFeedbackTone] = useState<SaveFeedbackTone>('neutral');
   const [safetyNotice, setSafetyNotice] = useState<PrayerSafetyNotice | null>(null);
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
   const [volume, setVolume] = useState(0.2);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  function clearSaveState() {
+    setGeneratedPrayerId('');
+    setIsSavingPrayer(false);
+    setSaveFeedback('');
+    setSaveFeedbackTone('neutral');
+  }
 
   useEffect(() => {
     const savedName = localStorage.getItem('pwg_user_name');
@@ -476,6 +511,7 @@ function PrayPageInner() {
     setIsReflecting(false);
     setShowSaveModal(false);
     setSafetyNotice(null);
+    clearSaveState();
 
     const mappedTradition = mapPathToTradition(pathParam);
     const mappedCatalogKey = normalizeCatalogKey(pathParam);
@@ -733,6 +769,7 @@ function PrayPageInner() {
     setHasSubmitted(false);
     setShowSaveModal(false);
     setSafetyNotice(null);
+    clearSaveState();
 
     setMode('free');
     setLauncherView('free');
@@ -754,6 +791,7 @@ function PrayPageInner() {
     setHasSubmitted(false);
     setShowSaveModal(false);
     setSafetyNotice(null);
+    clearSaveState();
 
     setMode('classic');
     setLauncherView('classic');
@@ -778,6 +816,7 @@ function PrayPageInner() {
     setPrayer('');
     setShowSaveModal(false);
     setSafetyNotice(null);
+    clearSaveState();
 
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -802,12 +841,14 @@ function PrayPageInner() {
 
       setSafetyNotice(data.safetyNotice || null);
       setPrayer(data.prayer || '');
+      setGeneratedPrayerId(getGeneratedPrayerIdFromResponse(data));
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
         setError('');
         return;
       }
 
+      clearSaveState();
       setError(
         err instanceof Error
           ? err.message
@@ -909,6 +950,7 @@ function PrayPageInner() {
     setHasSubmitted(false);
     setShowSaveModal(false);
     setSafetyNotice(null);
+    clearSaveState();
 
     if (mode === 'classic') {
       setIntention('');
@@ -924,13 +966,10 @@ function PrayPageInner() {
   }
 
   function handleAddIntentions() {
-    stopSpeaking();
-    stopGenerating();
-    setPrayer('');
-    setError('');
-    setHasSubmitted(false);
-    setShowSaveModal(false);
-    setSafetyNotice(null);
+    openCustomizePrayer();
+    setTimeout(() => {
+      scrollToCustomPrayerForm();
+    }, 100);
   }
 
   function handleReadAloud() {
@@ -964,6 +1003,62 @@ function PrayPageInner() {
 
     setIsSpeaking(true);
     synth.speak(utterance);
+  }
+
+  async function handleSavePrayer() {
+    if (isSavingPrayer) return;
+
+    setShowSaveModal(true);
+    setSaveFeedback('');
+    setSaveFeedbackTone('neutral');
+
+    if (!prayer.trim()) {
+      setSaveFeedbackTone('error');
+      setSaveFeedback('No prayer is available to save yet.');
+      return;
+    }
+
+    if (!generatedPrayerId) {
+      setSaveFeedbackTone('error');
+      setSaveFeedback(
+        'This prayer does not have a generatedPrayerId yet. Please generate it again once. If this message still appears, send me app/api/pray/route.ts next and I will wire the returned id.'
+      );
+      return;
+    }
+
+    try {
+      setIsSavingPrayer(true);
+
+      const res = await fetch('/api/prayers/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ generatedPrayerId }),
+      });
+
+      const data = (await res.json()) as SavePrayerResponse;
+
+      if (!res.ok) {
+        throw new Error(
+          data?.error ||
+            data?.details ||
+            'Could not save prayer.'
+        );
+      }
+
+      setSaveFeedbackTone('success');
+      setSaveFeedback(
+        data.alreadySaved
+          ? 'This prayer was already saved to your dashboard.'
+          : 'Prayer saved to your dashboard.'
+      );
+    } catch (err) {
+      setSaveFeedbackTone('error');
+      setSaveFeedback(
+        err instanceof Error ? err.message : 'Could not save prayer.'
+      );
+    } finally {
+      setIsSavingPrayer(false);
+    }
   }
 
   async function handleSharePrayer() {
@@ -1229,6 +1324,18 @@ function PrayPageInner() {
         : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
     }`;
 
+  const saveFeedbackClass =
+    saveFeedbackTone === 'success'
+      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+      : saveFeedbackTone === 'error'
+        ? 'border-red-200 bg-red-50 text-red-700'
+        : 'border-sky-200 bg-sky-50 text-zinc-900';
+
+  const saveSummaryText = isSavingPrayer
+    ? 'Saving your prayer now...'
+    : saveFeedback ||
+      'This prayer can be saved to your dashboard along with the details below.';
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
@@ -1312,11 +1419,21 @@ function PrayPageInner() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     type="button"
-                    onClick={() => setShowSaveModal(true)}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
+                    onClick={handleSavePrayer}
+                    disabled={isSavingPrayer}
+                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    <Bookmark className="h-4 w-4" />
-                    Save
+                    {isSavingPrayer ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark className="h-4 w-4" />
+                        Save
+                      </>
+                    )}
                   </button>
                 </div>
 
@@ -1941,20 +2058,12 @@ function PrayPageInner() {
           >
             <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5 sm:px-8">
               <div>
-                <Link
-                  href="/join"
-                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                >
-                  Become a Member!
-                </Link>
-
-                <h2 className="mt-5 text-2xl font-semibold tracking-tight text-zinc-900">
+                <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">
                   Save this prayer
                 </h2>
 
-                <p className="mt-2 text-sm leading-6 text-black">
-                  Member save tools are coming soon. When enabled, this prayer can be saved
-                  along with the details below.
+                <p className={`mt-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${saveFeedbackClass}`}>
+                  {saveSummaryText}
                 </p>
               </div>
 
@@ -1974,7 +2083,7 @@ function PrayPageInner() {
                 {saveChecklistItems.map((item) => (
                   <label
                     key={item.label}
-                    className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 opacity-60"
+                    className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3"
                   >
                     <input
                       type="checkbox"
@@ -1994,9 +2103,47 @@ function PrayPageInner() {
                   </label>
                 ))}
               </div>
+
+              {generatedPrayerId ? (
+                <div className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-zinc-900">
+                  Generated prayer id ready for saving.
+                </div>
+              ) : (
+                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  No generated prayer id is currently available on this page.
+                </div>
+              )}
             </div>
 
-            <div className="border-t border-zinc-100 px-6 py-4 sm:px-8">
+            <div className="flex flex-wrap items-center gap-3 border-t border-zinc-100 px-6 py-4 sm:px-8">
+              {saveFeedbackTone === 'success' ? (
+                <Link
+                  href="/dashboard/saved"
+                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                >
+                  View Saved Prayers
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSavePrayer}
+                  disabled={isSavingPrayer || !prayer.trim()}
+                  className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSavingPrayer ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Bookmark className="h-4 w-4" />
+                      Save Now
+                    </>
+                  )}
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => setShowSaveModal(false)}

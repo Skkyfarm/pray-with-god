@@ -1,164 +1,149 @@
 // /app/api/prayers/save/route.ts
-
-import { NextResponse } from 'next/server';
-import { getMemberStatus } from '@/lib/member/getMemberStatus';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type SavePrayerBody = {
-  tradition?: string;
-  prayerMode?: 'quick' | 'custom' | 'type';
-  prayerTypeSlug?: string | null;
-  prayerTypeLabel?: string | null;
-  feelings?: string[];
-  userInput?: string | null;
-  generatedText?: string;
-  userTitle?: string | null;
+  generatedPrayerId?: string;
 };
 
-async function savePrayer(body: SavePrayerBody) {
-  const tradition = body.tradition?.trim();
-  const prayerMode = body.prayerMode;
-  const prayerTypeSlug = body.prayerTypeSlug?.trim() || null;
-  const prayerTypeLabel = body.prayerTypeLabel?.trim() || null;
-  const userInput = body.userInput?.trim() || null;
-  const generatedText = body.generatedText?.trim();
-  const userTitle = body.userTitle?.trim() || null;
+async function getOrCreateProfileId(clerkUserId: string) {
+  const supabaseAdmin = createSupabaseAdminClient();
 
-  const feelings = Array.isArray(body.feelings)
-    ? body.feelings
-        .filter((value): value is string => typeof value === 'string')
-        .map((value) => value.trim())
-        .filter(Boolean)
-    : [];
+  const { data: existingProfile, error: existingProfileError } =
+    await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("clerk_user_id", clerkUserId)
+      .maybeSingle();
 
-  if (!tradition) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Missing tradition.',
-      },
-      { status: 400 }
-    );
+  if (existingProfileError) {
+    throw new Error(`Could not load profile: ${existingProfileError.message}`);
   }
 
-  if (!prayerMode || !['quick', 'custom', 'type'].includes(prayerMode)) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Missing or invalid prayerMode.',
-      },
-      { status: 400 }
-    );
+  if (existingProfile?.id) {
+    return existingProfile.id as string;
   }
 
-  if (!generatedText) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Missing generatedText.',
-      },
-      { status: 400 }
-    );
+  const { data: insertedProfile, error: insertedProfileError } =
+    await supabaseAdmin
+      .from("profiles")
+      .insert({
+        clerk_user_id: clerkUserId,
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+  if (insertedProfileError) {
+    throw new Error(`Could not create profile: ${insertedProfileError.message}`);
   }
 
-  const { profile, memberStatus } = await getMemberStatus();
-
-  if (!memberStatus.is_member) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Membership required to save prayers.',
-      },
-      { status: 403 }
-    );
-  }
-
-  const supabase = createSupabaseAdminClient();
-  // /app/api/prayers/save/route.ts
-
-  const { data: generatedPrayer, error: generatedPrayerError } = await supabase
-    .from('generated_prayers')
-    .insert({
-      profile_id: profile.id,
-      tradition,
-      prayer_mode: prayerMode,
-      prayer_type_slug: prayerTypeSlug,
-      prayer_type_label: prayerTypeLabel,
-      feelings,
-      user_input: userInput,
-      generated_text: generatedText,
-    })
-    .select('*')
-    .single();
-
-  if (generatedPrayerError) {
-    throw new Error(
-      `Failed to save generated prayer: ${generatedPrayerError.message}`
-    );
-  }
-
-  const { data: savedPrayer, error: savedPrayerError } = await supabase
-    .from('saved_prayers')
-    .insert({
-      profile_id: profile.id,
-      generated_prayer_id: generatedPrayer.id,
-      user_title: userTitle,
-    })
-    .select('*')
-    .single();
-
-  if (savedPrayerError) {
-    throw new Error(`Failed to save prayer record: ${savedPrayerError.message}`);
-  }
-
-  return NextResponse.json({
-    ok: true,
-    message: 'Prayer saved successfully.',
-    generatedPrayer,
-    savedPrayer,
-  });
+  return insertedProfile.id as string;
 }
-// /app/api/prayers/save/route.ts
 
-export async function GET() {
+export async function POST(req: Request) {
   try {
-    return await savePrayer({
-      tradition: 'protestant',
-      prayerMode: 'quick',
-      prayerTypeSlug: null,
-      prayerTypeLabel: null,
-      feelings: ['Gratitude', 'Hope'],
-      userInput: 'Please help me trust God today.',
-      generatedText:
-        'Lord, thank You for this day. Help me trust You, walk in peace, and remember Your care.',
-      userTitle: 'Trust God Today',
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const body = (await req.json()) as SavePrayerBody;
+    const generatedPrayerId = String(body?.generatedPrayerId || "").trim();
+
+    if (!generatedPrayerId) {
+      return NextResponse.json(
+        { error: "Missing generatedPrayerId." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseAdmin = createSupabaseAdminClient();
+    const profileId = await getOrCreateProfileId(userId);
+
+    const { data: generatedPrayer, error: generatedPrayerError } =
+      await supabaseAdmin
+        .from("generated_prayers")
+        .select("id, profile_id")
+        .eq("id", generatedPrayerId)
+        .eq("profile_id", profileId)
+        .maybeSingle();
+
+    if (generatedPrayerError) {
+      return NextResponse.json(
+        {
+          error: "Could not verify generated prayer.",
+          details: generatedPrayerError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!generatedPrayer) {
+      return NextResponse.json(
+        { error: "Prayer not found for this member." },
+        { status: 404 }
+      );
+    }
+
+    const { data: existingSavedPrayer, error: existingSavedPrayerError } =
+      await supabaseAdmin
+        .from("saved_prayers")
+        .select("id, generated_prayer_id")
+        .eq("profile_id", profileId)
+        .eq("generated_prayer_id", generatedPrayerId)
+        .maybeSingle();
+
+    if (existingSavedPrayerError) {
+      return NextResponse.json(
+        {
+          error: "Could not check existing saved prayer.",
+          details: existingSavedPrayerError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (existingSavedPrayer?.id) {
+      return NextResponse.json({
+        ok: true,
+        alreadySaved: true,
+        savedPrayerId: existingSavedPrayer.id,
+      });
+    }
+
+    const { data: insertedSavedPrayer, error: insertedSavedPrayerError } =
+      await supabaseAdmin
+        .from("saved_prayers")
+        .insert({
+          profile_id: profileId,
+          generated_prayer_id: generatedPrayerId,
+        })
+        .select("id")
+        .single();
+
+    if (insertedSavedPrayerError) {
+      return NextResponse.json(
+        {
+          error: "Could not save prayer.",
+          details: insertedSavedPrayerError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      alreadySaved: false,
+      savedPrayerId: insertedSavedPrayer.id,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Unknown error';
-
     return NextResponse.json(
       {
-        ok: false,
-        error: message,
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const body = (await request.json()) as SavePrayerBody;
-    return await savePrayer(body);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Unknown error';
-
-    return NextResponse.json(
-      {
-        ok: false,
-        error: message,
+        error: "Something went wrong while saving the prayer.",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

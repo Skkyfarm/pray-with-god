@@ -1,13 +1,15 @@
-// app/api/pray/route.ts
+// /app/api/pray/route.ts
 
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { auth } from "@clerk/nextjs/server";
 import {
   buildStructureInstruction,
   postProcessPrayer,
 } from "@/lib/prayerStructure";
 import type { Tradition } from "@/lib/avatars";
 import { detectPrayerSafety } from "@/lib/safety";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -413,8 +415,102 @@ EMOTIONAL TONE:
   return lines.join("\n");
 }
 
+function getStoredPrayerMode(mode: PrayMode) {
+  return mode === "free" ? "quick" : "classic";
+}
+
+async function getOrCreateProfileId(clerkUserId: string) {
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const { data: existingProfile, error: existingProfileError } =
+    await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("clerk_user_id", clerkUserId)
+      .maybeSingle();
+
+  if (existingProfileError) {
+    throw new Error(`Could not load profile: ${existingProfileError.message}`);
+  }
+
+  if (existingProfile?.id) {
+    return existingProfile.id;
+  }
+
+  const { data: insertedProfile, error: insertedProfileError } =
+    await supabaseAdmin
+      .from("profiles")
+      .insert({
+        clerk_user_id: clerkUserId,
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+  if (insertedProfileError) {
+    throw new Error(`Could not create profile: ${insertedProfileError.message}`);
+  }
+
+  return insertedProfile.id;
+}
+
+async function saveGeneratedPrayer(params: {
+  clerkUserId: string;
+  tradition: Tradition;
+  mode: PrayMode;
+  feelings: string[];
+  input: string;
+  prayerType: string;
+  selectedPrayerLabel: string;
+  intention: string;
+  generatedText: string;
+}) {
+  const {
+    clerkUserId,
+    tradition,
+    mode,
+    feelings,
+    input,
+    prayerType,
+    selectedPrayerLabel,
+    intention,
+    generatedText,
+  } = params;
+
+  const profileId = await getOrCreateProfileId(clerkUserId);
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const storedPrayerMode = getStoredPrayerMode(mode);
+  const prayerTypeLabel =
+    mode === "free" ? prayerType || null : selectedPrayerLabel || null;
+
+  const userInput = mode === "free" ? input || null : intention || null;
+
+  const { data, error } = await supabaseAdmin
+    .from("generated_prayers")
+    .insert({
+      profile_id: profileId,
+      tradition: String(tradition).toLowerCase(),
+      prayer_mode: storedPrayerMode,
+      prayer_type_slug: null,
+      prayer_type_label: prayerTypeLabel,
+      feelings: mode === "free" ? feelings : [],
+      user_input: userInput,
+      generated_text: generatedText,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    throw new Error(`Could not save generated prayer: ${error.message}`);
+  }
+
+  return data?.id ?? null;
+}
+
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
     const body = (await req.json()) as PrayBody;
 
     const timezone =
@@ -656,9 +752,36 @@ Do not mention rules or instructions.
 
     text = stripGenericOpeners(text);
 
+    let historySaved = false;
+    let generatedPrayerId: string | null = null;
+
+    if (userId) {
+      try {
+        generatedPrayerId = await saveGeneratedPrayer({
+          clerkUserId: userId,
+          tradition,
+          mode,
+          feelings,
+          input,
+          prayerType,
+          selectedPrayerLabel,
+          intention,
+          generatedText: text,
+        });
+        historySaved = Boolean(generatedPrayerId);
+      } catch (saveError) {
+        console.error("Could not save generated prayer:", saveError);
+      }
+    }
+
     return NextResponse.json({
       prayer: text,
       safetyNotice: safety.safetyNotice,
+      historySaved,
+      generatedPrayerId,
+      generated_prayer_id: generatedPrayerId,
+      generatedPrayer: generatedPrayerId ? { id: generatedPrayerId } : null,
+      generated_prayer: generatedPrayerId ? { id: generatedPrayerId } : null,
     });
   } catch (err: any) {
     console.error("API /api/pray error:", err);
