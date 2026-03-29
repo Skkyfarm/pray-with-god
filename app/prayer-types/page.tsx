@@ -91,17 +91,8 @@ function getTypeCount(key: TraditionKey) {
 
 export default function PrayerTypesPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-amber-100 via-sky-50 to-white text-slate-900">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.24),_transparent_32%),radial-gradient(circle_at_18%_20%,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_82%_22%,_rgba(253,224,71,0.12),_transparent_22%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_85%)] bg-[linear-gradient(to_right,rgba(255,255,255,0.55)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.55)_1px,transparent_1px)] bg-[size:38px_38px]"
-      />
-
-      <section className="relative mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="min-h-screen text-slate-900">
+      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             Prayer Types
