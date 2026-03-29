@@ -12,8 +12,66 @@ type PageProps = {
   };
 };
 
-function getPrayerType(slug: string) {
-  return BUDDHIST_PRAYER_TYPES.find((item) => item.slug === slug);
+type GenericPrayerType = {
+  slug: string;
+} & Record<string, unknown>;
+
+function getPrayerType(slug: string): GenericPrayerType | undefined {
+  return BUDDHIST_PRAYER_TYPES.find(
+    (item) => item.slug === slug
+  ) as GenericPrayerType | undefined;
+}
+
+function pickText(
+  item: GenericPrayerType,
+  keys: string[],
+  fallback = ""
+): string {
+  for (const key of keys) {
+    const value = item[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+  return fallback;
+}
+
+function getPrayerTypeContent(item: GenericPrayerType) {
+  const title = pickText(item, ["title", "label", "name"], "Buddhist Prayer");
+  const description = pickText(
+    item,
+    ["description", "summary", "intro", "excerpt"],
+    "Explore this Buddhist prayer type on PrayWithGod.ai."
+  );
+  const longDescription = pickText(
+    item,
+    ["longDescription", "long_description", "details", "body", "content"],
+    description
+  );
+  const whenToUse = pickText(
+    item,
+    ["whenToUse", "when_to_use", "usage", "when"],
+    "This prayer type may be used during moments of reflection, devotion, gratitude, guidance, remembrance, or spiritual focus."
+  );
+  const focus = pickText(
+    item,
+    ["focus", "emphasis", "theme"],
+    "It often emphasizes mindfulness, compassion, reverence, wisdom, intention, and inner steadiness."
+  );
+  const howToPractice = pickText(
+    item,
+    ["howToPractice", "how_to_practice", "practice", "approach"],
+    "Begin quietly, settle your attention, bring your intention to mind, and continue with sincerity, humility, and care."
+  );
+
+  return {
+    title,
+    description,
+    longDescription,
+    whenToUse,
+    focus,
+    howToPractice,
+  };
 }
 
 export function generateStaticParams() {
@@ -33,9 +91,11 @@ export function generateMetadata({ params }: PageProps): Metadata {
     };
   }
 
+  const content = getPrayerTypeContent(prayerType);
+
   return {
-    title: `${prayerType.label} | Buddhist Prayer Types | PrayWithGod.ai`,
-    description: prayerType.description,
+    title: `${content.title} | Buddhist Prayer Types | PrayWithGod.ai`,
+    description: content.description,
     alternates: {
       canonical: `/prayer-types/buddhist/${prayerType.slug}`,
     },
@@ -48,6 +108,8 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
   if (!prayerType) {
     notFound();
   }
+
+  const content = getPrayerTypeContent(prayerType);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50">
@@ -67,10 +129,10 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
               Buddhist Prayer Type
             </p>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              {prayerType.label}
+              {content.title}
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
-              {prayerType.description}
+              {content.description}
             </p>
           </div>
 
@@ -80,7 +142,7 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
                 What this prayer type is
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-700">
-                {prayerType.longDescription}
+                {content.longDescription}
               </p>
             </section>
 
@@ -90,7 +152,7 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
                   When people use this prayer
                 </h2>
                 <p className="mt-3 text-base leading-7 text-slate-700">
-                  {prayerType.whenToUse}
+                  {content.whenToUse}
                 </p>
               </div>
 
@@ -99,7 +161,7 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
                   What it often emphasizes
                 </h2>
                 <p className="mt-3 text-base leading-7 text-slate-700">
-                  {prayerType.focus}
+                  {content.focus}
                 </p>
               </div>
             </section>
@@ -109,7 +171,7 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
                 A simple way to approach it
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-700">
-                {prayerType.howToPractice}
+                {content.howToPractice}
               </p>
             </section>
 
