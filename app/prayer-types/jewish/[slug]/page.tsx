@@ -1,13 +1,13 @@
 // app/prayer-types/jewish/[slug]/page.tsx
 
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   JEWISH_PRAYER_TYPES,
   getJewishPrayerTypeBySlug,
-} from '@/lib/jewishPrayerTypes';
-import { getPrayerTypePrayHref } from '@/lib/prayerTypeLinks';
+} from "@/lib/jewishPrayerTypes";
+import { getPrayerTypePrayHref } from "@/lib/prayerTypeLinks";
 
 type PageProps = {
   params: {
@@ -26,7 +26,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
   if (!item) {
     return {
-      title: 'Jewish Prayer Types | PrayWithGod.ai',
+      title: "Jewish Prayer Types | PrayWithGod.ai",
     };
   }
 
@@ -47,8 +47,8 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="relative min-h-screen bg-transparent text-slate-900">
+      <section className="relative mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             Jewish Prayer Types
@@ -65,7 +65,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
-            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 What is this Jewish prayer form?
               </h2>
@@ -79,7 +79,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 How this prayer form functions in Jewish prayer life
               </h2>
@@ -98,7 +98,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 When this prayer form may be encountered
               </h2>
@@ -112,7 +112,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </ul>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Example situations</h2>
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
@@ -122,7 +122,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
+            <section className="rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
@@ -141,7 +141,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href={getPrayerTypePrayHref('jewish', item.title)}
+                  href={getPrayerTypePrayHref("jewish", item.title)}
                   className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
                 >
                   Go to Jewish Prayer Experience
@@ -156,7 +156,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
 
               <div className="mt-6 space-y-6">
@@ -173,7 +173,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
           </div>
 
           <aside className="space-y-8">
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Key themes</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
@@ -185,7 +185,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </ul>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
@@ -202,7 +202,7 @@ export default function JewishPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">

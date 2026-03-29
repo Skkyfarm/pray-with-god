@@ -47,8 +47,8 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="relative min-h-screen bg-transparent text-slate-900">
+      <section className="relative mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             Hindu Prayer Types
@@ -65,7 +65,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
           <div className="space-y-8">
-            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 What is this Hindu prayer type?
               </h2>
@@ -79,7 +79,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 How this prayer type functions in Hindu devotional life
               </h2>
@@ -101,7 +101,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </p>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
                 When this prayer type may be helpful
               </h2>
@@ -115,7 +115,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </ul>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Example situations</h2>
 
               <div className="mt-4 space-y-4 text-base leading-7 text-slate-700">
@@ -125,7 +125,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
+            <section className="rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">How PrayWithGod.ai can help</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
@@ -160,7 +160,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
 
               <div className="mt-6 space-y-6">
@@ -177,7 +177,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
           </div>
 
           <aside className="space-y-8">
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Key themes</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
@@ -189,7 +189,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </ul>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Related direction</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
@@ -206,7 +206,7 @@ export default function HinduPrayerTypeDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">A simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">

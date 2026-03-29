@@ -1,23 +1,23 @@
 // app/prayer-types/jewish/page.tsx
 
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { getPrayerTypePrayHref } from '@/lib/prayerTypeLinks';
-import { JEWISH_PRAYER_TYPES } from '@/lib/jewishPrayerTypes';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getPrayerTypePrayHref } from "@/lib/prayerTypeLinks";
+import { JEWISH_PRAYER_TYPES } from "@/lib/jewishPrayerTypes";
 
 export const metadata: Metadata = {
-  title: 'Jewish Prayer Types | PrayWithGod.ai',
+  title: "Jewish Prayer Types | PrayWithGod.ai",
   description:
-    'Explore Jewish prayer types and liturgical forms including Shacharit, Mincha, Maariv, Hallel, Tehillim, Birkat Hamazon, Tefilat Haderech, Kabbalat Shabbat, Mussaf, Tashlich, Selichot, and Vidui.',
+    "Explore Jewish prayer types and liturgical forms including Shacharit, Mincha, Maariv, Hallel, Tehillim, Birkat Hamazon, Tefilat Haderech, Kabbalat Shabbat, Mussaf, Tashlich, Selichot, and Vidui.",
   alternates: {
-    canonical: '/prayer-types/jewish',
+    canonical: "/prayer-types/jewish",
   },
 };
 
 export default function JewishPrayerTypesPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="relative min-h-screen bg-transparent text-slate-900">
+      <section className="relative mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             PrayWithGod.ai
@@ -35,7 +35,7 @@ export default function JewishPrayerTypesPage() {
           </p>
         </div>
 
-        <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
+        <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
           <h2 className="text-2xl font-semibold">What you’ll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
@@ -57,7 +57,7 @@ export default function JewishPrayerTypesPage() {
             <Link
               key={item.slug}
               href={`/prayer-types/jewish/${item.slug}`}
-              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
             >
               <h2 className="text-2xl font-semibold">{item.title}</h2>
 
@@ -74,7 +74,7 @@ export default function JewishPrayerTypesPage() {
           ))}
         </div>
 
-        <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
+        <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm backdrop-blur-sm">
           <h2 className="text-2xl font-semibold">
             Use PrayWithGod.ai as a prayer companion
           </h2>
@@ -88,7 +88,7 @@ export default function JewishPrayerTypesPage() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href={getPrayerTypePrayHref('jewish', 'Shacharit')}
+              href={getPrayerTypePrayHref("jewish", "Shacharit")}
               className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
             >
               Go to Jewish Prayer Experience

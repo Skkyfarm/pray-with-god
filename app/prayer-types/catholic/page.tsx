@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 
 export default function CatholicPrayerTypesPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="relative min-h-screen bg-transparent text-slate-900">
+      <section className="relative mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             PrayWithGod.ai
@@ -36,7 +36,7 @@ export default function CatholicPrayerTypesPage() {
           </p>
         </div>
 
-        <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
+        <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
           <h2 className="text-2xl font-semibold">What you’ll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
@@ -60,7 +60,7 @@ export default function CatholicPrayerTypesPage() {
             <Link
               key={item.slug}
               href={`/prayer-types/catholic/${item.slug}`}
-              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
             >
               <h2 className="text-2xl font-semibold">{item.title}</h2>
 
@@ -77,7 +77,7 @@ export default function CatholicPrayerTypesPage() {
           ))}
         </div>
 
-        <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
+        <div className="mx-auto mt-16 max-w-4xl rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm backdrop-blur-sm">
           <h2 className="text-2xl font-semibold">
             Use PrayWithGod.ai as a Catholic prayer companion
           </h2>
