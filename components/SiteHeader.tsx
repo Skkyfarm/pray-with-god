@@ -1,4 +1,4 @@
-// /components/SiteHeader.tsx
+// components/SiteHeader.tsx
 "use client";
 
 import Link from "next/link";
@@ -293,7 +293,7 @@ export default function SiteHeader() {
               href="/signin"
               className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
             >
-              JOIN FREE
+              JOIN
             </Link>
           </SignedOut>
 
@@ -413,7 +413,7 @@ export default function SiteHeader() {
                   onClick={closeAllMenus}
                   className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                 >
-                  Join Free
+                  Join
                 </Link>
               </SignedOut>
 

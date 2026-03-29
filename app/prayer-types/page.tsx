@@ -7,7 +7,7 @@ import { getPrayerOptions, type TraditionKey } from "@/lib/prayerCatalog";
 export const metadata: Metadata = {
   title: "Prayer Types | PrayWithGod.ai",
   description:
-    "Explore live prayer-type pages across Protestant, Catholic, Jewish, Muslim, Hindu, and Buddhist traditions on PrayWithGod.ai.",
+    "Explore prayer types across Protestant, Catholic, Jewish, Muslim, Hindu, and Buddhist traditions, with guidance for visitors seeking a non-denominational Christian starting point.",
   alternates: {
     canonical: "/prayer-types",
   },
@@ -91,8 +91,17 @@ function getTypeCount(key: TraditionKey) {
 
 export default function PrayerTypesPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50 text-slate-900">
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-amber-100 via-sky-50 to-white text-slate-900">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.24),_transparent_32%),radial-gradient(circle_at_18%_20%,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_82%_22%,_rgba(253,224,71,0.12),_transparent_22%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_85%)] bg-[linear-gradient(to_right,rgba(255,255,255,0.55)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.55)_1px,transparent_1px)] bg-[size:38px_38px]"
+      />
+
+      <section className="relative mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             Prayer Types
@@ -112,22 +121,20 @@ export default function PrayerTypesPage() {
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.3fr_0.9fr]">
           <div className="space-y-8">
-            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">
-                Why this section matters
-              </h2>
+            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold">What you’ll find here</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                PrayWithGod.ai is strongest when visitors can do more than just
-                generate a prayer. They should also be able to understand what
-                kind of prayer they are asking for and why that direction fits
-                their moment.
+                This page helps you explore different ways people pray across
+                traditions. You can learn the tone and purpose of a prayer path
+                before you begin, or you can jump directly into a tradition’s
+                prayer experience.
               </p>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                These tradition pages now let people browse live prayer-type
-                lanes across multiple faith traditions instead of running into
-                placeholders or dead ends.
+                Some visitors arrive knowing exactly where they belong. Others
+                are still finding their footing. This page is meant to make that
+                first step clearer, calmer, and more intentional.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -170,10 +177,43 @@ export default function PrayerTypesPage() {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">
-                Browse traditions
+                Non-Denominational Christians
               </h2>
+
+              <p className="mt-4 text-base leading-7 text-slate-700">
+                Many non-denominational Christians pray through familiar
+                Christian patterns such as thanksgiving, guidance,
+                intercession, confession, praise, and daily surrender.
+              </p>
+
+              <p className="mt-4 text-base leading-7 text-slate-700">
+                On PrayWithGod.ai, that spiritual style is closest to the
+                broader Christian prayer paths currently found in the Protestant
+                hub. Dedicated non-denominational prayer-type lanes can grow
+                from here over time, but visitors in that space already have a
+                meaningful place to begin.
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/prayer-types/protestant"
+                  className="rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-800"
+                >
+                  Explore Christian Prayer Types
+                </Link>
+                <Link
+                  href="/pray?path=protestant"
+                  className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
+                >
+                  Begin a Christian Prayer
+                </Link>
+              </div>
+            </section>
+
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold">Browse traditions</h2>
 
               <div className="mt-6 grid gap-5 md:grid-cols-2">
                 {TRADITIONS.map((tradition) => {
@@ -224,47 +264,42 @@ export default function PrayerTypesPage() {
           </div>
 
           <aside className="space-y-8">
-            <section className="rounded-3xl border border-amber-200 bg-amber-50/80 p-8 shadow-sm">
-              <h2 className="text-2xl font-semibold">What changed</h2>
-
-              <p className="mt-4 text-base leading-7 text-slate-700">
-                Muslim, Hindu, and Buddhist prayer-type sections are now live
-                and should no longer be described here as “more content coming
-                soon.”
-              </p>
-
-              <p className="mt-4 text-base leading-7 text-slate-700">
-                This page should now behave like a real navigation hub rather
-                than a partial placeholder.
-              </p>
-            </section>
-
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-amber-200 bg-amber-50/85 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">How to use this page</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Browse a tradition first if you want to learn the prayer lanes
-                  before praying.
+                <li className="rounded-2xl bg-white/70 px-4 py-3">
+                  Browse a tradition first if you want to understand its prayer
+                  lanes before you begin.
                 </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
+                <li className="rounded-2xl bg-white/70 px-4 py-3">
                   Jump straight into a tradition’s prayer experience if you
-                  already know where you want to begin.
+                  already know where you want to start.
                 </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Use the type pages as an SEO-friendly definition layer and as
-                  a user-friendly orientation layer.
+                <li className="rounded-2xl bg-white/70 px-4 py-3">
+                  Use this page as a calm front door into the part of prayer
+                  life that best fits your moment.
                 </li>
               </ul>
             </section>
 
-            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold">A simple way to begin</h2>
+
+              <p className="mt-4 text-base leading-7 text-slate-700">
+                If you already know your tradition, start there. If you are
+                still deciding, read a few summaries and choose the lane that
+                feels spiritually familiar, respectful, and clear.
+              </p>
+            </section>
+
+            <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
               <h2 className="text-2xl font-semibold">Simple summary</h2>
 
               <p className="mt-4 text-base leading-7 text-slate-700">
-                This page is now the front door to live prayer-type hubs across
-                six traditions, with direct paths into both exploration and
-                prayer experience.
+                This page is the front door to prayer-type exploration across
+                multiple traditions, with a gentle starting point for visitors
+                who want orientation before they pray.
               </p>
             </section>
           </aside>
