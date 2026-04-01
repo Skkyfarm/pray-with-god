@@ -7,7 +7,15 @@ const isProtectedRoute = createRouteMatcher([
   "/api/prayers/save(.*)",
 ]);
 
+const isPublicRoute = createRouteMatcher([
+  "/api/webhooks/clerk(.*)",
+]);
+
 export default clerkMiddleware(async (auth, req) => {
+  if (isPublicRoute(req)) {
+    return;
+  }
+
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
