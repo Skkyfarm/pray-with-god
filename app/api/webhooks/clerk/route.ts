@@ -33,6 +33,7 @@ type ClerkUserCreatedData = {
   id: string;
   first_name?: string | null;
   last_name?: string | null;
+  username?: string | null;
   primary_email_address_id?: string | null;
   email_addresses?: ClerkEmailAddress[];
 };
@@ -52,6 +53,8 @@ export async function POST(req: NextRequest) {
 
     const clerkUserId = data.id;
     const firstName = data.first_name?.trim() || null;
+    const lastName = data.last_name?.trim() || null;
+    const username = data.username?.trim() || null;
 
     const primaryEmail =
       data.email_addresses?.find(
@@ -59,6 +62,9 @@ export async function POST(req: NextRequest) {
       )?.email_address ||
       data.email_addresses?.[0]?.email_address ||
       null;
+
+    const displayName =
+      [firstName, lastName].filter(Boolean).join(' ').trim() || username || null;
 
     if (!clerkUserId || !primaryEmail) {
       return Response.json(
@@ -70,34 +76,50 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data: profile, error: profileLookupError } = await supabaseAdmin
+    const { data: profile, error: profileUpsertError } = await supabaseAdmin
       .from('profiles')
-      .select('id, clerk_user_id, welcome_email_sent_at, welcome_email_status')
-      .eq('clerk_user_id', clerkUserId)
-      .maybeSingle();
+      .upsert(
+        {
+          clerk_user_id: clerkUserId,
+          email: primaryEmail,
+          display_name: displayName,
+          welcome_email_status: 'pending',
+          welcome_email_error: null,
+          updated_at: new Date().toISOString(),
+        },
+        {
+          onConflict: 'clerk_user_id',
+        }
+      )
+      .select('id, clerk_user_id, email, welcome_email_sent_at, welcome_email_status')
+      .single();
 
-    if (profileLookupError) {
-      console.error('Webhook profile lookup error:', profileLookupError);
+    if (profileUpsertError || !profile) {
+      console.error('Webhook profile upsert error:', profileUpsertError);
 
       return Response.json(
-        { ok: false, error: 'Failed to look up profile.' },
+        { ok: false, error: 'Failed to create or update profile.' },
         { status: 500 }
       );
     }
 
-    if (!profile) {
-      console.warn('No profile found for Clerk user yet:', {
-        clerkUserId,
-        primaryEmail,
-      });
+    const { error: memberStatusError } = await supabaseAdmin
+      .from('member_status')
+      .upsert(
+        {
+          profile_id: profile.id,
+        },
+        {
+          onConflict: 'profile_id',
+        }
+      );
+
+    if (memberStatusError) {
+      console.error('Webhook member_status upsert error:', memberStatusError);
 
       return Response.json(
-        {
-          ok: true,
-          skipped: true,
-          reason: 'Profile not found yet.',
-        },
-        { status: 200 }
+        { ok: false, error: 'Failed to ensure member status row.' },
+        { status: 500 }
       );
     }
 
@@ -107,26 +129,9 @@ export async function POST(req: NextRequest) {
           ok: true,
           skipped: true,
           reason: 'Welcome email already sent.',
+          profileId: profile.id,
         },
         { status: 200 }
-      );
-    }
-
-    const { error: markPendingError } = await supabaseAdmin
-      .from('profiles')
-      .update({
-        welcome_email_status: 'pending',
-        welcome_email_error: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', profile.id);
-
-    if (markPendingError) {
-      console.error('Webhook profile pending update error:', markPendingError);
-
-      return Response.json(
-        { ok: false, error: 'Failed to mark welcome email as pending.' },
-        { status: 500 }
       );
     }
 
@@ -139,6 +144,8 @@ export async function POST(req: NextRequest) {
       const { error: markSentError } = await supabaseAdmin
         .from('profiles')
         .update({
+          email: primaryEmail,
+          display_name: displayName,
           welcome_email_sent_at: new Date().toISOString(),
           welcome_email_status: 'sent',
           welcome_email_error: null,
@@ -189,6 +196,8 @@ export async function POST(req: NextRequest) {
       const { error: markFailedError } = await supabaseAdmin
         .from('profiles')
         .update({
+          email: primaryEmail,
+          display_name: displayName,
           welcome_email_status: 'failed',
           welcome_email_error: errorMessage,
           updated_at: new Date().toISOString(),
