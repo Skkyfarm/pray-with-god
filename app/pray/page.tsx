@@ -4,6 +4,7 @@
 
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import GuideAvatar from '@/components/GuideAvatar';
 import { AVATARS } from '@/lib/avatars';
@@ -59,6 +60,7 @@ type PrayMode = 'free' | 'classic';
 type LauncherView = 'quick' | 'free' | 'classic';
 type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 type SaveFeedbackTone = 'neutral' | 'success' | 'error';
+type SaveModalMode = 'join' | 'save';
 
 type PrayerRequestPayload = {
   tradition: Tradition;
@@ -421,6 +423,7 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
 function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isLoaded: isUserLoaded, isSignedIn } = useUser();
   const abortRef = useRef<AbortController | null>(null);
 
   const pathParam = searchParams.get('path');
@@ -451,6 +454,7 @@ function PrayPageInner() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [shareFeedback, setShareFeedback] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveModalMode, setSaveModalMode] = useState<SaveModalMode>('join');
   const [isSavingPrayer, setIsSavingPrayer] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState('');
   const [saveFeedbackTone, setSaveFeedbackTone] = useState<SaveFeedbackTone>('neutral');
@@ -466,6 +470,7 @@ function PrayPageInner() {
     setIsSavingPrayer(false);
     setSaveFeedback('');
     setSaveFeedbackTone('neutral');
+    setSaveModalMode('join');
   }
 
   useEffect(() => {
@@ -1013,15 +1018,31 @@ function PrayPageInner() {
     setSaveFeedbackTone('neutral');
 
     if (!prayer.trim()) {
-      setSaveFeedbackTone('error');
+      setSaveModalMode('join');
       setSaveFeedback('No prayer is available to save yet.');
       return;
     }
 
+    if (!isUserLoaded) {
+      setSaveModalMode('join');
+      setSaveFeedback('Checking your account status...');
+      return;
+    }
+
+    if (!isSignedIn) {
+      setSaveModalMode('join');
+      setSaveFeedback(
+        'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+      );
+      return;
+    }
+
+    setSaveModalMode('save');
+
     if (!generatedPrayerId) {
       setSaveFeedbackTone('error');
       setSaveFeedback(
-        'This prayer does not have a generatedPrayerId yet. Please generate it again once. If this message still appears, send me app/api/pray/route.ts next and I will wire the returned id.'
+        'This prayer is not ready to save yet. The page did not receive its generated prayer id from the pray route.'
       );
       return;
     }
@@ -1239,7 +1260,7 @@ function PrayPageInner() {
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
   const resultTitle = isClassic
-    ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer type'
+    ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer Type'
     : isProtestantPersonalMode
       ? 'Personal Prayer'
       : selectedFreePrayerEntry?.display ||
@@ -1268,30 +1289,30 @@ function PrayPageInner() {
     : 'Not provided';
 
   const savePathLabel = isClassic
-    ? 'Prayer type'
+    ? 'Prayer Type'
     : isProtestantPersonalMode
-      ? 'Prayer path'
-      : 'Prayer type';
+      ? 'Prayer Path'
+      : 'Prayer Type';
 
   const savePathValue = isClassic
     ? resultTitle
     : isProtestantPersonalMode
-      ? 'Personal prayer'
+      ? 'Personal Prayer'
       : resultTitle;
 
   const saveChecklistItems = [
     {
-      label: 'Prayer text file',
+      label: 'Prayer Text File',
       value: 'Current prayer output',
       checked: Boolean(prayer.trim()),
     },
     {
-      label: 'Prepared by',
+      label: 'Prepared By',
       value: preparedByName,
       checked: Boolean(preparedByName),
     },
     {
-      label: 'Prayer recipient',
+      label: 'Prayer Recipient',
       value: preparedRecipient || 'Not provided',
       checked: Boolean(preparedRecipient),
     },
@@ -1306,7 +1327,7 @@ function PrayPageInner() {
       checked: Boolean(savePathValue),
     },
     {
-      label: 'Prayer request',
+      label: 'Prayer Request',
       value: requestSummary || 'Not provided',
       checked: Boolean(requestSummary),
     },
@@ -1331,10 +1352,14 @@ function PrayPageInner() {
         ? 'border-red-200 bg-red-50 text-red-700'
         : 'border-sky-200 bg-sky-50 text-zinc-900';
 
-  const saveSummaryText = isSavingPrayer
-    ? 'Saving your prayer now...'
-    : saveFeedback ||
-      'This prayer can be saved to your dashboard along with the details below.';
+  const saveSummaryText =
+    saveModalMode === 'join'
+      ? saveFeedback ||
+        'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+      : isSavingPrayer
+        ? 'Saving your prayer now...'
+        : saveFeedback ||
+          'This prayer can be saved to your dashboard along with the details below.';
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
@@ -1431,7 +1456,7 @@ function PrayPageInner() {
                     ) : (
                       <>
                         <Bookmark className="h-4 w-4" />
-                        Save
+                        Save This Prayer
                       </>
                     )}
                   </button>
@@ -1471,7 +1496,7 @@ function PrayPageInner() {
                     className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
                   >
                     <Share2 className="h-4 w-4" />
-                    Share this Prayer
+                    Share This Prayer
                   </button>
 
                   <button
@@ -1488,7 +1513,7 @@ function PrayPageInner() {
                     className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-zinc-50"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    Change tradition
+                    Change Tradition
                   </Link>
                 </div>
 
@@ -1544,7 +1569,7 @@ function PrayPageInner() {
 
                 <div className="rounded-[1.25rem] border border-amber-100 bg-white/75 px-5 py-4 text-left shadow-sm">
                   <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-700">
-                    About this prayer
+                    About This Prayer
                   </div>
                   <p className="mt-2 text-sm leading-7 text-black">
                     {disclosureNote}
@@ -1805,7 +1830,7 @@ function PrayPageInner() {
                           </span>
                         </div>
                         <div className="text-xl font-semibold text-zinc-900">
-                          {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer type'}
+                          {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer Type'}
                         </div>
                         {selectedPrayerKind === 'named' ? (
                           <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
@@ -1969,7 +1994,7 @@ function PrayPageInner() {
                       ) : (
                         <>
                           <Send className="h-4 w-4" />
-                          {isClassic ? 'Generate prayer by type' : 'Generate prayer'}
+                          {isClassic ? 'Generate Prayer by Type' : 'Generate Prayer'}
                         </>
                       )}
                     </button>
@@ -1998,7 +2023,7 @@ function PrayPageInner() {
                       className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Change tradition
+                      Change Tradition
                     </Link>
                   </div>
                 </>
@@ -2059,7 +2084,7 @@ function PrayPageInner() {
             <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5 sm:px-8">
               <div>
                 <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">
-                  Save this prayer
+                  {saveModalMode === 'join' ? 'Join PWG to Save Prayers' : 'Save This Prayer'}
                 </h2>
 
                 <p className={`mt-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${saveFeedbackClass}`}>
@@ -2079,44 +2104,75 @@ function PrayPageInner() {
             </div>
 
             <div className="overflow-y-auto px-6 py-5 sm:px-8">
-              <div className="space-y-3">
-                {saveChecklistItems.map((item) => (
-                  <label
-                    key={item.label}
-                    className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={item.checked}
-                      readOnly
-                      disabled
-                      className="mt-1 h-4 w-4"
-                    />
-                    <div>
-                      <div className="text-sm font-semibold text-black">
-                        {item.label}
-                      </div>
-                      <div className="mt-1 text-sm text-black">
-                        {item.value}
-                      </div>
+              {saveModalMode === 'join' ? (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      Why Join?
                     </div>
-                  </label>
-                ))}
-              </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Create a free PWG account so you can save prayers, return to meaningful moments, and begin building your personal prayer library.
+                    </p>
+                  </div>
 
-              {generatedPrayerId ? (
-                <div className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-zinc-900">
-                  Generated prayer id ready for saving.
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      What Stays Open to Everyone
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Prayer access, printing, sharing, read-aloud, and voice choices remain part of the free core experience.
+                    </p>
+                  </div>
                 </div>
               ) : (
-                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                  No generated prayer id is currently available on this page.
-                </div>
+                <>
+                  <div className="space-y-3">
+                    {saveChecklistItems.map((item) => (
+                      <label
+                        key={item.label}
+                        className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={item.checked}
+                          readOnly
+                          disabled
+                          className="mt-1 h-4 w-4"
+                        />
+                        <div>
+                          <div className="text-sm font-semibold text-black">
+                            {item.label}
+                          </div>
+                          <div className="mt-1 text-sm text-black">
+                            {item.value}
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+
+                  {generatedPrayerId ? (
+                    <div className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-zinc-900">
+                      Generated prayer id ready for saving.
+                    </div>
+                  ) : (
+                    <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                      No generated prayer id is currently available on this page.
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-zinc-100 px-6 py-4 sm:px-8">
-              {saveFeedbackTone === 'success' ? (
+              {saveModalMode === 'join' ? (
+                <Link
+                  href="/signin"
+                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                >
+                  Join or Sign In
+                </Link>
+              ) : saveFeedbackTone === 'success' ? (
                 <Link
                   href="/dashboard/saved"
                   className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
