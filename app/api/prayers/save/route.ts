@@ -7,6 +7,16 @@ type SavePrayerBody = {
   generatedPrayerId?: string;
 };
 
+type MemberStatusRow = {
+  is_member?: boolean | null;
+  support_type?: string | null;
+  support_started_at?: string | null;
+  support_expires_at?: string | null;
+  last_support_at?: string | null;
+  lifetime_support_total?: number | null;
+  founding_supporter?: boolean | null;
+};
+
 async function getOrCreateProfileId(clerkUserId: string) {
   const supabaseAdmin = createSupabaseAdminClient();
 
@@ -42,12 +52,36 @@ async function getOrCreateProfileId(clerkUserId: string) {
   return insertedProfile.id as string;
 }
 
+function isActiveSupporter(memberStatus: MemberStatusRow | null) {
+  if (!memberStatus?.is_member) {
+    return false;
+  }
+
+  if (!memberStatus.support_expires_at) {
+    return true;
+  }
+
+  const expiresAt = new Date(memberStatus.support_expires_at);
+
+  if (Number.isNaN(expiresAt.getTime())) {
+    return false;
+  }
+
+  return expiresAt.getTime() > Date.now();
+}
+
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
 
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+      return NextResponse.json(
+        {
+          error: "Join PWG to save prayers.",
+          supportRequired: false,
+        },
+        { status: 401 }
+      );
     }
 
     const body = (await req.json()) as SavePrayerBody;
@@ -62,6 +96,35 @@ export async function POST(req: Request) {
 
     const supabaseAdmin = createSupabaseAdminClient();
     const profileId = await getOrCreateProfileId(userId);
+
+    const { data: memberStatus, error: memberStatusError } =
+      await supabaseAdmin
+        .from("member_status")
+        .select(
+          "is_member, support_type, support_started_at, support_expires_at, last_support_at, lifetime_support_total, founding_supporter"
+        )
+        .eq("profile_id", profileId)
+        .maybeSingle<MemberStatusRow>();
+
+    if (memberStatusError) {
+      return NextResponse.json(
+        {
+          error: "Could not verify supporter status.",
+          details: memberStatusError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!isActiveSupporter(memberStatus || null)) {
+      return NextResponse.json(
+        {
+          error: "Support PWG to save prayers.",
+          supportRequired: true,
+        },
+        { status: 403 }
+      );
+    }
 
     const { data: generatedPrayer, error: generatedPrayerError } =
       await supabaseAdmin
@@ -83,7 +146,7 @@ export async function POST(req: Request) {
 
     if (!generatedPrayer) {
       return NextResponse.json(
-        { error: "Prayer not found for this member." },
+        { error: "Prayer not found for this account." },
         { status: 404 }
       );
     }
