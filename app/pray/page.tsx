@@ -54,13 +54,15 @@ type SavePrayerResponse = {
   details?: string;
   alreadySaved?: boolean;
   savedPrayerId?: string;
+  errorCode?: 'auth_required' | 'not_member' | 'expired_member';
+  supportRequired?: boolean;
 };
 
 type PrayMode = 'free' | 'classic';
 type LauncherView = 'quick' | 'free' | 'classic';
 type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 type SaveFeedbackTone = 'neutral' | 'success' | 'error';
-type SaveModalMode = 'join' | 'save';
+type SaveModalMode = 'join' | 'support' | 'expired' | 'save';
 
 type PrayerRequestPayload = {
   tradition: Tradition;
@@ -1018,7 +1020,7 @@ function PrayPageInner() {
     setSaveFeedbackTone('neutral');
 
     if (!prayer.trim()) {
-      setSaveModalMode('join');
+      setSaveModalMode('save');
       setSaveFeedback('No prayer is available to save yet.');
       return;
     }
@@ -1059,13 +1061,40 @@ function PrayPageInner() {
       const data = (await res.json()) as SavePrayerResponse;
 
       if (!res.ok) {
-        throw new Error(
-          data?.error ||
-            data?.details ||
-            'Could not save prayer.'
-        );
+        if (res.status === 401 || data.errorCode === 'auth_required') {
+          setSaveModalMode('join');
+          setSaveFeedbackTone('neutral');
+          setSaveFeedback(
+            data.error ||
+              'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+          );
+          return;
+        }
+
+        if (res.status === 403 && data.errorCode === 'expired_member') {
+          setSaveModalMode('expired');
+          setSaveFeedbackTone('neutral');
+          setSaveFeedback(
+            data.error ||
+              'Your PWG support appears to have lapsed. Renew support to keep saving prayers and continue building your prayer library.'
+          );
+          return;
+        }
+
+        if (res.status === 403 && data.errorCode === 'not_member') {
+          setSaveModalMode('support');
+          setSaveFeedbackTone('neutral');
+          setSaveFeedback(
+            data.error ||
+              'Support PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+          );
+          return;
+        }
+
+        throw new Error(data?.error || data?.details || 'Could not save prayer.');
       }
 
+      setSaveModalMode('save');
       setSaveFeedbackTone('success');
       setSaveFeedback(
         data.alreadySaved
@@ -1073,10 +1102,9 @@ function PrayPageInner() {
           : 'Prayer saved to your dashboard.'
       );
     } catch (err) {
+      setSaveModalMode('save');
       setSaveFeedbackTone('error');
-      setSaveFeedback(
-        err instanceof Error ? err.message : 'Could not save prayer.'
-      );
+      setSaveFeedback(err instanceof Error ? err.message : 'Could not save prayer.');
     } finally {
       setIsSavingPrayer(false);
     }
@@ -1356,10 +1384,25 @@ function PrayPageInner() {
     saveModalMode === 'join'
       ? saveFeedback ||
         'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
-      : isSavingPrayer
-        ? 'Saving your prayer now...'
-        : saveFeedback ||
-          'This prayer can be saved to your dashboard along with the details below.';
+      : saveModalMode === 'support'
+        ? saveFeedback ||
+          'Support PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+        : saveModalMode === 'expired'
+          ? saveFeedback ||
+            'Your PWG support appears to have lapsed. Renew support to keep saving prayers and continue building your prayer library.'
+          : isSavingPrayer
+            ? 'Saving your prayer now...'
+            : saveFeedback ||
+              'This prayer can be saved to your dashboard along with the details below.';
+
+  const saveModalTitle =
+    saveModalMode === 'join'
+      ? 'Join PWG to Save Prayers'
+      : saveModalMode === 'support'
+        ? 'Support PWG to Save Prayers'
+        : saveModalMode === 'expired'
+          ? 'Renew Support to Save Prayers'
+          : 'Save This Prayer';
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
@@ -2084,7 +2127,7 @@ function PrayPageInner() {
             <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5 sm:px-8">
               <div>
                 <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">
-                  {saveModalMode === 'join' ? 'Join PWG to Save Prayers' : 'Save This Prayer'}
+                  {saveModalTitle}
                 </h2>
 
                 <p className={`mt-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${saveFeedbackClass}`}>
@@ -2104,27 +2147,7 @@ function PrayPageInner() {
             </div>
 
             <div className="overflow-y-auto px-6 py-5 sm:px-8">
-              {saveModalMode === 'join' ? (
-                <div className="space-y-3">
-                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
-                    <div className="text-sm font-semibold text-black">
-                      Why Join?
-                    </div>
-                    <p className="mt-2 text-sm leading-7 text-black">
-                      Create a free PWG account so you can save prayers, return to meaningful moments, and begin building your personal prayer library.
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4">
-                    <div className="text-sm font-semibold text-black">
-                      What Stays Open to Everyone
-                    </div>
-                    <p className="mt-2 text-sm leading-7 text-black">
-                      Prayer access, printing, sharing, read-aloud, and voice choices remain part of the free core experience.
-                    </p>
-                  </div>
-                </div>
-              ) : (
+              {saveModalMode === 'save' ? (
                 <>
                   <div className="space-y-3">
                     {saveChecklistItems.map((item) => (
@@ -2161,6 +2184,66 @@ function PrayPageInner() {
                     </div>
                   )}
                 </>
+              ) : saveModalMode === 'expired' ? (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      Support Needs Refreshing
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Your PWG support appears to have lapsed. Renew support to keep saving prayers and continue building your personal prayer library.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      What Still Stays Open
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Prayer access, printing, sharing, read-aloud, and voice choices remain part of the free core experience.
+                    </p>
+                  </div>
+                </div>
+              ) : saveModalMode === 'support' ? (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      Save Prayers by Supporting PWG
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Support PWG so you can save prayers, return to meaningful moments, and build your personal prayer library over time.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      What Stays Open to Everyone
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Prayer access, printing, sharing, read-aloud, and voice choices remain part of the free core experience.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      Why Join?
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Create a free PWG account so you can save prayers, return to meaningful moments, and begin building your personal prayer library.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4">
+                    <div className="text-sm font-semibold text-black">
+                      What Stays Open to Everyone
+                    </div>
+                    <p className="mt-2 text-sm leading-7 text-black">
+                      Prayer access, printing, sharing, read-aloud, and voice choices remain part of the free core experience.
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -2171,6 +2254,20 @@ function PrayPageInner() {
                   className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
                 >
                   Join or Sign In
+                </Link>
+              ) : saveModalMode === 'support' ? (
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                >
+                  Support PWG
+                </Link>
+              ) : saveModalMode === 'expired' ? (
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                >
+                  Renew Support
                 </Link>
               ) : saveFeedbackTone === 'success' ? (
                 <Link
