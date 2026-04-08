@@ -2,7 +2,14 @@
 
 'use client';
 
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -78,6 +85,14 @@ type PrayerRequestPayload = {
   timezone?: string | null;
   localDateTime?: string | null;
   dayPart?: DayPart | null;
+};
+
+type ClassicPrayerTypeGridProps = {
+  items: PrayerEntry[];
+  selectedPrayerLabel: string;
+  selectedPrayerKind: PrayerKind;
+  definitionKey: TraditionKey | Tradition;
+  onSelect: (label: string, kind: PrayerKind) => void;
 };
 
 const PRAYER_REQUEST_MAX = 500;
@@ -421,6 +436,60 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
     </div>
   );
 }
+
+const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
+  items,
+  selectedPrayerLabel,
+  selectedPrayerKind,
+  definitionKey,
+  onSelect,
+}: ClassicPrayerTypeGridProps) {
+  return (
+    <div className="mb-8">
+      <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
+        Prayer types
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {items.map((item) => {
+          const active =
+            selectedPrayerLabel === item.label &&
+            selectedPrayerKind === item.kind;
+          const aboutHref = getPrayerTypeDefinitionHref(definitionKey, item.label);
+
+          return (
+            <div key={`${item.kind}-${item.label}`} className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => onSelect(item.label, item.kind)}
+                aria-pressed={active}
+                className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
+                  active
+                    ? 'border-sky-400 bg-sky-100 shadow-sm'
+                    : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
+                }`}
+              >
+                <div className="font-medium text-zinc-900">{item.display}</div>
+                {item.kind === 'named' ? (
+                  <div className="mt-2 text-sm text-zinc-700">Named prayer</div>
+                ) : null}
+              </button>
+
+              {aboutHref ? (
+                <Link
+                  href={aboutHref}
+                  className="pl-2 text-sm font-semibold text-sky-700 transition hover:text-sky-800"
+                >
+                  Read more →
+                </Link>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+});
 
 function PrayPageInner() {
   const router = useRouter();
@@ -814,6 +883,14 @@ function PrayPageInner() {
       }
     }
   }
+
+  const handleSelectClassicPrayerType = useCallback(
+    (label: string, kind: PrayerKind) => {
+      setSelectedPrayerLabel(label);
+      setSelectedPrayerKind(kind);
+    },
+    []
+  );
 
   const effectivePrayerForName = prayerForName.trim() || userName || '';
 
@@ -1814,56 +1891,13 @@ function PrayPageInner() {
 
                   {isClassic ? (
                     <>
-                      <div className="mb-8">
-                        <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
-                          Prayer types
-                        </div>
-
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {traditionalOptions.map((item) => {
-                            const active =
-                              selectedPrayerLabel === item.label &&
-                              selectedPrayerKind === item.kind;
-                            const aboutHref = getPrayerTypeDefinitionHref(
-                              activeCatalogKey || selectedTradition,
-                              item.label
-                            );
-
-                            return (
-                              <div
-                                key={`${item.kind}-${item.label}`}
-                                className={`rounded-2xl border px-4 py-4 transition ${
-                                  active
-                                    ? 'border-sky-400 bg-sky-100 shadow-sm'
-                                    : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
-                                }`}
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedPrayerLabel(item.label);
-                                    setSelectedPrayerKind(item.kind);
-                                  }}
-                                  className="w-full text-left"
-                                >
-                                  <div className="font-medium text-zinc-900">{item.display}</div>
-                                </button>
-
-                                {aboutHref ? (
-                                  <div className="mt-2">
-                                    <Link
-                                      href={aboutHref}
-                                      className="text-sm font-semibold text-sky-700 transition hover:text-sky-800"
-                                    >
-                                      Read more →
-                                    </Link>
-                                  </div>
-                                ) : null}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
+                      <ClassicPrayerTypeGrid
+                        items={traditionalOptions}
+                        selectedPrayerLabel={selectedPrayerLabel}
+                        selectedPrayerKind={selectedPrayerKind}
+                        definitionKey={activeCatalogKey || selectedTradition}
+                        onSelect={handleSelectClassicPrayerType}
+                      />
 
                       <div className="mb-8 rounded-[1.75rem] border border-sky-300 bg-gradient-to-b from-white to-sky-100 px-5 py-5 shadow-sm">
                         <div className="mb-2 flex items-center gap-2 text-sky-800">
