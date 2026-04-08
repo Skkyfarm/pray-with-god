@@ -1,4 +1,4 @@
-// app/page.tsx
+// /app/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -127,15 +127,15 @@ export default function Home() {
         <div className="relative z-10 flex w-full max-w-6xl flex-col items-center text-center">
           <div className="mb-4 max-w-3xl space-y-2 md:mb-5 md:space-y-2">
             <p className="text-[11px] uppercase tracking-[0.24em] text-black md:text-xs">
-              PrayWithGod
+              PrayWithGod.ai
             </p>
 
             <h1 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-4xl">
-              A prayer companion across spiritual traditions
+              Choose a Tradition, Bring What Is In Your Heart, and Begin.
             </h1>
 
             <p className="mx-auto max-w-2xl text-sm leading-relaxed text-black md:text-[15px]">
-              Begin in a peaceful space shaped by reverence, reflection, and care.
+              Prayer companion for believers, seekers, and anyone in need of a quiet moment of prayer.
             </p>
           </div>
 
@@ -143,7 +143,7 @@ export default function Home() {
             <div className="glass-panel mb-5 w-full max-w-2xl rounded-[1.75rem] border border-black/10 px-5 py-5 text-center shadow-sm md:mb-6 md:px-6 md:py-6">
               <div className="mb-3 space-y-1.5">
                 <h2 className="text-xl italic text-black md:text-2xl">
-                  {userName ? greeting : 'What should we call you?'}
+                  {userName ? greeting : 'What Should We Call You?'}
                 </h2>
 
                 <p className="mx-auto max-w-xl text-sm leading-relaxed text-black md:text-base">
@@ -158,7 +158,7 @@ export default function Home() {
           )}
 
           <p className="mb-4 text-sm leading-relaxed text-black md:mb-5 md:text-base">
-            Choose the tradition that feels closest to home — or start with Exploring if you are still finding your way.
+            Begin with the tradition that feels closest to home — or start with Exploring if you are still finding your way.
           </p>
 
           <div className="mb-5 w-full max-w-6xl md:mb-6">
@@ -184,7 +184,7 @@ export default function Home() {
           </div>
 
           <p className="text-lg italic text-black md:text-xl">
-            All are welcome here.
+            Pray and Reflect, or Explore and Seek. All Are Welcome Here.
           </p>
         </div>
       </section>
