@@ -3,54 +3,112 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import GuideAvatar from '@/components/GuideAvatar';
 import NameCapture from '@/components/NameCapture';
 import { AVATARS } from '@/lib/avatars';
 
+function getRandomGreeting(name: string) {
+  const variants = [
+    `Welcome back, ${name}.`,
+    `It’s good to see you again, ${name}.`,
+    `Peace be with you, ${name}.`,
+    `I’m glad you’ve returned, ${name}.`,
+  ];
+
+  return variants[Math.floor(Math.random() * variants.length)];
+}
+
+function getPreferredClerkName(user: ReturnType<typeof useUser>['user']) {
+  const firstName = user?.firstName?.trim();
+  if (firstName) return firstName;
+
+  const fullName = user?.fullName?.trim();
+  if (fullName) return fullName;
+
+  const username = typeof user?.username === 'string' ? user.username.trim() : '';
+  if (username) return username;
+
+  const primaryEmail = user?.primaryEmailAddress?.emailAddress?.trim();
+  if (primaryEmail) {
+    return primaryEmail.split('@')[0] || null;
+  }
+
+  return null;
+}
+
 export default function Home() {
+  const { isLoaded, isSignedIn, user } = useUser();
+
   const [userName, setUserName] = useState<string | null>(null);
   const [hasSkippedName, setHasSkippedName] = useState(false);
   const [greeting, setGreeting] = useState<string>('I’m here.');
 
   useEffect(() => {
-    const name = localStorage.getItem('pwg_user_name');
+    if (!isLoaded) return;
+
+    const legacyName = localStorage.getItem('pwg_user_name');
     const skipped = localStorage.getItem('pwg_name_skipped') === 'true';
 
-    if (name) {
-      setUserName(name);
-      setHasSkippedName(false);
+    if (!isSignedIn || !user?.id) {
+      if (legacyName) {
+        setUserName(legacyName);
+        setHasSkippedName(false);
+        setGreeting(getRandomGreeting(legacyName));
+      } else {
+        setUserName(null);
+        setHasSkippedName(skipped);
+        setGreeting('I’m here.');
+      }
 
-      const variants = [
-        `Welcome back, ${name}.`,
-        `It’s good to see you again, ${name}.`,
-        `Peace be with you, ${name}.`,
-        `I’m glad you’ve returned, ${name}.`,
-      ];
-
-      setGreeting(variants[Math.floor(Math.random() * variants.length)]);
-    } else {
-      setHasSkippedName(skipped);
+      return;
     }
-  }, []);
+
+    const scopedNameKey = `pwg_user_name_${user.id}`;
+    const scopedName = localStorage.getItem(scopedNameKey);
+    const clerkName = getPreferredClerkName(user);
+    const resolvedName = scopedName || clerkName || null;
+
+    if (resolvedName) {
+      localStorage.setItem('pwg_user_name', resolvedName);
+      localStorage.setItem(scopedNameKey, resolvedName);
+      localStorage.removeItem('pwg_name_skipped');
+
+      setUserName(resolvedName);
+      setHasSkippedName(false);
+      setGreeting(getRandomGreeting(resolvedName));
+      return;
+    }
+
+    localStorage.removeItem('pwg_user_name');
+    setUserName(null);
+    setHasSkippedName(false);
+    setGreeting('I’m here.');
+  }, [isLoaded, isSignedIn, user]);
 
   const handleNameComplete = (name: string | null) => {
     setUserName(name);
 
     if (name) {
+      if (isSignedIn && user?.id) {
+        localStorage.setItem(`pwg_user_name_${user.id}`, name);
+      }
+
+      localStorage.setItem('pwg_user_name', name);
+      localStorage.removeItem('pwg_name_skipped');
       setHasSkippedName(false);
-
-      const variants = [
-        `Welcome back, ${name}.`,
-        `It’s good to see you again, ${name}.`,
-        `Peace be with you, ${name}.`,
-        `I’m glad you’ve returned, ${name}.`,
-      ];
-
-      setGreeting(variants[Math.floor(Math.random() * variants.length)]);
-    } else {
-      setHasSkippedName(true);
-      setGreeting('I’m here.');
+      setGreeting(getRandomGreeting(name));
+      return;
     }
+
+    if (isSignedIn && user?.id) {
+      localStorage.removeItem(`pwg_user_name_${user.id}`);
+    }
+
+    localStorage.removeItem('pwg_user_name');
+    localStorage.setItem('pwg_name_skipped', 'true');
+    setHasSkippedName(true);
+    setGreeting('I’m here.');
   };
 
   const traditions = [
@@ -67,20 +125,41 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden bg-transparent text-black">
       <section className="relative flex flex-col items-center px-4 pb-8 pt-5 sm:px-6 md:px-6 md:pb-10 md:pt-8">
         <div className="relative z-10 flex w-full max-w-6xl flex-col items-center text-center">
-          <div className="mb-4 max-w-3xl space-y-2 md:mb-5 md:space-y-2.5">
-            <p className="text-[11px] uppercase tracking-[0.24em] text-black md:text-sm">
-              Welcome to PrayWithGod
+          <div className="mb-4 max-w-3xl space-y-2 md:mb-5 md:space-y-2">
+            <p className="text-[11px] uppercase tracking-[0.24em] text-black md:text-xs">
+              PrayWithGod
             </p>
 
-            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-5xl">
+            <h1 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-4xl">
               A prayer companion across spiritual traditions
             </h1>
 
-            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-black md:text-base">
-              Choose a path below and begin in a peaceful space shaped by reverence,
-              reflection, and care.
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-black md:text-[15px]">
+              Begin in a peaceful space shaped by reverence, reflection, and care.
             </p>
           </div>
+
+          {(userName || !hasSkippedName) && (
+            <div className="glass-panel mb-5 w-full max-w-2xl rounded-[1.75rem] border border-black/10 px-5 py-5 text-center shadow-sm md:mb-6 md:px-6 md:py-6">
+              <div className="mb-3 space-y-1.5">
+                <h2 className="text-xl italic text-black md:text-2xl">
+                  {userName ? greeting : 'What should we call you?'}
+                </h2>
+
+                <p className="mx-auto max-w-xl text-sm leading-relaxed text-black md:text-base">
+                  {userName
+                    ? 'Your saved name helps keep your prayer experience personal and welcoming.'
+                    : 'Optional — your name is only used to personalize your prayers.'}
+                </p>
+              </div>
+
+              {!userName && <NameCapture onComplete={handleNameComplete} />}
+            </div>
+          )}
+
+          <p className="mb-4 text-sm leading-relaxed text-black md:mb-5 md:text-base">
+            Choose the tradition that feels closest to home — or start with Exploring if you are still finding your way.
+          </p>
 
           <div className="mb-5 w-full max-w-6xl md:mb-6">
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-7 md:gap-3">
@@ -104,32 +183,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="glass-panel mb-5 w-full max-w-4xl rounded-3xl border border-black/10 px-5 py-5 text-center md:mb-6 md:px-8 md:py-6">
-            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-black md:text-base">
-              Choose the tradition that feels closest to home — or start with
-              Exploring if you are still finding your way.
-            </p>
-          </div>
-
-          {(userName || !hasSkippedName) && (
-            <div className="glass-panel mb-6 w-full max-w-xl rounded-2xl border border-black/10 px-4 py-4 md:mb-7 md:px-5 md:py-4">
-              <div className="mb-3 space-y-1.5">
-                <h2 className="text-lg italic text-black md:text-xl">
-                  {userName ? greeting : 'What should we call you?'}
-                </h2>
-
-                <p className="text-sm leading-relaxed text-black">
-                  {userName
-                    ? 'Your saved name can help make your prayers feel more personal.'
-                    : 'Optional — your name is only used to personalize your prayers.'}
-                </p>
-              </div>
-
-              {!userName && <NameCapture onComplete={handleNameComplete} />}
-            </div>
-          )}
-
-          <p className="text-xl italic text-black md:text-2xl">
+          <p className="text-lg italic text-black md:text-xl">
             All are welcome here.
           </p>
         </div>

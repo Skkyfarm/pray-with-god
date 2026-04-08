@@ -100,7 +100,7 @@ export default async function DashboardPrayersPage() {
 
         <div className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Member Prayer History
+            Prayer History
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -123,11 +123,6 @@ export default async function DashboardPrayersPage() {
                 Live now
               </span>
             </div>
-
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              This page is now loading your recent entries from{" "}
-              <code>generated_prayers</code>.
-            </p>
 
             {prayers.length === 0 ? (
               <div className="mt-6 rounded-2xl border border-dashed border-black/10 bg-white/70 p-6">
@@ -185,7 +180,7 @@ export default async function DashboardPrayersPage() {
 
                     <div className="mt-5">
                       <Link
-                        href={`/dashboard/prayers/${prayer.id}`}
+                        href={`/dashboard/prayers/${prayer.id}?source=history`}
                         className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/80"
                       >
                         View Prayer
@@ -218,22 +213,21 @@ export default async function DashboardPrayersPage() {
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-slate-700">
-                Prayer history gives members continuity. It helps you return to
-                prayers from hard days, grateful days, and moments you do not
-                want to lose.
+                Prayer history is your recent activity layer. It helps you return
+                to recent prayers, hard days, grateful days, and moments you do
+                not want to lose.
               </p>
             </section>
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                What comes next
+                History and saved prayers
               </h2>
 
-              <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Wire Saved Prayers to Supabase.</li>
-                <li>Add open/view actions for full prayer text later.</li>
-                <li>Then wire private settings and preferences.</li>
-              </ol>
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                Prayer history is your recent prayer activity. Saved Prayers are
+                the intentional keep layer for prayers you chose to hold onto.
+              </p>
             </section>
           </div>
         </div>

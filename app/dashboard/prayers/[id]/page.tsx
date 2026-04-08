@@ -9,6 +9,9 @@ type PrayerDetailPageProps = {
   params: {
     id: string;
   };
+  searchParams?: {
+    source?: string;
+  };
 };
 
 type PrayerRow = {
@@ -47,6 +50,7 @@ function prettifyValue(value: string | null, fallback: string) {
 
 export default async function PrayerDetailPage({
   params,
+  searchParams,
 }: PrayerDetailPageProps) {
   const { userId } = await auth();
 
@@ -100,16 +104,22 @@ export default async function PrayerDetailPage({
 
   const prayerRow = prayer as PrayerRow;
   const initiallySaved = Boolean(savedPrayer?.id);
+  const source = searchParams?.source === "saved" ? "saved" : "history";
+
+  const eyebrow = source === "saved" ? "Saved Prayer" : "Prayer History Entry";
+  const backHref = source === "saved" ? "/dashboard/saved" : "/dashboard/prayers";
+  const backLabel = source === "saved" ? "← Back to Saved Prayers" : "← Back to Prayer History";
+  const statusLabel = source === "saved" ? "Saved" : "History";
 
   return (
     <main className="min-h-screen text-slate-900">
       <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-wrap gap-3">
           <Link
-            href="/dashboard/prayers"
+            href={backHref}
             className="inline-flex items-center text-sm font-medium text-sky-700 hover:text-sky-900"
           >
-            ← Back to Prayer History
+            {backLabel}
           </Link>
 
           <Link
@@ -124,13 +134,11 @@ export default async function PrayerDetailPage({
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-                Prayer History Entry
+                {eyebrow}
               </p>
 
               <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                {prayerRow.prayer_type_label
-                  ? prayerRow.prayer_type_label
-                  : "Prayer"}
+                {prayerRow.prayer_type_label ? prayerRow.prayer_type_label : "Prayer"}
               </h1>
 
               <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
@@ -140,7 +148,7 @@ export default async function PrayerDetailPage({
             </div>
 
             <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-              Live now
+              {statusLabel}
             </span>
           </div>
 
@@ -239,14 +247,14 @@ export default async function PrayerDetailPage({
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                What comes next
+                Where this prayer lives
               </h2>
 
-              <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Wire the Saved Prayers page to real Supabase data.</li>
-                <li>Add print, share, and read-aloud actions later.</li>
-                <li>Wire the original pray-page Save button into this same route.</li>
-              </ul>
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                {source === "saved"
+                  ? "You opened this prayer from Saved Prayers, the intentional keep layer for prayers you chose to hold onto."
+                  : "You opened this prayer from Prayer History, the recent activity layer of prayers you have generated."}
+              </p>
             </section>
           </div>
         </div>

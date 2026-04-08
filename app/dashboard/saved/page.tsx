@@ -132,7 +132,7 @@ export default async function DashboardSavedPrayersPage() {
 
         <div className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Member Saved Prayers
+            Saved Prayers
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -155,11 +155,6 @@ export default async function DashboardSavedPrayersPage() {
                 Live now
               </span>
             </div>
-
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              This page is now loading your saved entries from{" "}
-              <code>saved_prayers</code>.
-            </p>
 
             {savedPrayerRows.length === 0 ? (
               <div className="mt-6 rounded-2xl border border-dashed border-black/10 bg-white/70 p-6">
@@ -217,7 +212,7 @@ export default async function DashboardSavedPrayersPage() {
 
                       <div className="mt-5">
                         <Link
-                          href={`/dashboard/prayers/${savedPrayer.generated_prayer_id}`}
+                          href={`/dashboard/prayers/${savedPrayer.generated_prayer_id}?source=saved`}
                           className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/80"
                         >
                           View Prayer
@@ -259,14 +254,14 @@ export default async function DashboardSavedPrayersPage() {
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                What comes next
+                Saved prayers and history
               </h2>
 
-              <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Wire the original pray-page Save button into the same route.</li>
-                <li>Add print, share, and read-aloud actions later.</li>
-                <li>Add unsave/removal later if you want it.</li>
-              </ol>
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                Saved Prayers are the prayers you intentionally chose to keep.
+                Prayer History is the recent activity layer of prayers you have
+                generated.
+              </p>
             </section>
           </div>
         </div>
