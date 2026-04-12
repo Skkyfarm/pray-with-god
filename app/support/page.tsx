@@ -1,3 +1,4 @@
+// /app/support/page.tsx
 import Link from "next/link";
 
 export default function SupportPage() {
@@ -12,8 +13,8 @@ export default function SupportPage() {
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Need help?</h2>
           <p className="mt-2 text-sm text-gray-800">
-            Start with the FAQ — it covers the most common questions and how PWG
-            works.
+            Start with the FAQ for common questions and a quick overview of how
+            PWG works.
           </p>
           <div className="mt-5">
             <Link
@@ -43,8 +44,8 @@ export default function SupportPage() {
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Report an issue</h2>
           <p className="mt-2 text-sm text-gray-800">
-            If something looks broken or confusing, report it and we’ll look
-            into it.
+            If something looks broken or confusing, report it and we’ll take a
+            look.
           </p>
           <div className="mt-5">
             <Link
@@ -57,10 +58,10 @@ export default function SupportPage() {
         </div>
 
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-          <h2 className="text-lg font-semibold">Donate</h2>
+          <h2 className="text-lg font-semibold">Support PWG</h2>
           <p className="mt-2 text-sm text-gray-800">
-            Your support helps PWG stay calm, respectful, and available to those
-            who need it.
+            Prayer remains free for everyone. Your support helps keep PWG calm,
+            respectful, and available to those who need it.
           </p>
           <div className="mt-5">
             <Link
@@ -78,33 +79,33 @@ export default function SupportPage() {
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/pray"
-            className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+            className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
           >
             Pray
           </Link>
           <Link
-            href="/community"
+            href="/faq"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
           >
-            Community
+            FAQ
           </Link>
           <Link
-            href="/join"
-            className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
-          >
-            Join Free
-          </Link>
-          <Link
-            href="/signin"
+            href="/contact"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
           >
-            Sign In
+            Contact
+          </Link>
+          <Link
+            href="/donate"
+            className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+          >
+            Donate
           </Link>
         </div>
 
         <p className="mt-4 text-xs text-gray-600">
-          We keep PWG non-coercive and respectful across traditions. If something
-          ever feels off, please tell us.
+          If something ever feels broken, confusing, or off-tone, please let us
+          know.
         </p>
       </div>
     </main>
