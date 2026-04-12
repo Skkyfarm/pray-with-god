@@ -54,24 +54,19 @@ export default async function DashboardProfilePage() {
           </h1>
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
-            This is where your personal PWG profile lives. This first live
-            version saves your display name and ZIP code into Supabase.
+            This is your personal PWG profile. You can update your display name
+            and location details here.
           </p>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-900">
-                Profile details
-              </h2>
-              <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                Live now
-              </span>
-            </div>
+            <h2 className="text-lg font-semibold text-slate-900">
+              Profile details
+            </h2>
 
             <p className="mt-2 text-sm leading-6 text-slate-700">
-              Update your basic PWG profile details below.
+              Update the basic details you want PWG to remember for your account.
             </p>
 
             <ProfileForm
@@ -83,7 +78,7 @@ export default async function DashboardProfilePage() {
           <div className="space-y-6">
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                Current account identity
+                Account details
               </h2>
 
               <dl className="mt-4 space-y-4 text-sm text-slate-700">
@@ -96,27 +91,7 @@ export default async function DashboardProfilePage() {
                   <dt className="font-semibold text-slate-900">Email</dt>
                   <dd className="mt-1 break-all">{email}</dd>
                 </div>
-
-                <div>
-                  <dt className="font-semibold text-slate-900">Member ID</dt>
-                  <dd className="mt-1 break-all text-xs text-slate-500">
-                    {userId}
-                  </dd>
-                </div>
               </dl>
-            </section>
-
-            <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
-              <h2 className="text-lg font-semibold text-slate-900">
-                What comes after this
-              </h2>
-
-              <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Show saved values every time the member returns.</li>
-                <li>Wire prayer history into Supabase next.</li>
-                <li>Wire saved prayers after that.</li>
-                <li>Then persist private settings and preferences.</li>
-              </ul>
             </section>
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
