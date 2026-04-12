@@ -1,3 +1,4 @@
+// /app/community/page.tsx
 import Link from "next/link";
 
 export default function CommunityPage() {
@@ -5,29 +6,26 @@ export default function CommunityPage() {
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
       <h1 className="text-3xl font-semibold">Community</h1>
       <p className="mt-3 text-gray-800">
-        Community is optional. Some people pray privately; others find strength
-        in shared intentions and encouragement. PWG will roll this out in phases.
+        Community is optional. Some people prefer to pray privately, while
+        others find comfort in shared intentions and encouragement. PWG begins
+        with private prayer and may grow community features over time.
       </p>
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Prayer Requests</h2>
           <p className="mt-2 text-sm text-gray-800">
-            Share an intention (optionally anonymous) and receive supportive,
-            respectful prayers from others.
+            A future space where people may be able to share an intention,
+            sometimes anonymously, and receive thoughtful encouragement and
+            prayer from others.
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button
-              type="button"
-              disabled
-              className="inline-flex cursor-not-allowed rounded-xl bg-black/20 px-4 py-2 text-sm font-semibold text-gray-700"
-              title="Coming soon"
-            >
-              Coming Soon
-            </button>
+          <p className="mt-4 text-xs text-gray-600">
+            This feature is not live yet.
+          </p>
+          <div className="mt-5">
             <Link
               href="/pray"
-              className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+              className="inline-flex rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
             >
               Pray Now
             </Link>
@@ -37,52 +35,52 @@ export default function CommunityPage() {
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Circles</h2>
           <p className="mt-2 text-sm text-gray-800">
-            Small groups for ongoing support — friends, families, or quiet groups
-            formed around shared needs.
+            A future space for small groups centered on care, encouragement, and
+            shared prayer — whether among friends, family, or others carrying a
+            similar burden.
+          </p>
+          <p className="mt-4 text-xs text-gray-600">
+            This feature is not live yet.
           </p>
           <div className="mt-5">
-            <button
-              type="button"
-              disabled
-              className="inline-flex cursor-not-allowed rounded-xl bg-black/20 px-4 py-2 text-sm font-semibold text-gray-700"
-              title="Coming soon"
+            <Link
+              href="/support"
+              className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
             >
-              Coming Soon
-            </button>
+              Help
+            </Link>
           </div>
         </div>
       </div>
 
       <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold">Community guidelines</h2>
+        <h2 className="text-lg font-semibold">Community spirit</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-800">
-  <li>Be respectful across traditions and beliefs.</li>
-  <li>No harassment, shaming, or coercion.</li>
-  <li>Keep it supportive: prayers, encouragement, and care.</li>
-  <li>Don’t share private info you wouldn’t want public.</li>
-
-  <li>Pray hard</li>
-  <li>Love yourself</li>
-  <li>Love your neighbor</li>
-</ul>
+          <li>Be respectful across traditions and beliefs.</li>
+          <li>Keep your words kind, thoughtful, and supportive.</li>
+          <li>Share only what feels right to share.</li>
+          <li>Protect your privacy and the privacy of others.</li>
+          <li>Leave room for sincerity, encouragement, and care.</li>
+        </ul>
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/join"
+            href="/pray"
             className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
           >
-            Join Free
+            Pray
           </Link>
           <Link
             href="/support"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
           >
-            Support
+            Help
           </Link>
         </div>
 
         <p className="mt-4 text-xs text-gray-600">
-          Community features can stay optional — PWG is always usable for private prayer.
+          PWG remains fully usable for private prayer, whether or not community
+          features are used.
         </p>
       </div>
     </main>
