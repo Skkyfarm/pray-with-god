@@ -1,3 +1,4 @@
+// /app/donate/page.tsx
 'use client';
 
 import Script from "next/script";
@@ -39,19 +40,25 @@ export default function DonatePage() {
         onLoad={() => setSdkLoaded(true)}
       />
 
-      <h1 className="text-3xl font-semibold">Donate</h1>
+      <h1 className="text-3xl font-semibold">Support PWG</h1>
       <p className="mt-3 text-gray-800">
-        Your support helps keep PrayWithGod.ai calm, respectful, and available
-        to anyone who needs a place to pray.
+        Prayer stays free for everyone. If PrayWithGod.ai has been meaningful to
+        you, your support helps keep it calm, respectful, and available to
+        others.
       </p>
 
       <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
         <h2 className="text-lg font-semibold">Give with PayPal</h2>
         <p className="mt-2 text-gray-800">
-          Donate securely using the options available in the PayPal form below.
+          You can support PWG securely using the PayPal options below.
         </p>
 
         <div className="mt-5" id={PAYPAL_CONTAINER_ID} />
+
+        <p className="mt-6 text-xs text-gray-600">
+          Support for PrayWithGod.ai is not tax-deductible. Skky Farm Publishing
+          LLC is not a qualified charitable organization.
+        </p>
       </div>
     </main>
   );

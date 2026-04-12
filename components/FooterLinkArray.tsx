@@ -23,7 +23,7 @@ export default function FooterLinkArray() {
             </div>
 
             <p className="mt-2 text-sm leading-6 text-black/70">
-              Prayer companion for believers, seekers, and anyone in need of a quiet moment.
+              Prayer companion for believers, seekers, and anyone in need of a quiet moment of prayer.
             </p>
           </div>
 
