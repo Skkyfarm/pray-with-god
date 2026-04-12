@@ -4,17 +4,17 @@ import Link from "next/link";
 export default function SupportPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
-      <h1 className="text-3xl font-semibold">Support</h1>
+      <h1 className="text-3xl font-semibold">Help</h1>
       <p className="mt-3 text-gray-800">
-        Help, answers, and ways to support PrayWithGod.ai.
+        Questions, answers, and ways to reach us.
       </p>
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-          <h2 className="text-lg font-semibold">Need help?</h2>
+          <h2 className="text-lg font-semibold">FAQ</h2>
           <p className="mt-2 text-sm text-gray-800">
-            Start with the FAQ for common questions and a quick overview of how
-            PWG works.
+            Start here for common questions and a quick overview of how PWG
+            works.
           </p>
           <div className="mt-5">
             <Link

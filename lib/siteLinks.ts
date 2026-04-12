@@ -10,7 +10,7 @@ export const headerLinks: NavLink[] = [
 ];
 
 export const supportLinks: NavLink[] = [
-  { label: "Support", href: "/support" },
+  { label: "Help", href: "/support" },
   { label: "Donate", href: "/donate" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },

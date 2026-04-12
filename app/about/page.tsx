@@ -1,3 +1,4 @@
+// /app/about/page.tsx
 import Link from "next/link";
 
 export default function AboutPage() {
@@ -14,17 +15,20 @@ export default function AboutPage() {
         <section className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Our mission</h2>
           <p className="mt-2 text-sm text-gray-800">
-            To offer a gentle, non-coercive place to pray — where people can
-            slow down, breathe, and reflect, without pressure or performance.
+            To offer a peaceful place to pray — where people can slow down,
+            breathe, reflect, and find words for what is on their heart.
           </p>
         </section>
 
         <section className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">What PWG is</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-800">
-            <li>A prayer companion that helps you express an intention clearly.</li>
+            <li>
+              A prayer companion that helps you gather your thoughts and put
+              them into words for prayer.
+            </li>
             <li>A respectful experience across multiple traditions.</li>
-            <li>Private-first by design, with optional community features.</li>
+            <li>A privacy-first experience, with optional personal features.</li>
           </ul>
         </section>
 
@@ -32,26 +36,28 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold">What PWG is not</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-800">
             <li>Not a replacement for clergy, therapy, or medical care.</li>
-            <li>Not a place for coercion, harassment, or shaming.</li>
-            <li>Not a guarantee of outcomes — just a supportive space to pray.</li>
+            <li>Not a place for harassment, hostility, or shaming.</li>
+            <li>
+              Not a guarantee of outcomes — simply a supportive place to pray.
+            </li>
           </ul>
         </section>
 
         <section className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-          <h2 className="text-lg font-semibold">Non-coercive promise</h2>
+          <h2 className="text-lg font-semibold">A gentle approach</h2>
           <p className="mt-2 text-sm text-gray-800">
-            PWG aims to be gentle and respectful. You choose the tradition and
-            tone. We avoid fear-based pressure, manipulation, or “hard sells.”
-            Prayer is personal — PWG exists to support it, not control it.
+            PWG is meant to feel calm, welcoming, and respectful. You choose the
+            tradition and tone. The goal is to offer a quiet place to pray,
+            reflect, and find words when you need them.
           </p>
         </section>
 
         <section className="rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
           <h2 className="text-lg font-semibold">Get started</h2>
           <p className="mt-2 text-sm text-gray-800">
-            You can start praying immediately. Joining is optional — it’s there
-            for features like saved intentions, preferences, and community
-            participation.
+            You can start praying immediately. Prayer stays free for everyone.
+            Signing in is only for extra features like saving prayers and
+            keeping track of your preferences.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -62,22 +68,18 @@ export default function AboutPage() {
               Pray
             </Link>
             <Link
-              href="/join"
-              className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
-            >
-              Join Free
-            </Link>
-            <Link
               href="/support"
               className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
             >
-              Support
+              Help
+            </Link>
+            <Link
+              href="/donate"
+              className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+            >
+              Support PWG
             </Link>
           </div>
-
-          <p className="mt-4 text-xs text-gray-600">
-            This page is easy to expand later (team story, roadmap, FAQs, etc.).
-          </p>
         </section>
       </div>
     </main>

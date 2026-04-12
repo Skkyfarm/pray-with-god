@@ -4,11 +4,11 @@ import Link from "next/link";
 const faqs = [
   {
     q: "What is PrayWithGod.ai?",
-    a: "PrayWithGod.ai is a calm, respectful space for prayer and reflection. It helps you put your intention into words and offers a gentle, tradition-aware prayer response.",
+    a: "PrayWithGod.ai is a calm, respectful space for prayer and reflection. It helps you put your intention into words and offers a gentle, tradition-aware prayer companion experience.",
   },
   {
     q: "Do I need an account to pray?",
-    a: "No. You can pray privately without creating an account. Creating an account (Join Free) is for optional features like saving intentions, history, or community participation.",
+    a: "No. You can pray privately without creating an account. Signing in is only for extra features like saving prayers and keeping track of your preferences. Prayer itself stays free for everyone.",
   },
   {
     q: "Is this tied to one religion?",
@@ -16,15 +16,15 @@ const faqs = [
   },
   {
     q: "Is this a replacement for clergy, therapy, or medical care?",
-    a: "No. PWG can be a supportive tool, but it isn’t a substitute for professional care, crisis services, or spiritual leadership in your community.",
+    a: "No. PWG can be a supportive tool, but it is not a substitute for professional care, crisis services, or spiritual leadership in your community.",
   },
   {
     q: "Is my prayer private?",
-    a: "PWG is built for privacy-first use. Over time, we’ll publish clear privacy details and options so you can control what’s saved and what stays local/private.",
+    a: "PWG is designed for private-first use. When features involve saved data or account activity, PWG aims to be clear about what is stored and what remains private.",
   },
   {
     q: "How can I support PWG?",
-    a: "You can donate, share PWG with someone who might benefit, or send feedback about what feels helpful or what needs improvement.",
+    a: "You can donate, share PWG with someone who might benefit, or send feedback about what feels helpful and what needs improvement.",
   },
 ];
 
@@ -33,8 +33,8 @@ export default function FAQPage() {
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
       <h1 className="text-3xl font-semibold">FAQ</h1>
       <p className="mt-3 text-gray-800">
-        Quick answers to common questions. If you don’t see what you need, reach
-        out anytime.
+        Quick answers to common questions. If you do not see what you need,
+        reach out anytime.
       </p>
 
       <div className="mt-8 space-y-4">
