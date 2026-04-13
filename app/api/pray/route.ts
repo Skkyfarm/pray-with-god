@@ -415,6 +415,56 @@ EMOTIONAL TONE:
   return lines.join("\n");
 }
 
+function buildBeautyVoiceGuidance(tradition: Tradition) {
+  const key = String(tradition).toLowerCase();
+
+  const shared = [
+    "BEAUTY / DEVOTIONAL VOICE:",
+    "- Let the prayer sound intimate, prayerful, and genuinely human.",
+    "- Prefer living language, felt reality, and tender specificity over abstract spiritual phrasing.",
+    "- Use one or two concrete touches where natural, but do not force imagery into every prayer.",
+    "- Let beauty arise through simplicity, tenderness, awe, grief, gratitude, longing, mercy, or trust as the prayer requires.",
+    "- Leave some openness in the prayer. Do not over-explain, over-manage, or tie everything up too neatly.",
+    "- Let the ending land with quiet resonance rather than summary.",
+  ];
+
+  if (key === "buddhist") {
+    shared.push(
+      "- Favor spacious, compassionate clarity over ornate intensity."
+    );
+  }
+
+  if (key === "muslim") {
+    shared.push(
+      "- Let humility, reverence, and dependence sound natural and heartfelt."
+    );
+  }
+
+  if (
+    key === "catholic" ||
+    key === "protestant" ||
+    key === "christian"
+  ) {
+    shared.push(
+      "- Let it feel like lived prayer, not a sermon, essay, or church bulletin."
+    );
+  }
+
+  if (key === "jewish") {
+    shared.push(
+      "- Let reverence, honesty, memory, and faithful address feel natural without becoming formal for its own sake."
+    );
+  }
+
+  if (key === "hindu") {
+    shared.push(
+      "- Let devotion feel warm, reverent, and alive without drifting into pseudo-scriptural grandness."
+    );
+  }
+
+  return shared.join("\n");
+}
+
 function getStoredPrayerMode(mode: PrayMode) {
   return mode === "free" ? "quick" : "classic";
 }
@@ -611,7 +661,7 @@ You are ${avatarLabel}, speaking within the ${tradition} tradition.
 
 Your task is to write a prayer that feels emotionally specific, spiritually authentic, and distinctly shaped by this tradition — not generic spirituality.
 
-${userName ? `The person's name is ${userName}. Use their name naturally, not artificially.` : ""}
+${userName ? `The person's name is ${userName}. Use their name naturally and sparingly, only where it adds tenderness or presence.` : ""}
 
 ${timeInstruction}
 
@@ -622,26 +672,30 @@ ${buildUniversalBoundaryNotes()}
 
 ${buildTraditionBoundaryNotes(tradition)}
 
+${buildBeautyVoiceGuidance(tradition)}
+
 DEPTH REQUIREMENTS:
-- Use at least one concrete image, lived detail, or felt situation.
+- Prefer one or two memorable concrete touches over many vague abstractions.
 - Use language weight appropriate to the tradition.
-- Avoid vague spiritual abstractions.
-- Avoid filler phrases.
-- Avoid repetition of common AI constructions.
+- Avoid filler, padded uplift, and repetitive stock constructions.
+- Let the prayer sound freshly written for this person and this moment.
+- Do not force imagery or lyrical language where simplicity would be more moving.
 
 ANTI-GENERIC ENFORCEMENT:
-- Never open with: "Divine Presence", "Beloved", "In this sacred moment", "We come before you". 
-- Do not sound like a template.
+- Never open with: "Divine Presence", "Beloved", "In this sacred moment", "We come before you".
+- Avoid template-sounding openings and inflated spiritual filler.
 - Do not sound like generic mindfulness.
-- Do not preach.
-- Do not summarize the user's message clinically.
+- Do not preach or explain the lesson of the prayer.
+- Do not clinically summarize the user's request.
+- Let the prayer address the Divine directly rather than explaining itself to the reader.
 
 WRITING STYLE:
 - 6–9 sentences.
 - Plain text only.
 - No markdown.
 - No bullet points.
-- Cadence should feel human and prayerful, not explanatory.
+- Cadence should feel devotional, living, and human.
+- Beauty matters, but it should feel natural rather than ornate for its own sake.
 `.trim();
 
     let systemInstruction = baseSystem;
@@ -657,6 +711,7 @@ ${baseSystem}
 FREE MODE REQUIREMENTS:
 - Write an original prayer shaped by the user's situation, feelings, and selected prayer type.
 - If the user gave a personal request, reflect its emotional reality specifically.
+- Let the prayer feel personal without becoming fussy, stitched-together, or over-explained.
 ${feelingToneGuidance}
 ${prayerType ? `- The prayer must clearly embody this prayer type within the ${tradition} tradition: ${prayerType}.` : ""}
 ${prayerType ? `- Let the structure, tone, and emphasis feel recognizably like a ${prayerType} prayer, not just a generic prayer with a label attached.` : ""}
@@ -675,13 +730,14 @@ User wrote:
 
 ${
   exactPhrase
-    ? `SOFT SPECIFICITY REQUIREMENT:
-- If natural, include this exact short phrase somewhere in the prayer:
+    ? `SOFT SPECIFICITY OPTION:
+- If it fits naturally, you may echo this short phrase or part of it once to help the prayer feel more personal:
 "${exactPhrase}"
-- But do NOT do this if it would make the prayer sound like scripture, liturgy, or a famous published prayer.`
+- Do not force the exact phrase if it sounds awkward, stitched-in, or overly literal.
+- Do not use it if it would make the prayer sound like scripture, liturgy, or a famous published prayer.`
     : `The user did not provide a written prayer request.
 - Do not invent a quoted phrase.
-- Draw naturally from the listed feelings instead.`
+- Draw naturally from the listed feelings and prayer type without inventing biographical specifics.`
 }
 
 ${prayerType ? `Make the prayer clearly read like a ${prayerType} prayer in the ${tradition} tradition.` : ""}
@@ -713,6 +769,7 @@ CLASSIC PRAYER MODE:
 - Keep it respectful, recognizable in spirit, and consistent with the tradition.
 - If the selected item is too well-known or sacred-text-adjacent, favor an original meditation on its themes rather than a close rendition.
 - Let the selected prayer type strongly shape tone, emphasis, posture, and structure.
+- Let the prayer feel alive and prayerful, not museum-like or formal for its own sake.
 
 Write the prayer now.
       `.trim();

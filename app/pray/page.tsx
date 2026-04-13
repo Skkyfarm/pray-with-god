@@ -123,7 +123,8 @@ const FEELING_OPTIONS = [
   'Frustrated',
 ];
 
-const DEFAULT_FEELING = FEELING_OPTIONS[0];
+const QUICK_PRAYER_FALLBACK_INPUT =
+  'Please offer a simple prayer for this moment.';
 
 const GRACE_FALLBACK_TYPES = [
   'General Prayer',
@@ -377,6 +378,27 @@ function getGeneratedPrayerIdFromResponse(data: PrayerResponse) {
   return typeof candidate === 'string' ? candidate.trim() : '';
 }
 
+function buildFreePrayerContent(inputValue: string, feelings: string[]) {
+  const trimmedInput = inputValue.trim();
+
+  if (trimmedInput) {
+    return {
+      input: trimmedInput,
+      feelings,
+    };
+  }
+
+  if (feelings.length > 0) {
+    return {
+      feelings,
+    };
+  }
+
+  return {
+    input: QUICK_PRAYER_FALLBACK_INPUT,
+  };
+}
+
 function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
   const isCrisis = notice.level === 'crisis';
 
@@ -513,7 +535,7 @@ function PrayPageInner() {
   const [selectedPrayerLabel, setSelectedPrayerLabel] = useState('');
   const [selectedPrayerKind, setSelectedPrayerKind] = useState<PrayerKind>('type');
 
-  const [selectedFeelings, setSelectedFeelings] = useState<string[]>([DEFAULT_FEELING]);
+  const [selectedFeelings, setSelectedFeelings] = useState<string[]>([]);
   const [input, setInput] = useState('');
   const [intention, setIntention] = useState('');
   const [prayerForName, setPrayerForName] = useState('');
@@ -656,7 +678,7 @@ function PrayPageInner() {
           ? PROTESTANT_PERSONAL_BASE
           : prayerTypeParam || ''
       );
-      setSelectedFeelings([DEFAULT_FEELING]);
+      setSelectedFeelings([]);
     }
   }, [
     pathParam,
@@ -821,7 +843,6 @@ function PrayPageInner() {
   function toggleFeeling(feeling: string) {
     setSelectedFeelings((prev) => {
       if (prev.includes(feeling)) {
-        if (prev.length === 1) return prev;
         return prev.filter((item) => item !== feeling);
       }
 
@@ -856,7 +877,6 @@ function PrayPageInner() {
         ? PROTESTANT_PERSONAL_BASE
         : freePrayerOptions[0]?.label || ''
     );
-    setSelectedFeelings((prev) => (prev.length > 0 ? prev : [DEFAULT_FEELING]));
   }
 
   function openClassicPrayer() {
@@ -964,8 +984,7 @@ function PrayPageInner() {
     const effectiveFreePrayerType = isProtestantPrayerPath
       ? PROTESTANT_PERSONAL_BASE
       : selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer';
-    const effectiveFeelings =
-      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
+    const freePrayerContent = buildFreePrayerContent(input, selectedFeelings);
 
     const payload: PrayerRequestPayload =
       mode === 'classic'
@@ -985,8 +1004,7 @@ function PrayPageInner() {
             avatarLabel: currentAvatar?.label ?? 'Grace',
             prayerType: effectiveFreePrayerType,
             userName: effectivePrayerForName || null,
-            feelings: effectiveFeelings,
-            input: input.trim(),
+            ...freePrayerContent,
             ...timeContext,
           };
 
@@ -995,8 +1013,7 @@ function PrayPageInner() {
 
   async function handleQuickPrayer() {
     const timeContext = getLocalTimeContext();
-    const quickFeelings =
-      selectedFeelings.length > 0 ? selectedFeelings : [DEFAULT_FEELING];
+    const quickPrayerContent = buildFreePrayerContent(input, selectedFeelings);
 
     setLauncherView('quick');
 
@@ -1018,8 +1035,7 @@ function PrayPageInner() {
         ? PROTESTANT_PERSONAL_BASE
         : selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer',
       userName: effectivePrayerForName || null,
-      feelings: quickFeelings,
-      input: input.trim(),
+      ...quickPrayerContent,
       ...timeContext,
     };
 
@@ -1040,7 +1056,7 @@ function PrayPageInner() {
       setIntention('');
     } else {
       setInput('');
-      setSelectedFeelings([DEFAULT_FEELING]);
+      setSelectedFeelings([]);
       setSelectedPrayerType(
         isProtestantPrayerPath
           ? PROTESTANT_PERSONAL_BASE
@@ -2050,7 +2066,7 @@ function PrayPageInner() {
                           })}
                         </div>
                         <p className="mt-3 text-sm text-zinc-900">
-                          One feeling is always kept selected so you can begin quickly.
+                          Feelings are optional. You can choose any number of them, or none.
                         </p>
                       </div>
                     </>
