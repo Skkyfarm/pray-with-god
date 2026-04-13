@@ -71,8 +71,8 @@ function StatusBadge({ status }: { status: HubCard["status"] }) {
     status === "Live now"
       ? "border-emerald-200 bg-emerald-50 text-emerald-700"
       : status === "Coming next"
-      ? "border-sky-200 bg-sky-50 text-sky-700"
-      : "border-amber-200 bg-amber-50 text-amber-700";
+        ? "border-sky-200 bg-sky-50 text-sky-700"
+        : "border-amber-200 bg-amber-50 text-amber-700";
 
   return (
     <span
@@ -112,9 +112,9 @@ export default async function DashboardPage() {
           </h1>
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
-            This is the PWG continuity layer — the place where profile details,
-            prayer history, saved prayers, private settings, and membership
-            tools will live together.
+            This is your PWG continuity layer — the place for profile details,
+            prayer history, saved prayers, private settings, and your personal
+            member home base.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -200,31 +200,16 @@ export default async function DashboardPage() {
         <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
           <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
             <h2 className="text-lg font-semibold text-slate-900">
-              What comes next
+              What you can do here now
             </h2>
 
-            <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-              <li>
-                <span className="font-semibold text-slate-900">1.</span> Wire
-                profile into Supabase persistence.
-              </li>
-              <li>
-                <span className="font-semibold text-slate-900">2.</span> Wire
-                prayer history into Supabase persistence.
-              </li>
-              <li>
-                <span className="font-semibold text-slate-900">3.</span> Wire
-                saved prayers into Supabase persistence.
-              </li>
-              <li>
-                <span className="font-semibold text-slate-900">4.</span> Create
-                and wire <code>user_preferences</code>.
-              </li>
-              <li>
-                <span className="font-semibold text-slate-900">5.</span> Add
-                membership and billing inside the dashboard.
-              </li>
-            </ol>
+            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+              <li>Open Pray and begin a new prayer.</li>
+              <li>Review your recent prayer history.</li>
+              <li>Return to prayers you intentionally saved.</li>
+              <li>Update your profile details.</li>
+              <li>Manage your private settings.</li>
+            </ul>
           </section>
 
           <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
