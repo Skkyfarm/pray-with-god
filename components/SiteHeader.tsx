@@ -1,6 +1,7 @@
 // components/SiteHeader.tsx
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -172,10 +173,26 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-5">
         <Link
           href="/"
-          className="text-xs font-semibold tracking-[0.18em] text-black/90 hover:text-black sm:text-sm"
+          className="flex items-center gap-2.5 text-black/90 hover:text-black"
           aria-label="Go to PrayWithGod home"
         >
-          PWG
+          <Image
+            src="/brand/pwg-icon-512.png"
+            alt="PrayWithGod.ai"
+            width={36}
+            height={36}
+            priority
+            className="h-9 w-9 rounded-xl shadow-sm"
+          />
+
+          <div className="flex flex-col leading-none">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.20em] text-black/85 sm:text-[11px]">
+              PrayWithGod.ai
+            </span>
+            <span className="hidden text-[9px] font-medium tracking-[0.14em] text-black/55 sm:block">
+              Prayer and Reflection
+            </span>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex" aria-label="Primary">
