@@ -1,11 +1,24 @@
 // /app/about/page.tsx
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AboutPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
-      <h1 className="text-3xl font-semibold">About PrayWithGod.ai</h1>
-      <p className="mt-3 text-gray-800">
+      <div className="mb-8 flex justify-center">
+        <Image
+          src="/brand/pwg-logo.png"
+          alt="PrayWithGod.ai logo"
+          width={420}
+          height={315}
+          className="h-auto w-full max-w-[420px]"
+          priority
+        />
+      </div>
+
+      <h1 className="text-3xl font-semibold text-center">About PrayWithGod.ai</h1>
+
+      <p className="mt-3 text-center text-gray-800">
         PrayWithGod.ai (PWG) is a calm, respectful space for prayer and
         reflection — designed for people who want help putting their intentions
         into words, at their own pace.
@@ -16,7 +29,7 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold">Our mission</h2>
           <p className="mt-2 text-sm text-gray-800">
             To offer a peaceful place to pray — where people can slow down,
-            breathe, reflect, and find words for what is on their heart.
+            breathe, reflect, and find words for what is in their heart.
           </p>
         </section>
 
