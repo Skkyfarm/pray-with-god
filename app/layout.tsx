@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/next";
 import SiteHeader from "@/components/SiteHeader";
 import FooterLinkArray from "@/components/FooterLinkArray";
 
@@ -41,6 +41,8 @@ export default function RootLayout({
           <div className="relative z-10">
             <FooterLinkArray />
           </div>
+
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
