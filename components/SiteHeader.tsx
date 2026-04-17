@@ -1,9 +1,10 @@
-// components/SiteHeader.tsx
+// /components/SiteHeader.tsx
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { headerLinks, supportLinks } from "@/lib/siteLinks";
 
@@ -14,7 +15,9 @@ export default function SiteHeader() {
   const [shareFeedback, setShareFeedback] = useState("");
 
   const headerRef = useRef<HTMLElement | null>(null);
-  const supportRef = useRef<HTMLDivElement | null>(null);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const siteUrl = "https://praywithgod.ai";
 
@@ -25,15 +28,24 @@ export default function SiteHeader() {
 
   const shareUrl = `${siteUrl}${sharePath || ""}`;
 
+  function closeAllMenus() {
+    setShareOpen(false);
+    setSupportOpen(false);
+    setMobileOpen(false);
+  }
+
+  function closeDesktopDropdownsOnly() {
+    setShareOpen(false);
+    setSupportOpen(false);
+  }
+
   useEffect(() => {
     function onDocPointerDown(e: PointerEvent) {
       const target = e.target as Node | null;
       if (!target) return;
 
       if (headerRef.current && !headerRef.current.contains(target)) {
-        setShareOpen(false);
-        setSupportOpen(false);
-        setMobileOpen(false);
+        closeAllMenus();
       }
     }
 
@@ -44,9 +56,7 @@ export default function SiteHeader() {
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        setShareOpen(false);
-        setSupportOpen(false);
-        setMobileOpen(false);
+        closeAllMenus();
       }
     }
 
@@ -59,6 +69,10 @@ export default function SiteHeader() {
     const timer = setTimeout(() => setShareFeedback(""), 2200);
     return () => clearTimeout(timer);
   }, [shareFeedback]);
+
+  useEffect(() => {
+    closeAllMenus();
+  }, [pathname, searchParams]);
 
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("PrayWithGod");
@@ -121,12 +135,6 @@ export default function SiteHeader() {
     }
   }
 
-  function closeAllMenus() {
-    setShareOpen(false);
-    setSupportOpen(false);
-    setMobileOpen(false);
-  }
-
   function renderSupportItem(
     item: { label: string; href?: string },
     mobile = false
@@ -173,6 +181,8 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 sm:px-5">
         <Link
           href="/"
+          onClick={closeAllMenus}
+          onMouseEnter={closeDesktopDropdownsOnly}
           className="flex items-center gap-2.5 text-black/90 hover:text-black"
           aria-label="Go to PrayWithGod home"
         >
@@ -200,6 +210,8 @@ export default function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={closeAllMenus}
+              onMouseEnter={closeDesktopDropdownsOnly}
               className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
             >
               {item.label}
@@ -210,12 +222,16 @@ export default function SiteHeader() {
             <>
               <Link
                 href="/dashboard"
+                onClick={closeAllMenus}
+                onMouseEnter={closeDesktopDropdownsOnly}
                 className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
               >
                 DASHBOARD
               </Link>
               <Link
                 href="/account"
+                onClick={closeAllMenus}
+                onMouseEnter={closeDesktopDropdownsOnly}
                 className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
               >
                 ACCOUNT
@@ -226,6 +242,9 @@ export default function SiteHeader() {
           <div className="relative">
             <button
               type="button"
+              onMouseEnter={() => {
+                setSupportOpen(false);
+              }}
               onClick={() => {
                 setShareOpen((v) => !v);
                 setSupportOpen(false);
@@ -266,9 +285,12 @@ export default function SiteHeader() {
             ) : null}
           </div>
 
-          <div className="relative" ref={supportRef}>
+          <div className="relative">
             <button
               type="button"
+              onMouseEnter={() => {
+                setShareOpen(false);
+              }}
               onClick={() => {
                 setSupportOpen((v) => !v);
                 setShareOpen(false);
@@ -301,6 +323,7 @@ export default function SiteHeader() {
           <SignedOut>
             <Link
               href="/signin"
+              onClick={closeAllMenus}
               className="hidden text-[11px] font-semibold tracking-[0.18em] text-black/70 hover:text-black md:inline"
             >
               Sign In
@@ -308,6 +331,7 @@ export default function SiteHeader() {
 
             <Link
               href="/signin"
+              onClick={closeAllMenus}
               className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
             >
               JOIN

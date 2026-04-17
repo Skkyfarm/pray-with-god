@@ -9,8 +9,7 @@ export const headerLinks: NavLink[] = [
 ];
 
 export const supportLinks: NavLink[] = [
-  { label: "Help", href: "/support" },
-  { label: "Donate", href: "/donate" },
+  { label: "Support PWG", href: "/support" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Report Issue", href: "/report" },

@@ -1,6 +1,7 @@
 // /app/donate/page.tsx
 'use client';
 
+import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
@@ -40,12 +41,28 @@ export default function DonatePage() {
         onLoad={() => setSdkLoaded(true)}
       />
 
-      <h1 className="text-3xl font-semibold">Support PWG</h1>
+      <h1 className="text-3xl font-semibold">Donate to PWG</h1>
       <p className="mt-3 text-gray-800">
-        Prayer stays free for everyone. If PrayWithGod.ai has been meaningful to
-        you, your support helps keep it calm, respectful, and available to
-        others.
+        Prayer companionship and exploration remain free for everyone on
+        PrayWithGod.ai. If PWG has been meaningful to you, your donation helps
+        sustain the mission and support added features like saved prayers,
+        prayer history, and more as the site grows.
       </p>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          href="/support"
+          className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+        >
+          Back to Support PWG
+        </Link>
+        <Link
+          href="/faq"
+          className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+        >
+          View FAQ
+        </Link>
+      </div>
 
       <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
         <h2 className="text-lg font-semibold">Give with PayPal</h2>
@@ -55,9 +72,18 @@ export default function DonatePage() {
 
         <div className="mt-5" id={PAYPAL_CONTAINER_ID} />
 
-        <p className="mt-6 text-xs text-gray-600">
-          Support for PrayWithGod.ai is not tax-deductible. Skky Farm Publishing
-          LLC is not a qualified charitable organization.
+        <p className="mt-6 text-xs leading-relaxed text-gray-600">
+          Donations in support of PrayWithGod.ai are not tax-deductible. Skky
+          Farm Publishing LLC is not a qualified charitable organization.
+        </p>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
+        <h2 className="text-lg font-semibold">Why your support matters</h2>
+        <p className="mt-2 text-sm leading-relaxed text-gray-800">
+          PWG was built to remain a calm, welcoming place for prayer,
+          reflection, and spiritual exploration. Your support helps keep that
+          work growing while core prayer companionship stays free for everyone.
         </p>
       </div>
     </main>
