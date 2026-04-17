@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getOrCreateProfile } from "@/lib/profile/getOrCreateProfile";
 
 type SavePrayerBody = {
   generatedPrayerId?: string;
@@ -18,39 +19,6 @@ type MemberStatusRow = {
 };
 
 type SaveAccessState = "active" | "expired_member" | "not_member";
-
-async function getOrCreateProfileId(clerkUserId: string) {
-  const supabaseAdmin = createSupabaseAdminClient();
-
-  const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
-    .from("profiles")
-    .select("id")
-    .eq("clerk_user_id", clerkUserId)
-    .maybeSingle();
-
-  if (existingProfileError) {
-    throw new Error(`Could not load profile: ${existingProfileError.message}`);
-  }
-
-  if (existingProfile?.id) {
-    return existingProfile.id as string;
-  }
-
-  const { data: insertedProfile, error: insertedProfileError } = await supabaseAdmin
-    .from("profiles")
-    .insert({
-      clerk_user_id: clerkUserId,
-      updated_at: new Date().toISOString(),
-    })
-    .select("id")
-    .single();
-
-  if (insertedProfileError) {
-    throw new Error(`Could not create profile: ${insertedProfileError.message}`);
-  }
-
-  return insertedProfile.id as string;
-}
 
 function hasSupportHistory(memberStatus: MemberStatusRow | null) {
   if (!memberStatus) {
@@ -119,7 +87,8 @@ export async function POST(req: Request) {
     }
 
     const supabaseAdmin = createSupabaseAdminClient();
-    const profileId = await getOrCreateProfileId(userId);
+    const profile = await getOrCreateProfile();
+    const profileId = profile.id;
 
     const { data: memberStatus, error: memberStatusError } = await supabaseAdmin
       .from("member_status")

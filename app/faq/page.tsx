@@ -4,19 +4,35 @@ import Link from "next/link";
 const faqs = [
   {
     q: "What is PrayWithGod.ai?",
-    a: "PrayWithGod.ai is a calm, respectful space for prayer and reflection. It helps you put your intention into words and offers a gentle, tradition-aware prayer companion experience.",
+    a: "PrayWithGod.ai is a prayer companion for believers, seekers, and anyone in need of a quiet moment of prayer. It offers a calm, respectful space for prayer, reflection, and spiritual exploration.",
+  },
+  {
+    q: "Is prayer free on PWG?",
+    a: "Yes. Prayer companionship and exploration are free for everyone on PWG.",
   },
   {
     q: "Do I need an account to pray?",
-    a: "No. You can pray privately without creating an account. Signing in is only for extra features like saving prayers and keeping track of your preferences. Prayer itself stays free for everyone.",
+    a: "No. You can pray privately without creating an account. Prayer itself remains free for everyone.",
+  },
+  {
+    q: "Why create a free account?",
+    a: "A free account helps PWG recognize you when you return and makes it possible to take part in features like comments and shared reflections as they become available.",
+  },
+  {
+    q: "Is a free account the same as being a supporter?",
+    a: "No. A free account helps with recognition and participation. Supporters help sustain the mission and unlock added features like saved prayers, prayer history, and other enhanced tools over time.",
+  },
+  {
+    q: "What does supporting PWG unlock?",
+    a: "Supporting PWG helps sustain the mission and unlocks enhanced features like saved prayers, prayer history, and other tools that help you return to what mattered.",
   },
   {
     q: "Is this tied to one religion?",
-    a: "PWG is designed to support multiple traditions. You choose the tradition and style you want, and PWG aims to stay respectful and non-coercive.",
+    a: "PWG is designed to support multiple traditions. You choose the tradition and prayer style you want, and PWG aims to remain respectful, thoughtful, and welcoming.",
   },
   {
     q: "Is this a replacement for clergy, therapy, or medical care?",
-    a: "No. PWG can be a supportive tool, but it is not a substitute for professional care, crisis services, or spiritual leadership in your community.",
+    a: "No. PWG can be a supportive spiritual tool, but it is not a substitute for professional care, crisis services, or spiritual leadership in your own community.",
   },
   {
     q: "Is my prayer private?",
@@ -24,7 +40,7 @@ const faqs = [
   },
   {
     q: "How can I support PWG?",
-    a: "You can donate, share PWG with someone who might benefit, or send feedback about what feels helpful and what needs improvement.",
+    a: "You can support PWG by donating, sharing it with someone who may benefit, or sending thoughtful feedback about what feels helpful and what needs improvement. You can also visit the Support page to learn more.",
   },
 ];
 
@@ -33,8 +49,8 @@ export default function FAQPage() {
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
       <h1 className="text-3xl font-semibold">FAQ</h1>
       <p className="mt-3 text-gray-800">
-        Quick answers to common questions. If you do not see what you need,
-        reach out anytime.
+        Quick answers to common questions about prayer, accounts, support, and
+        how PWG works.
       </p>
 
       <div className="mt-8 space-y-4">
@@ -49,15 +65,24 @@ export default function FAQPage() {
               </span>
               {item.q}
             </summary>
-            <p className="mt-3 text-sm text-gray-800">{item.a}</p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-800">{item.a}</p>
+
+            {item.q === "How can I support PWG?" && (
+              <div className="mt-4">
+                <Link
+                  href="/support"
+                  className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+                >
+                  Visit Support Page
+                </Link>
+              </div>
+            )}
           </details>
         ))}
       </div>
 
       <div className="mt-10 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold text-gray-950">
-          Still have a question?
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-950">Still have a question?</h2>
         <p className="mt-2 text-gray-800">
           For general questions, contact us directly. For bugs or technical
           issues, use the support address below.
@@ -101,6 +126,12 @@ export default function FAQPage() {
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
           >
             Contact
+          </Link>
+          <Link
+            href="/support"
+            className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+          >
+            Support
           </Link>
         </div>
       </div>

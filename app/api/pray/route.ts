@@ -10,6 +10,7 @@ import {
 import type { Tradition } from "@/lib/avatars";
 import { detectPrayerSafety } from "@/lib/safety";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getOrCreateProfile } from "@/lib/profile/getOrCreateProfile";
 
 export const runtime = "nodejs";
 
@@ -469,43 +470,7 @@ function getStoredPrayerMode(mode: PrayMode) {
   return mode === "free" ? "quick" : "classic";
 }
 
-async function getOrCreateProfileId(clerkUserId: string) {
-  const supabaseAdmin = createSupabaseAdminClient();
-
-  const { data: existingProfile, error: existingProfileError } =
-    await supabaseAdmin
-      .from("profiles")
-      .select("id")
-      .eq("clerk_user_id", clerkUserId)
-      .maybeSingle();
-
-  if (existingProfileError) {
-    throw new Error(`Could not load profile: ${existingProfileError.message}`);
-  }
-
-  if (existingProfile?.id) {
-    return existingProfile.id;
-  }
-
-  const { data: insertedProfile, error: insertedProfileError } =
-    await supabaseAdmin
-      .from("profiles")
-      .insert({
-        clerk_user_id: clerkUserId,
-        updated_at: new Date().toISOString(),
-      })
-      .select("id")
-      .single();
-
-  if (insertedProfileError) {
-    throw new Error(`Could not create profile: ${insertedProfileError.message}`);
-  }
-
-  return insertedProfile.id;
-}
-
 async function saveGeneratedPrayer(params: {
-  clerkUserId: string;
   tradition: Tradition;
   mode: PrayMode;
   feelings: string[];
@@ -516,7 +481,6 @@ async function saveGeneratedPrayer(params: {
   generatedText: string;
 }) {
   const {
-    clerkUserId,
     tradition,
     mode,
     feelings,
@@ -527,7 +491,7 @@ async function saveGeneratedPrayer(params: {
     generatedText,
   } = params;
 
-  const profileId = await getOrCreateProfileId(clerkUserId);
+  const profile = await getOrCreateProfile();
   const supabaseAdmin = createSupabaseAdminClient();
 
   const storedPrayerMode = getStoredPrayerMode(mode);
@@ -539,7 +503,7 @@ async function saveGeneratedPrayer(params: {
   const { data, error } = await supabaseAdmin
     .from("generated_prayers")
     .insert({
-      profile_id: profileId,
+      profile_id: profile.id,
       tradition: String(tradition).toLowerCase(),
       prayer_mode: storedPrayerMode,
       prayer_type_slug: null,
@@ -815,7 +779,6 @@ Do not mention rules or instructions.
     if (userId) {
       try {
         generatedPrayerId = await saveGeneratedPrayer({
-          clerkUserId: userId,
           tradition,
           mode,
           feelings,

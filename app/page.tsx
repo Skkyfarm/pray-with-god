@@ -135,7 +135,11 @@ export default function Home() {
             </h1>
 
             <p className="mx-auto max-w-2xl text-sm leading-relaxed text-black md:text-[15px]">
-              Prayer companion for believers, seekers, and anyone in need of a quiet moment of prayer.
+              A prayer companion for believers, seekers, and anyone in need of a quiet moment of prayer.
+            </p>
+
+            <p className="mx-auto max-w-2xl text-xs leading-relaxed text-black/80 md:text-sm">
+              Free prayer companionship and exploration for everyone. Support PWG to save prayers and unlock enhanced features.
             </p>
           </div>
 
