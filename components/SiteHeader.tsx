@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { headerLinks, supportLinks } from "@/lib/siteLinks";
 
@@ -17,7 +17,6 @@ export default function SiteHeader() {
   const headerRef = useRef<HTMLElement | null>(null);
 
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const siteUrl = "https://praywithgod.ai";
 
@@ -72,7 +71,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     closeAllMenus();
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   const emailHref = useMemo(() => {
     const subject = encodeURIComponent("PrayWithGod");
