@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignOutUrl="/signout">
       <html lang="en">
         <body
           className={`${inter.className} relative min-h-screen flex flex-col bg-white text-black antialiased`}
@@ -34,9 +34,7 @@ export default function RootLayout({
             <SiteHeader />
           </div>
 
-          <div className="relative z-10 flex-grow">
-            {children}
-          </div>
+          <div className="relative z-10 flex-grow">{children}</div>
 
           <div className="relative z-10">
             <FooterLinkArray />

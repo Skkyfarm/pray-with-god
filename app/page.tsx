@@ -37,6 +37,21 @@ function getPreferredClerkName(user: ReturnType<typeof useUser>['user']) {
   return null;
 }
 
+function clearLocalNameMemory() {
+  if (typeof window === 'undefined') return;
+
+  localStorage.removeItem('pwg_user_name');
+  localStorage.removeItem('pwg_name_skipped');
+
+  for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+    const key = localStorage.key(i);
+
+    if (key?.startsWith('pwg_user_name_')) {
+      localStorage.removeItem(key);
+    }
+  }
+}
+
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
 
@@ -111,6 +126,13 @@ export default function Home() {
     setGreeting('I’m here.');
   };
 
+  const handleClearSavedName = () => {
+    clearLocalNameMemory();
+    setUserName(null);
+    setHasSkippedName(false);
+    setGreeting('I’m here.');
+  };
+
   const traditions = [
     { name: 'Protestant', path: '/pray?path=protestant', avatar: AVATARS.protestant },
     { name: 'Catholic', path: '/pray?path=catholic', avatar: AVATARS.catholic },
@@ -158,6 +180,16 @@ export default function Home() {
               </div>
 
               {!userName && <NameCapture onComplete={handleNameComplete} />}
+
+              {userName && !isSignedIn ? (
+                <button
+                  type="button"
+                  onClick={handleClearSavedName}
+                  className="mt-3 text-xs font-semibold text-black/55 underline underline-offset-4 hover:text-black"
+                >
+                  Not you? Clear saved name
+                </button>
+              ) : null}
             </div>
           )}
 
