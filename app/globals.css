@@ -1,3 +1,4 @@
+/* /app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,6 +53,55 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Guided action glow - use only on main doorway / next-step controls */
+.pwg-guided-action {
+  position: relative;
+  transform: translateZ(0);
+  transition:
+    transform 260ms ease,
+    box-shadow 260ms ease,
+    border-color 260ms ease,
+    background-color 260ms ease,
+    color 260ms ease;
+  will-change: transform;
+}
+
+.pwg-guided-action:hover,
+.pwg-guided-action:focus-visible {
+  transform: translateY(-3px) scale(1.025);
+  border-color: rgba(167, 139, 250, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.86),
+    0 0 18px rgba(255, 255, 255, 0.84),
+    0 0 36px rgba(139, 92, 246, 0.46),
+    0 0 68px rgba(91, 33, 182, 0.30);
+}
+
+.pwg-guided-action:focus-visible {
+  outline: none;
+}
+
+.pwg-guided-action:active {
+  transform: translateY(-1px) scale(1.01);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pwg-guided-action {
+    transition:
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease;
+    will-change: auto;
+  }
+
+  .pwg-guided-action:hover,
+  .pwg-guided-action:focus-visible,
+  .pwg-guided-action:active {
+    transform: none;
+  }
 }
 
 /* Float Animation */

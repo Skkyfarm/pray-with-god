@@ -112,7 +112,7 @@ export default function Home() {
       localStorage.setItem('pwg_user_name', name);
       localStorage.removeItem('pwg_name_skipped');
       setHasSkippedName(false);
-      setGreeting(getRandomGreeting(name));
+      setGreeting(`Welcome, ${name}.`);
       return;
     }
 

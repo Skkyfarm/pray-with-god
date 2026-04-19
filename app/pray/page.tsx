@@ -1460,11 +1460,11 @@ function PrayPageInner() {
   ];
 
   const launcherButtonClass = (active: boolean) =>
-    `rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70 ${
-      active
-        ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
-        : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
-    }`;
+  `pwg-guided-action rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70 ${
+    active
+      ? 'border border-sky-400 bg-sky-100 text-zinc-900 shadow-sm'
+      : 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
+  }`;
 
   const saveFeedbackClass =
     saveFeedbackTone === 'success'
@@ -1548,7 +1548,7 @@ function PrayPageInner() {
                 <button
                   type="button"
                   onClick={handleReadAloud}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                  className="pwg-guided-action mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
                 >
                   {isSpeaking ? (
                     <>
@@ -1819,7 +1819,7 @@ function PrayPageInner() {
                         onClick={handleQuickPrayer}
                         disabled={isReflecting}
                         title="Generate a prayer now"
-                        className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="pwg-guided-action inline-flex items-center justify-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
                       >
                         {isReflecting ? (
                           <>
@@ -2077,7 +2077,7 @@ function PrayPageInner() {
                       type="button"
                       onClick={handleGeneratePrayer}
                       disabled={isReflecting}
-                      className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                      className="pwg-guided-action inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       {isReflecting ? (
                         <>
