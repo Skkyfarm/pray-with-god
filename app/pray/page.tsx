@@ -1510,7 +1510,7 @@ function PrayPageInner() {
           </Link>
 
           <div className="rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm text-zinc-900 shadow-sm backdrop-blur">
-            {userName ? `Welcome back, ${userName}.` : 'A quiet place to pray.'}
+            {userName ? `Welcome, ${userName}.` : 'A quiet place to pray.'}
           </div>
         </div>
 
