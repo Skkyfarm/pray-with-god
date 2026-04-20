@@ -4,6 +4,7 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import DeleteSavedPrayerButton from "@/components/dashboard/DeleteSavedPrayerButton";
 import {
   getAccountCapabilities,
   getSupporterAccessMessage,
@@ -362,6 +363,8 @@ export default async function DashboardSavedPrayersPage() {
                         >
                           View Prayer
                         </Link>
+
+                        <DeleteSavedPrayerButton savedPrayerId={savedPrayer.id} />
                       </div>
                     </article>
                   );
