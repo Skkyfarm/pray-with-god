@@ -1,4 +1,5 @@
 // /app/dashboard/prayers/[id]/page.tsx
+
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
@@ -25,6 +26,13 @@ type PrayerRow = {
   created_at: string | null;
 };
 
+type SavedPrayerStateRow = {
+  id: string;
+  title: string | null;
+  is_deleted: boolean | null;
+  created_at: string | null;
+};
+
 function formatPrayerDate(value: string | null) {
   if (!value) return "Unknown date";
 
@@ -46,6 +54,20 @@ function prettifyValue(value: string | null, fallback: string) {
   return value
     .replace(/[_-]+/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getDisplayTitle(
+  source: "saved" | "history",
+  savedPrayer: SavedPrayerStateRow | null,
+  prayer: PrayerRow
+) {
+  const savedTitle = savedPrayer?.title?.trim();
+
+  if (source === "saved" && savedTitle) {
+    return savedTitle;
+  }
+
+  return prayer.prayer_type_label || "Prayer";
 }
 
 export default async function PrayerDetailPage({
@@ -93,23 +115,29 @@ export default async function PrayerDetailPage({
 
   const { data: savedPrayer, error: savedPrayerError } = await supabaseAdmin
     .from("saved_prayers")
-    .select("id")
+    .select("id, title, is_deleted, created_at")
     .eq("profile_id", profile.id)
     .eq("generated_prayer_id", params.id)
-    .maybeSingle();
+    .eq("is_deleted", false)
+    .maybeSingle<SavedPrayerStateRow>();
 
   if (savedPrayerError) {
-    throw new Error(`Could not load saved prayer state: ${savedPrayerError.message}`);
+    throw new Error(
+      `Could not load saved prayer state: ${savedPrayerError.message}`
+    );
   }
 
   const prayerRow = prayer as PrayerRow;
-  const initiallySaved = Boolean(savedPrayer?.id);
+  const savedPrayerRow = savedPrayer || null;
+  const initiallySaved = Boolean(savedPrayerRow?.id);
   const source = searchParams?.source === "saved" ? "saved" : "history";
 
+  const displayTitle = getDisplayTitle(source, savedPrayerRow, prayerRow);
   const eyebrow = source === "saved" ? "Saved Prayer" : "Prayer History Entry";
   const backHref = source === "saved" ? "/dashboard/saved" : "/dashboard/prayers";
-  const backLabel = source === "saved" ? "← Back to Saved Prayers" : "← Back to Prayer History";
-  const statusLabel = source === "saved" ? "Saved" : "History";
+  const backLabel =
+    source === "saved" ? "← Back to Saved Prayers" : "← Back to Prayer History";
+  const statusLabel = source === "saved" && initiallySaved ? "Saved" : "History";
 
   return (
     <main className="min-h-screen text-slate-900">
@@ -138,13 +166,19 @@ export default async function PrayerDetailPage({
               </p>
 
               <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                {prayerRow.prayer_type_label ? prayerRow.prayer_type_label : "Prayer"}
+                {displayTitle}
               </h1>
 
               <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
                 {prettifyValue(prayerRow.tradition, "Tradition unknown")} ·{" "}
                 {prettifyValue(prayerRow.prayer_mode, "Mode unknown")}
               </p>
+
+              {source === "saved" && savedPrayerRow?.title ? (
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  This is the title you gave this saved prayer.
+                </p>
+              ) : null}
             </div>
 
             <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
@@ -205,9 +239,29 @@ export default async function PrayerDetailPage({
                   </dd>
                 </div>
 
+                {source === "saved" ? (
+                  <div>
+                    <dt className="font-semibold text-slate-900">
+                      Saved title
+                    </dt>
+                    <dd className="mt-1">{displayTitle}</dd>
+                  </div>
+                ) : null}
+
+                {source === "saved" && savedPrayerRow?.created_at ? (
+                  <div>
+                    <dt className="font-semibold text-slate-900">Saved</dt>
+                    <dd className="mt-1">
+                      {formatPrayerDate(savedPrayerRow.created_at)}
+                    </dd>
+                  </div>
+                ) : null}
+
                 <div>
                   <dt className="font-semibold text-slate-900">Created</dt>
-                  <dd className="mt-1">{formatPrayerDate(prayerRow.created_at)}</dd>
+                  <dd className="mt-1">
+                    {formatPrayerDate(prayerRow.created_at)}
+                  </dd>
                 </div>
               </dl>
             </section>
