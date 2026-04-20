@@ -1,64 +1,41 @@
 // /app/api/prayers/save/route.ts
+
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getOrCreateProfile } from "@/lib/profile/getOrCreateProfile";
+import {
+  getAccountCapabilities,
+  type MemberStatusLike,
+} from "@/lib/accountCapabilities";
 
 type SavePrayerBody = {
   generatedPrayerId?: string;
 };
 
-type MemberStatusRow = {
-  is_member?: boolean | null;
-  support_type?: string | null;
-  support_started_at?: string | null;
-  support_expires_at?: string | null;
-  last_support_at?: string | null;
-  lifetime_support_total?: number | null;
-  founding_supporter?: boolean | null;
+type MemberStatusRow = MemberStatusLike & {
+  id?: string | null;
+  profile_id?: string | null;
 };
 
-type SaveAccessState = "active" | "expired_member" | "not_member";
+function getInactiveSupportErrorCode(memberStatus: MemberStatusRow | null) {
+  const supportStatus = memberStatus?.support_status ?? "none";
 
-function hasSupportHistory(memberStatus: MemberStatusRow | null) {
-  if (!memberStatus) {
-    return false;
-  }
-
-  const supportType = (memberStatus.support_type || "").trim().toLowerCase();
-  const hasRealSupportType = supportType !== "" && supportType !== "none";
-
-  return Boolean(
-    hasRealSupportType ||
-      memberStatus.support_started_at ||
-      memberStatus.support_expires_at ||
-      memberStatus.last_support_at ||
-      memberStatus.founding_supporter ||
-      (typeof memberStatus.lifetime_support_total === "number" &&
-        memberStatus.lifetime_support_total > 0)
-  );
-}
-
-function getSaveAccessState(memberStatus: MemberStatusRow | null): SaveAccessState {
-  if (!memberStatus) {
-    return "not_member";
-  }
-
-  if (memberStatus.is_member) {
-    if (!memberStatus.support_expires_at) {
-      return "active";
-    }
-
-    const expiresAt = new Date(memberStatus.support_expires_at);
-
-    if (!Number.isNaN(expiresAt.getTime()) && expiresAt.getTime() > Date.now()) {
-      return "active";
-    }
-
+  if (supportStatus === "expired" || supportStatus === "canceled") {
     return "expired_member";
   }
 
-  return hasSupportHistory(memberStatus) ? "expired_member" : "not_member";
+  return "not_member";
+}
+
+function getInactiveSupportMessage(memberStatus: MemberStatusRow | null) {
+  const errorCode = getInactiveSupportErrorCode(memberStatus);
+
+  if (errorCode === "expired_member") {
+    return "Your PWG support appears to have lapsed. Renew support to keep saving prayers.";
+  }
+
+  return "Support PWG to save prayers.";
 }
 
 export async function POST(req: Request) {
@@ -93,7 +70,17 @@ export async function POST(req: Request) {
     const { data: memberStatus, error: memberStatusError } = await supabaseAdmin
       .from("member_status")
       .select(
-        "is_member, support_type, support_started_at, support_expires_at, last_support_at, lifetime_support_total, founding_supporter"
+        [
+          "id",
+          "profile_id",
+          "is_member",
+          "support_type",
+          "support_status",
+          "support_plan",
+          "support_current_period_end",
+          "support_canceled_at",
+          "lifetime_support_cents",
+        ].join(", ")
       )
       .eq("profile_id", profileId)
       .maybeSingle<MemberStatusRow>();
@@ -108,29 +95,30 @@ export async function POST(req: Request) {
       );
     }
 
-    const saveAccessState = getSaveAccessState(memberStatus || null);
+    const capabilities = getAccountCapabilities({
+      userId,
+      memberStatus: memberStatus || null,
+    });
 
-    if (saveAccessState !== "active") {
-      const isExpired = saveAccessState === "expired_member";
-
+    if (!capabilities.canSavePrayers) {
       return NextResponse.json(
         {
-          error: isExpired
-            ? "Your PWG support appears to have lapsed. Renew support to keep saving prayers."
-            : "Support PWG to save prayers.",
-          errorCode: saveAccessState,
+          error: getInactiveSupportMessage(memberStatus || null),
+          errorCode: getInactiveSupportErrorCode(memberStatus || null),
           supportRequired: true,
+          viewerKind: capabilities.viewerKind,
         },
         { status: 403 }
       );
     }
 
-    const { data: generatedPrayer, error: generatedPrayerError } = await supabaseAdmin
-      .from("generated_prayers")
-      .select("id, profile_id")
-      .eq("id", generatedPrayerId)
-      .eq("profile_id", profileId)
-      .maybeSingle();
+    const { data: generatedPrayer, error: generatedPrayerError } =
+      await supabaseAdmin
+        .from("generated_prayers")
+        .select("id, profile_id")
+        .eq("id", generatedPrayerId)
+        .eq("profile_id", profileId)
+        .maybeSingle();
 
     if (generatedPrayerError) {
       return NextResponse.json(
@@ -149,12 +137,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data: existingSavedPrayer, error: existingSavedPrayerError } = await supabaseAdmin
-      .from("saved_prayers")
-      .select("id, generated_prayer_id")
-      .eq("profile_id", profileId)
-      .eq("generated_prayer_id", generatedPrayerId)
-      .maybeSingle();
+    const { data: existingSavedPrayer, error: existingSavedPrayerError } =
+      await supabaseAdmin
+        .from("saved_prayers")
+        .select("id, generated_prayer_id, is_deleted")
+        .eq("profile_id", profileId)
+        .eq("generated_prayer_id", generatedPrayerId)
+        .maybeSingle();
 
     if (existingSavedPrayerError) {
       return NextResponse.json(
@@ -167,6 +156,34 @@ export async function POST(req: Request) {
     }
 
     if (existingSavedPrayer?.id) {
+      if (existingSavedPrayer.is_deleted) {
+        const { error: restoreSavedPrayerError } = await supabaseAdmin
+          .from("saved_prayers")
+          .update({
+            is_deleted: false,
+            deleted_at: null,
+          })
+          .eq("id", existingSavedPrayer.id)
+          .eq("profile_id", profileId);
+
+        if (restoreSavedPrayerError) {
+          return NextResponse.json(
+            {
+              error: "Could not restore saved prayer.",
+              details: restoreSavedPrayerError.message,
+            },
+            { status: 500 }
+          );
+        }
+
+        return NextResponse.json({
+          ok: true,
+          alreadySaved: false,
+          restored: true,
+          savedPrayerId: existingSavedPrayer.id,
+        });
+      }
+
       return NextResponse.json({
         ok: true,
         alreadySaved: true,
@@ -174,14 +191,17 @@ export async function POST(req: Request) {
       });
     }
 
-    const { data: insertedSavedPrayer, error: insertedSavedPrayerError } = await supabaseAdmin
-      .from("saved_prayers")
-      .insert({
-        profile_id: profileId,
-        generated_prayer_id: generatedPrayerId,
-      })
-      .select("id")
-      .single();
+    const { data: insertedSavedPrayer, error: insertedSavedPrayerError } =
+      await supabaseAdmin
+        .from("saved_prayers")
+        .insert({
+          profile_id: profileId,
+          generated_prayer_id: generatedPrayerId,
+          title: "Saved Prayer",
+          is_deleted: false,
+        })
+        .select("id")
+        .single();
 
     if (insertedSavedPrayerError) {
       return NextResponse.json(
