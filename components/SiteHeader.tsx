@@ -1,4 +1,5 @@
 // /components/SiteHeader.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -227,6 +228,7 @@ export default function SiteHeader() {
               >
                 DASHBOARD
               </Link>
+
               <Link
                 href="/account"
                 onClick={closeAllMenus}
@@ -234,6 +236,15 @@ export default function SiteHeader() {
                 className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
               >
                 ACCOUNT
+              </Link>
+
+              <Link
+                href="/signout"
+                onClick={closeAllMenus}
+                onMouseEnter={closeDesktopDropdownsOnly}
+                className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
+              >
+                SIGN OUT
               </Link>
             </>
           </SignedIn>
@@ -388,12 +399,21 @@ export default function SiteHeader() {
                   >
                     DASHBOARD
                   </Link>
+
                   <Link
                     href="/account"
                     onClick={closeAllMenus}
                     className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                   >
                     ACCOUNT
+                  </Link>
+
+                  <Link
+                    href="/signout"
+                    onClick={closeAllMenus}
+                    className="my-2 inline-flex justify-center rounded-xl border border-black/15 bg-white px-4 py-3 text-[11px] font-semibold tracking-[0.18em] text-black/85 hover:bg-white/80"
+                  >
+                    SIGN OUT
                   </Link>
                 </>
               </SignedIn>
@@ -460,7 +480,7 @@ export default function SiteHeader() {
               <SignedIn>
                 <div className="flex items-center gap-3 py-2">
                   <span className="text-[11px] font-semibold tracking-[0.18em] text-black/80">
-                    Account
+                    Clerk Account Menu
                   </span>
                   <UserButton />
                 </div>
