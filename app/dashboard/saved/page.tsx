@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import DeleteSavedPrayerButton from "@/components/dashboard/DeleteSavedPrayerButton";
+import RenameSavedPrayerButton from "@/components/dashboard/RenameSavedPrayerButton";
 import {
   getAccountCapabilities,
   getSupporterAccessMessage,
@@ -322,6 +323,10 @@ export default async function DashboardSavedPrayersPage() {
                   const prayer = generatedPrayerById.get(
                     savedPrayer.generated_prayer_id
                   );
+                  const savedPrayerTitle = getSavedPrayerTitle(
+                    savedPrayer,
+                    prayer
+                  );
 
                   return (
                     <article
@@ -331,7 +336,7 @@ export default async function DashboardSavedPrayersPage() {
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <h3 className="text-base font-semibold text-slate-900">
-                            {getSavedPrayerTitle(savedPrayer, prayer)}
+                            {savedPrayerTitle}
                           </h3>
 
                           <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
@@ -363,6 +368,11 @@ export default async function DashboardSavedPrayersPage() {
                         >
                           View Prayer
                         </Link>
+
+                        <RenameSavedPrayerButton
+                          savedPrayerId={savedPrayer.id}
+                          currentTitle={savedPrayerTitle}
+                        />
 
                         <DeleteSavedPrayerButton savedPrayerId={savedPrayer.id} />
                       </div>
