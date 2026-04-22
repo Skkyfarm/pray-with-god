@@ -21,7 +21,7 @@ const memberHubCards: HubCard[] = [
   },
   {
     title: "Account",
-    description: "View your current account details and member access.",
+    description: "View your current account details and support status.",
     href: "/account",
     cta: "View Account",
     status: "Live now",
@@ -53,17 +53,17 @@ const memberHubCards: HubCard[] = [
   {
     title: "Private settings",
     description:
-      "Control your personal preferences, defaults, and future member options.",
+      "Control your personal preferences, defaults, and future support options.",
     href: "/dashboard/settings",
     cta: "Open Settings",
     status: "Live now",
   },
   {
-    title: "Membership and billing",
-    description:
-      "Manage your member plan, support status, and billing details through Stripe.",
-    status: "Coming later",
-  },
+  title: "Support and billing",
+  description:
+    "Manage your support status and billing details.",
+  status: "Coming later",
+},
 ];
 
 function StatusBadge({ status }: { status: HubCard["status"] }) {
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Member Dashboard
+            PWG Dashboard
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -112,9 +112,9 @@ export default async function DashboardPage() {
           </h1>
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
-            This is your PWG continuity layer — the place for profile details,
-            prayer history, saved prayers, private settings, and your personal
-            member home base.
+            This is your PWG home base — the place for profile details,
+           prayer history, saved prayers, private settings, and your personal
+           support tools.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -218,10 +218,10 @@ export default async function DashboardPage() {
             </h2>
 
             <p className="mt-3 text-sm leading-6 text-slate-700">
-              PWG prayer tools stay free. The member area is the continuity and
-              support layer: your saved prayers, your history, your private
-              preferences, and your personal home base.
-            </p>
+  PWG prayer tools stay free. Your dashboard gives you a personal place
+  for saved prayers, prayer history, private preferences, and support
+  features when they are active.
+          </p>
           </section>
         </div>
       </section>
