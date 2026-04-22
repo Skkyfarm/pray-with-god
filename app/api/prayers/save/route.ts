@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json(
         {
-          error: "Join PWG to save prayers.",
+          error: "Sign in or create a free account to continue.",
           errorCode: "auth_required",
           supportRequired: false,
         },
