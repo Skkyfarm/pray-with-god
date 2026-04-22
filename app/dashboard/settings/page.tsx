@@ -24,7 +24,7 @@ export default async function DashboardSettingsPage() {
 
         <div className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Member Settings
+            PWG Settings
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -33,7 +33,7 @@ export default async function DashboardSettingsPage() {
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
             This is where your personal PWG preferences will live. The first
-            version is a clean shell for private defaults and member-only
+            version is a clean shell for private defaults and future support
             settings that we can wire into Supabase next.
           </p>
         </div>
@@ -51,8 +51,8 @@ export default async function DashboardSettingsPage() {
 
             <p className="mt-3 text-sm leading-6 text-slate-700">
               The next step will connect this page to a{" "}
-              <code>user_preferences</code> table so members can keep their own
-              PWG defaults.
+              <code>user_preferences</code> table so your PWG defaults can be
+              saved and reused.
             </p>
 
             <form className="mt-6 space-y-5">
@@ -105,17 +105,17 @@ export default async function DashboardSettingsPage() {
                 <label className="flex items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-4">
                   <input
                     type="checkbox"
-                    name="autoSavePrayers"
+                    name="prayerHistoryEnabled"
                     className="mt-1 h-4 w-4 rounded border-black/20"
                     disabled
                   />
                   <span>
                     <span className="block text-sm font-semibold text-slate-900">
-                      Auto-save prayers
+                      Prayer history preference
                     </span>
                     <span className="mt-1 block text-xs leading-5 text-slate-500">
-                      Save generated prayers automatically once this setting is
-                      wired up.
+                      Keep a simple prayer history preference once this setting
+                      is wired up.
                     </span>
                   </span>
                 </label>
@@ -143,7 +143,7 @@ export default async function DashboardSettingsPage() {
                 <p className="text-sm leading-6 text-slate-700">
                   Save wiring comes next. After this page is in place, we can
                   create a <code>user_preferences</code> table and persist these
-                  settings per member.
+                  settings per account.
                 </p>
               </div>
 
@@ -175,7 +175,7 @@ export default async function DashboardSettingsPage() {
               <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
                 <li>Default tradition</li>
                 <li>Preferred voice</li>
-                <li>Auto-save prayers</li>
+                <li>Prayer history preference</li>
                 <li>Read-aloud preference</li>
               </ul>
             </section>
@@ -187,8 +187,8 @@ export default async function DashboardSettingsPage() {
 
               <p className="mt-3 text-sm leading-6 text-slate-700">
                 Settings help PWG feel like a real home base. They reduce repeat
-                setup and give members a more personal, steady experience over
-                time.
+                setup and give returning users a more personal, steady
+                experience over time.
               </p>
             </section>
 
@@ -201,7 +201,7 @@ export default async function DashboardSettingsPage() {
                 <li>Make the Settings card live from the dashboard.</li>
                 <li>Create the <code>user_preferences</code> table.</li>
                 <li>Wire these fields to Supabase.</li>
-                <li>Then add membership and billing inside the dashboard.</li>
+                <li>Add support and billing tools inside the dashboard.</li>
               </ol>
             </section>
           </div>
