@@ -1124,10 +1124,10 @@ function PrayPageInner() {
       return;
     }
 
-    if (!isSignedIn) {
+      if (!isSignedIn) {
       setSaveModalMode('join');
       setSaveFeedback(
-        'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+        'Sign in or create a free account to continue. Support PWG when you are ready to save prayers and build your personal prayer library.'
       );
       return;
     }
@@ -1159,7 +1159,7 @@ function PrayPageInner() {
           setSaveFeedbackTone('neutral');
           setSaveFeedback(
             data.error ||
-              'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+              'Sign in or create a free account to continue. Support PWG when you are ready to save prayers and build your personal prayer library.'
           );
           return;
         }
@@ -1473,29 +1473,29 @@ function PrayPageInner() {
         ? 'border-red-200 bg-red-50 text-red-700'
         : 'border-sky-200 bg-sky-50 text-zinc-900';
 
-  const saveSummaryText =
+const saveSummaryText =
     saveModalMode === 'join'
       ? saveFeedback ||
-        'Join PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+        'Sign in or create a free account to continue. Support PWG when you are ready to save prayers and build your personal prayer library.'
       : saveModalMode === 'support'
         ? saveFeedback ||
           'Support PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
         : saveModalMode === 'expired'
           ? saveFeedback ||
-            'Your PWG support appears to have lapsed. Renew support to keep saving prayers and continue building your prayer library.'
+            'Your PWG support appears to have lapsed. Renew support to save prayers and continue building your prayer library.'
           : isSavingPrayer
             ? 'Saving your prayer now...'
             : saveFeedback ||
-              'This prayer can be saved to your dashboard along with the details below.';
+              'Save this prayer to your personal library so you can return to it later.';
 
   const saveModalTitle =
     saveModalMode === 'join'
-      ? 'Join PWG to Save Prayers'
+      ? 'Sign in to create a free account'
       : saveModalMode === 'support'
-        ? 'Support PWG to Save Prayers'
+        ? 'Support PWG to save prayers'
         : saveModalMode === 'expired'
-          ? 'Renew Support to Save Prayers'
-          : 'Save This Prayer';
+          ? 'Renew support to save prayers'
+          : 'Save Prayer';
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
@@ -1592,7 +1592,7 @@ function PrayPageInner() {
                     ) : (
                       <>
                         <Bookmark className="h-4 w-4" />
-                        Save This Prayer
+                        Save Prayer
                       </>
                     )}
                   </button>
@@ -2278,10 +2278,10 @@ function PrayPageInner() {
                 <div className="space-y-3">
                   <div className="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
                     <div className="text-sm font-semibold text-black">
-                      Why Join?
+                      Why create a free account?
                     </div>
                     <p className="mt-2 text-sm leading-7 text-black">
-                      Create a free PWG account so you can save prayers, return to meaningful moments, and begin building your personal prayer library.
+                      A free PWG account helps the site recognize you when you return. Support PWG when you are ready to save prayers and build your personal prayer library.
                     </p>
                   </div>
 
@@ -2303,7 +2303,7 @@ function PrayPageInner() {
                   href="/signin"
                   className="inline-flex items-center rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
                 >
-                  Join or Sign In
+                  Sign in or create a free account
                 </Link>
               ) : saveModalMode === 'support' ? (
                 <Link
