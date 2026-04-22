@@ -103,7 +103,7 @@ function SupportRequiredPanel() {
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Support PWG to Save Prayers
+            Support PWG to save prayers
           </h1>
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
