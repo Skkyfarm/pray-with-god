@@ -7,11 +7,11 @@ export default function SupportPage() {
       <h1 className="text-3xl font-semibold">Support PWG</h1>
 
       <p className="mt-3 text-gray-800">
-        Prayer companionship and exploration are free for everyone on
-        PrayWithGod.ai. If you choose to support PWG, your support helps sustain
-        the mission and unlocks enhanced features like saved prayers, prayer
-        history, and more as the site grows.
-      </p>
+  Prayer companionship and exploration are free for everyone on
+  PrayWithGod.ai. If you choose to support PWG, your support helps sustain
+  the mission and adds access to support features like saved prayers,
+  prayer history, and more as the site grows.
+</p>
 
       <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
         <h2 className="text-lg font-semibold">How PWG works</h2>
