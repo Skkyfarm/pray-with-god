@@ -80,7 +80,7 @@ export default function DonatePage() {
         onError={() => setPaypalStatus("error")}
       />
 
-      <h1 className="text-3xl font-semibold">Donate to PWG</h1>
+      <h1 className="text-3xl font-semibold">Support PWG</h1>
 
       <p className="mt-3 text-gray-800">
         Prayer companionship and exploration remain free for everyone on
