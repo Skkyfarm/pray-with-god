@@ -46,7 +46,7 @@ export default async function DashboardProfilePage() {
 
         <div className="rounded-3xl border border-black/10 bg-white/80 p-8 shadow-sm backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">
-            Member Profile
+            PWG Profile
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">

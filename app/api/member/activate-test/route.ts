@@ -44,7 +44,7 @@ export async function GET() {
 
     return NextResponse.json({
       ok: true,
-      message: 'Test membership activated.',
+      message: 'Test support status activated.',
       profile,
       memberStatus: data,
     });
