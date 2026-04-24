@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   },
 };
 
+function getPrayerTypeHref(slug: string) {
+  return `/prayer-types/jewish/${slug}`;
+}
+
 export default function JewishPrayerTypesPage() {
   return (
     <main className="relative min-h-screen bg-transparent text-slate-900">
@@ -33,6 +37,22 @@ export default function JewishPrayerTypesPage() {
             tied to time, season, and communal life. This section helps visitors
             understand those forms more clearly.
           </p>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              href={getPrayerTypePrayHref("jewish", "Shacharit")}
+              className="pwg-guided-action rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+            >
+              Start a Jewish Prayer
+            </Link>
+
+            <Link
+              href="/prayer-types"
+              className="rounded-full border border-slate-300 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white hover:shadow-md"
+            >
+              View All Prayer Types
+            </Link>
+          </div>
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
@@ -54,23 +74,32 @@ export default function JewishPrayerTypesPage() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {JEWISH_PRAYER_TYPES.map((item) => (
-            <Link
+            <article
               key={item.slug}
-              href={`/prayer-types/jewish/${item.slug}`}
-              className="rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+              className="pwg-guided-action flex h-full flex-col rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm"
             >
               <h2 className="text-2xl font-semibold">{item.title}</h2>
 
-              <p className="mt-4 text-base leading-7 text-slate-700">
+              <p className="mt-4 flex-1 text-base leading-7 text-slate-700">
                 {item.shortDescription}
               </p>
 
-              <div className="mt-6">
-                <span className="inline-flex items-center text-sm font-semibold text-sky-700">
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href={getPrayerTypePrayHref("jewish", item.title)}
+                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+                >
+                  Pray this type
+                </Link>
+
+                <Link
+                  href={getPrayerTypeHref(item.slug)}
+                  className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                >
                   Read more →
-                </span>
+                </Link>
               </div>
-            </Link>
+            </article>
           ))}
         </div>
 
@@ -89,7 +118,7 @@ export default function JewishPrayerTypesPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href={getPrayerTypePrayHref("jewish", "Shacharit")}
-              className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
+              className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white hover:bg-sky-800"
             >
               Go to Jewish Prayer Experience
             </Link>
