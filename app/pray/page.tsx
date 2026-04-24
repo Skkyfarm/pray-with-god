@@ -485,10 +485,10 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
                 type="button"
                 onClick={() => onSelect(item.label, item.kind)}
                 aria-pressed={active}
-                className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
+                className={`pwg-guided-action w-full rounded-2xl border px-4 py-4 text-left transition ${
                   active
-                    ? 'border-sky-400 bg-sky-100 shadow-sm'
-                    : 'border-zinc-200 bg-white hover:border-sky-300 hover:bg-sky-50'
+                    ? 'border-violet-300 bg-violet-50 shadow-sm'
+                    : 'border-zinc-200 bg-white hover:border-violet-300 hover:bg-violet-50'
                 }`}
               >
                 <div className="font-medium text-zinc-900">{item.display}</div>
@@ -908,6 +908,15 @@ function PrayPageInner() {
     (label: string, kind: PrayerKind) => {
       setSelectedPrayerLabel(label);
       setSelectedPrayerKind(kind);
+
+      if (typeof window === 'undefined') return;
+
+      window.setTimeout(() => {
+        const nextStep = document.getElementById('classic-prayer-next-step');
+        if (nextStep) {
+          nextStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 80);
     },
     []
   );
@@ -1915,19 +1924,49 @@ const saveSummaryText =
                         onSelect={handleSelectClassicPrayerType}
                       />
 
-                      <div className="mb-8 rounded-[1.75rem] border border-sky-300 bg-gradient-to-b from-white to-sky-100 px-5 py-5 shadow-sm">
-                        <div className="mb-2 flex items-center gap-2 text-sky-800">
+                      <div
+                        id="classic-prayer-next-step"
+                        className="mb-8 rounded-[1.75rem] border border-violet-200 bg-gradient-to-b from-white to-violet-50 px-5 py-5 shadow-sm"
+                      >
+                        <div className="mb-2 flex items-center gap-2 text-violet-800">
                           <Bookmark className="h-4 w-4" />
                           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
                             Selected prayer option
                           </span>
                         </div>
+
                         <div className="text-xl font-semibold text-zinc-900">
                           {selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer Type'}
                         </div>
+
                         {selectedPrayerKind === 'named' ? (
                           <div className="mt-2 text-sm text-zinc-900">Named prayer</div>
                         ) : null}
+
+                        <p className="mt-3 text-sm leading-7 text-zinc-900">
+                          You can generate this prayer now, or add a personal intention below first.
+                        </p>
+
+                        <div className="mt-5 flex flex-wrap gap-3">
+                          <button
+                            type="button"
+                            onClick={handleGeneratePrayer}
+                            disabled={isReflecting}
+                            className="pwg-guided-action inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70"
+                          >
+                            {isReflecting ? (
+                              <>
+                                <RefreshCw className="h-4 w-4 animate-spin" />
+                                Reflecting...
+                              </>
+                            ) : (
+                              <>
+                                <Send className="h-4 w-4" />
+                                Generate this prayer type
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
 
                       <div className="mb-8">
