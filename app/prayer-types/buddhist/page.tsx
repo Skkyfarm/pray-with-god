@@ -24,7 +24,7 @@ export default function BuddhistPrayerTypesPage() {
 
   return (
     <main className="relative min-h-screen bg-transparent text-slate-900">
-      <section className="relative mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
+      <section className="relative mx-auto max-w-6xl px-6 py-16 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
             Buddhist Prayer Types
@@ -44,9 +44,9 @@ export default function BuddhistPrayerTypesPage() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href={getPrayerTypePrayHref("buddhist", defaultPrayerTitle)}
-              className="pwg-guided-action rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+              className="pwg-guided-action rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
             >
-              Start a Buddhist Prayer
+              Pray this type
             </Link>
 
             <Link
@@ -57,6 +57,41 @@ export default function BuddhistPrayerTypesPage() {
             </Link>
           </div>
         </div>
+
+        <section className="mt-12 rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm sm:p-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-2xl font-semibold">
+              Choose a Buddhist prayer type
+            </h2>
+
+            <p className="mt-3 text-base leading-7 text-slate-700">
+              Tap a type below to begin a Buddhist prayer shaped by that
+              spiritual direction.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {BUDDHIST_PRAYER_TYPES.map((item) => (
+              <Link
+                key={item.slug}
+                href={getPrayerTypePrayHref("buddhist", item.title)}
+                className="pwg-guided-action rounded-2xl border border-slate-200 bg-slate-50/90 p-5 text-left shadow-sm transition hover:border-sky-200 hover:bg-white hover:shadow-md"
+              >
+                <h3 className="text-base font-semibold text-slate-950">
+                  {item.title}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  {item.shortDescription}
+                </p>
+
+                <span className="mt-4 inline-flex rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm">
+                  Pray this type
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.3fr_0.9fr]">
           <div className="space-y-8">
@@ -89,18 +124,27 @@ export default function BuddhistPrayerTypesPage() {
                 {BUDDHIST_PRAYER_TYPES.map((item) => (
                   <article
                     key={item.slug}
-                    className="pwg-guided-action flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-50/80 p-5 backdrop-blur-sm"
+                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 backdrop-blur-sm"
                   >
-                    <h3 className="text-xl font-semibold">{item.title}</h3>
+                    <Link
+                      href={getPrayerTypePrayHref("buddhist", item.title)}
+                      className="pwg-guided-action block rounded-2xl p-1 transition"
+                    >
+                      <h3 className="text-xl font-semibold">{item.title}</h3>
 
-                    <p className="mt-2 flex-1 text-base leading-7 text-slate-700">
-                      {item.shortDescription}
-                    </p>
+                      <p className="mt-2 text-base leading-7 text-slate-700">
+                        {item.shortDescription}
+                      </p>
+
+                      <span className="mt-4 inline-flex rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm">
+                        Pray this type
+                      </span>
+                    </Link>
 
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
                         href={getPrayerTypePrayHref("buddhist", item.title)}
-                        className="pwg-guided-action rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+                        className="pwg-guided-action rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
                       >
                         Pray this type
                       </Link>
@@ -123,30 +167,16 @@ export default function BuddhistPrayerTypesPage() {
               <h2 className="text-2xl font-semibold">Included here</h2>
 
               <ul className="mt-4 space-y-3 text-base leading-7 text-slate-700">
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Metta (Loving Kindness)
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Karuna (Compassion)
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Mindfulness Reflection
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Equanimity Practice
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Letting Go / Release
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Forgiveness Reflection
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Dedication of Merit
-                </li>
-                <li className="rounded-2xl bg-slate-50 px-4 py-3">
-                  Refuge / Protection
-                </li>
+                {BUDDHIST_PRAYER_TYPES.map((item) => (
+                  <li key={item.slug}>
+                    <Link
+                      href={getPrayerTypePrayHref("buddhist", item.title)}
+                      className="pwg-guided-action block rounded-2xl bg-slate-50 px-4 py-3 transition hover:bg-white hover:shadow-sm"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </section>
 
@@ -162,7 +192,7 @@ export default function BuddhistPrayerTypesPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href={getPrayerTypePrayHref("buddhist", defaultPrayerTitle)}
-                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
                 >
                   Go to Buddhist Prayer Experience
                 </Link>
