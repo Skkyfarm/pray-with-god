@@ -7,14 +7,9 @@ const SITE_URL = "https://praywithgod.ai";
 const staticRoutes = [
   "",
   "/about",
-  "/community",
   "/contact",
-  "/donate",
   "/faq",
-  "/join",
-  "/library",
   "/pray",
-  "/prayer-request",
   "/prayer-types",
   "/prayer-types/protestant",
   "/prayer-types/catholic",
@@ -23,9 +18,6 @@ const staticRoutes = [
   "/prayer-types/hindu",
   "/prayer-types/buddhist",
   "/privacy",
-  "/quiet",
-  "/report",
-  "/signin",
   "/support",
 ];
 
@@ -119,7 +111,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE_URL}${route}`,
     lastModified: now,
     changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : route === "/prayer-types" ? 0.9 : 0.7,
+    priority:
+      route === ""
+        ? 1
+        : route === "/pray" || route === "/prayer-types"
+          ? 0.9
+          : route.startsWith("/prayer-types/")
+            ? 0.85
+            : 0.7,
   })) satisfies MetadataRoute.Sitemap;
 
   const protestantEntries = protestantSlugs.map((slug) => ({
