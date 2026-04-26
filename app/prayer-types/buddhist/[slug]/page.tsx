@@ -110,6 +110,7 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
   }
 
   const content = getPrayerTypeContent(prayerType);
+  const prayHref = getPrayerTypePrayHref("buddhist", content.title);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-amber-50">
@@ -128,12 +129,30 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-sky-700">
               Buddhist Prayer Type
             </p>
+
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
               {content.title}
             </h1>
+
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
               {content.description}
             </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={prayHref}
+                className="inline-flex items-center justify-center rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
+              >
+                Pray This Type
+              </Link>
+
+              <Link
+                href="/prayer-types/buddhist"
+                className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-white/80 px-6 py-3 text-sm font-semibold text-sky-800 shadow-sm transition hover:bg-white"
+              >
+                Explore Buddhist Prayer Types
+              </Link>
+            </div>
           </div>
 
           <div className="space-y-8 px-6 py-8 sm:px-8">
@@ -188,17 +207,17 @@ export default function BuddhistPrayerTypeDetailPage({ params }: PageProps) {
 
             <section className="flex flex-col gap-3 border-t border-sky-100 pt-6 sm:flex-row">
               <Link
-                href={getPrayerTypePrayHref("buddhist", prayerType.slug)}
+                href={prayHref}
                 className="inline-flex items-center justify-center rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
               >
-                Pray in this style
+                Pray This Type
               </Link>
 
               <Link
                 href="/prayer-types/buddhist"
                 className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-white px-5 py-3 text-sm font-semibold text-sky-800 transition hover:bg-sky-50"
               >
-                Browse Buddhist prayer types
+                Back to Buddhist Prayer Types
               </Link>
             </section>
           </div>

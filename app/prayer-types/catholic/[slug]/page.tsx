@@ -46,6 +46,8 @@ export default function CatholicPrayerTypeDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const prayHref = getPrayerTypePrayHref("catholic", item.title);
+
   return (
     <main className="relative min-h-screen bg-transparent text-slate-900">
       <section className="relative mx-auto max-w-5xl px-6 py-16 sm:px-8 lg:px-10">
@@ -61,6 +63,22 @@ export default function CatholicPrayerTypeDetailPage({ params }: PageProps) {
           <p className="mt-6 text-lg leading-8 text-slate-700">
             {item.shortDescription}
           </p>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href={prayHref}
+              className="inline-flex rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800"
+            >
+              Pray This Type
+            </Link>
+
+            <Link
+              href="/prayer-types/catholic"
+              className="inline-flex rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white"
+            >
+              Explore Catholic Prayer Types
+            </Link>
+          </div>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
@@ -139,15 +157,15 @@ export default function CatholicPrayerTypeDetailPage({ params }: PageProps) {
                 These pages are not meant to replace official liturgy or
                 treasured traditional texts. They are meant to help visitors
                 understand the prayer type, find a better starting point, and
-                step into the Catholic prayer experience with more clarity.
+                step into Catholic prayer with more clarity.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href={getPrayerTypePrayHref("catholic", item.title)}
+                  href={prayHref}
                   className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
                 >
-                  Go to Catholic Prayer Experience
+                  Pray This Type
                 </Link>
 
                 <Link

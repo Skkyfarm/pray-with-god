@@ -44,14 +44,14 @@ export default function ProtestantPrayerTypesPage() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/pray?path=protestant"
-              className="rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-800 hover:shadow-md"
+              className="pwg-guided-action rounded-full bg-sky-700 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
             >
               Start a Protestant Prayer
             </Link>
 
             <Link
               href="/prayer-types"
-              className="rounded-full border border-slate-300 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-white hover:shadow-md"
+              className="rounded-full border border-slate-300 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-white hover:shadow-md"
             >
               View All Prayer Types
             </Link>
@@ -80,7 +80,7 @@ export default function ProtestantPrayerTypesPage() {
           {PROTESTANT_PRAYER_TYPES.map((item) => (
             <article
               key={item.slug}
-              className="flex h-full flex-col rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+              className="pwg-guided-action flex h-full flex-col rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm"
             >
               <h2 className="text-2xl font-semibold">{item.title}</h2>
 
@@ -91,7 +91,7 @@ export default function ProtestantPrayerTypesPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href={getPrayThisTypeHref(item.slug)}
-                  className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-800 hover:shadow-md"
+                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
                 >
                   Pray this type
                 </Link>
@@ -122,7 +122,7 @@ export default function ProtestantPrayerTypesPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/pray?path=protestant"
-              className="rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-800"
+              className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white hover:bg-sky-800"
             >
               Go to Prayer Experience
             </Link>
