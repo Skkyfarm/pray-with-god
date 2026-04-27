@@ -1,4 +1,4 @@
-// app/prayer-types/muslim/page.tsx
+﻿// app/prayer-types/muslim/page.tsx
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -34,8 +34,8 @@ export default function MuslimPrayerTypesPage() {
           <p className="mt-6 text-lg leading-8 text-slate-700">
             These pages are designed to help visitors understand the devotional
             direction of major Muslim prayer moments with reverence, clarity,
-            and modern language. They are not Qur’an, not a translation of
-            Qur’an, and not official religious text.
+            and modern language. They are not Qurâ€™an, not a translation of
+            Qurâ€™an, and not official religious text.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -105,7 +105,7 @@ export default function MuslimPrayerTypesPage() {
                         href={getPrayerTypeHref(item.slug)}
                         className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
                       >
-                        Read more →
+                        Read more
                       </Link>
                     </div>
                   </article>

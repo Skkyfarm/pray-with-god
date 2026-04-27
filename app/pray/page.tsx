@@ -499,7 +499,7 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
                   href={aboutHref}
                   className="pl-2 text-sm font-semibold text-sky-700 transition hover:text-sky-800"
                 >
-                  Read more â†’
+                  Read more
                 </Link>
               ) : null}
             </div>
@@ -1812,7 +1812,7 @@ const saveSummaryText =
                         </p>
                       ) : (
                         <p className="text-sm text-zinc-900">
-                          Choose a {pathDisplayLabel} prayer type below. Use Read more â†’ for the definition pages.
+                          Choose a {pathDisplayLabel} prayer type below. Use Read more for the definition pages.
                         </p>
                       )}
                     </div>
@@ -2417,4 +2417,5 @@ export default function PrayPage() {
     </Suspense>
   );
 }
+
 

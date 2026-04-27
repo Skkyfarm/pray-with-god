@@ -1,4 +1,4 @@
-// app/prayer-types/buddhist/page.tsx
+﻿// app/prayer-types/buddhist/page.tsx
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -59,7 +59,7 @@ export default function BuddhistPrayerTypesPage() {
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
-          <h2 className="text-2xl font-semibold">What you’ll find here</h2>
+          <h2 className="text-2xl font-semibold">What youâ€™ll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
             Buddhist devotional and reflective life can move through many
@@ -101,7 +101,7 @@ export default function BuddhistPrayerTypesPage() {
                   href={getPrayerTypeHref(item.slug)}
                   className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
                 >
-                  Read more →
+                  Read more
                 </Link>
               </div>
             </article>

@@ -1,4 +1,4 @@
-// app/prayer-types/hindu/page.tsx
+﻿// app/prayer-types/hindu/page.tsx
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -108,7 +108,7 @@ export default function HinduPrayerTypesPage() {
                         href={getPrayerTypeHref(item.slug)}
                         className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
                       >
-                        Read more →
+                        Read more
                       </Link>
                     </div>
                   </article>
