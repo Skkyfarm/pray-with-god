@@ -1,4 +1,4 @@
-// app/pray/page.tsx
+﻿// app/pray/page.tsx
 
 'use client';
 
@@ -200,15 +200,12 @@ function toDisplayLabel(value: string | null | undefined) {
     .replace(/\b\w/g, (m) => m.toUpperCase());
 }
 
-function getGuideSubLabel(
-  tradition: Tradition,
-  avatar: { name?: string } | undefined
-) {
+function getGuideSubLabel(tradition: Tradition) {
   const key = String(tradition).toLowerCase();
 
   switch (key) {
     case 'grace':
-      return avatar?.name || 'Grace';
+      return 'Exploring';
     case 'catholic':
       return 'Catholic';
     case 'protestant':
@@ -274,8 +271,8 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   switch (key) {
     case 'muslim':
       return isClassic
-        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.'
-        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.';
+        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.'
+        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.';
 
     case 'hindu':
       return isClassic
@@ -450,7 +447,7 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
             }`}
           >
             {notice.resources.map((resource) => (
-              <li key={resource}>• {resource}</li>
+              <li key={resource}>â€¢ {resource}</li>
             ))}
           </ul>
         </div>
@@ -502,7 +499,7 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
                   href={aboutHref}
                   className="pl-2 text-sm font-semibold text-sky-700 transition hover:text-sky-800"
                 >
-                  Read more →
+                  Read more â†’
                 </Link>
               ) : null}
             </div>
@@ -1748,10 +1745,10 @@ const saveSummaryText =
                         Selected tradition
                       </div>
                       <h2 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">
-                        {currentAvatar?.label || 'Grace'}
+                        {getGuideSubLabel(selectedTradition)}
                       </h2>
                       <p className="mt-1 text-sm text-zinc-900">
-                        {getGuideSubLabel(selectedTradition, currentAvatar)}
+                        Prayer and Reflection
                       </p>
                     </div>
                   </div>
@@ -1815,7 +1812,7 @@ const saveSummaryText =
                         </p>
                       ) : (
                         <p className="text-sm text-zinc-900">
-                          Choose a {pathDisplayLabel} prayer type below. Use Read more → for the definition pages.
+                          Choose a {pathDisplayLabel} prayer type below. Use Read more â†’ for the definition pages.
                         </p>
                       )}
                     </div>
@@ -2420,3 +2417,4 @@ export default function PrayPage() {
     </Suspense>
   );
 }
+
