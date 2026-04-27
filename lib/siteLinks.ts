@@ -1,4 +1,4 @@
-// /lib/sitelinks.ts
+// /lib/siteLinks.ts
 
 export type NavLink = { label: string; href: string };
 
@@ -13,6 +13,4 @@ export const supportLinks: NavLink[] = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Report Issue", href: "/report" },
-  { label: "Email Support", href: "mailto:support@praywithgod.ai" },
-  { label: "General Contact", href: "mailto:contact@praywithgod.ai" },
 ];
