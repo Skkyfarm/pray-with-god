@@ -4,18 +4,26 @@ import { auth } from "@clerk/nextjs/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type UpdateProfileBody = {
+  firstName?: string;
+  lastName?: string;
   displayName?: string;
+  city?: string;
+  stateRegion?: string;
+  country?: string;
   zipCode?: string;
 };
 
-function cleanDisplayName(value: unknown) {
+function cleanText(value: unknown, maxLength = 120) {
   if (typeof value !== "string") return "";
-  return value.trim().slice(0, 80);
+  return value.trim().slice(0, maxLength);
+}
+
+function cleanDisplayName(value: unknown) {
+  return cleanText(value, 80);
 }
 
 function cleanZipCode(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value.trim().slice(0, 20);
+  return cleanText(value, 20);
 }
 
 export async function PATCH(req: Request) {
@@ -28,14 +36,19 @@ export async function PATCH(req: Request) {
 
     const body = (await req.json()) as UpdateProfileBody;
 
+    const firstName = cleanText(body.firstName, 80);
+    const lastName = cleanText(body.lastName, 80);
     const displayName = cleanDisplayName(body.displayName);
+    const city = cleanText(body.city, 120);
+    const stateRegion = cleanText(body.stateRegion, 120);
+    const country = cleanText(body.country, 120);
     const zipCode = cleanZipCode(body.zipCode);
 
     const supabaseAdmin = createSupabaseAdminClient();
 
     const { data: existingProfile, error: fetchError } = await supabaseAdmin
       .from("profiles")
-      .select("id, display_name, zip_code")
+      .select("id")
       .eq("clerk_user_id", userId)
       .maybeSingle();
 
@@ -49,16 +62,33 @@ export async function PATCH(req: Request) {
       );
     }
 
+    const profilePayload = {
+      first_name: firstName || null,
+      last_name: lastName || null,
+      display_name: displayName || null,
+      city: city || null,
+      state_region: stateRegion || null,
+      country: country || null,
+      postal_code: zipCode || null,
+      updated_at: new Date().toISOString(),
+    };
+
     if (existingProfile) {
       const { data, error } = await supabaseAdmin
         .from("profiles")
-        .update({
-          display_name: displayName || null,
-          zip_code: zipCode || null,
-          updated_at: new Date().toISOString(),
-        })
+        .update(profilePayload)
         .eq("clerk_user_id", userId)
-        .select("display_name, zip_code")
+        .select(
+          `
+            first_name,
+            last_name,
+            display_name,
+            city,
+            state_region,
+            country,
+            postal_code
+          `
+        )
         .single();
 
       if (error) {
@@ -74,8 +104,13 @@ export async function PATCH(req: Request) {
       return NextResponse.json({
         ok: true,
         profile: {
+          firstName: data.first_name ?? "",
+          lastName: data.last_name ?? "",
           displayName: data.display_name ?? "",
-          zipCode: data.zip_code ?? "",
+          city: data.city ?? "",
+          stateRegion: data.state_region ?? "",
+          country: data.country ?? "",
+          zipCode: data.postal_code ?? "",
         },
       });
     }
@@ -84,11 +119,19 @@ export async function PATCH(req: Request) {
       .from("profiles")
       .insert({
         clerk_user_id: userId,
-        display_name: displayName || null,
-        zip_code: zipCode || null,
-        updated_at: new Date().toISOString(),
+        ...profilePayload,
       })
-      .select("display_name, zip_code")
+      .select(
+        `
+          first_name,
+          last_name,
+          display_name,
+          city,
+          state_region,
+          country,
+          postal_code
+        `
+      )
       .single();
 
     if (error) {
@@ -104,8 +147,13 @@ export async function PATCH(req: Request) {
     return NextResponse.json({
       ok: true,
       profile: {
+        firstName: data.first_name ?? "",
+        lastName: data.last_name ?? "",
         displayName: data.display_name ?? "",
-        zipCode: data.zip_code ?? "",
+        city: data.city ?? "",
+        stateRegion: data.state_region ?? "",
+        country: data.country ?? "",
+        zipCode: data.postal_code ?? "",
       },
     });
   } catch (error) {
