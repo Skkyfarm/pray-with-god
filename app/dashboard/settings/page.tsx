@@ -28,32 +28,34 @@ export default async function DashboardSettingsPage() {
           </p>
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Private Settings
+            Prayer Preferences
           </h1>
 
           <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
-            This is where your personal PWG preferences will live. The first
-            version is a clean shell for private defaults and future support
-            settings that we can wire into Supabase next.
+            Choose the prayer defaults that feel most natural to you. These
+            preferences help PrayWithGod.ai feel calmer, more familiar, and
+            easier to return to each time you pray.
           </p>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-900">
-                Prayer preferences
-              </h2>
-              <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                Live shell
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900">
+                  Your prayer defaults
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  These settings will help shape your prayer experience when you
+                  return to PWG.
+                </p>
+              </div>
+
+              <span className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
+                Private
               </span>
             </div>
-
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              The next step will connect this page to a{" "}
-              <code>user_preferences</code> table so your PWG defaults can be
-              saved and reused.
-            </p>
 
             <form className="mt-6 space-y-5">
               <div>
@@ -61,7 +63,7 @@ export default async function DashboardSettingsPage() {
                   htmlFor="defaultTradition"
                   className="mb-2 block text-sm font-semibold text-slate-900"
                 >
-                  Default tradition
+                  Preferred tradition
                 </label>
                 <select
                   id="defaultTradition"
@@ -69,8 +71,8 @@ export default async function DashboardSettingsPage() {
                   defaultValue=""
                   className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
                 >
-                  <option value="">Choose a default tradition</option>
-                  <option value="grace">Exploring</option>
+                  <option value="">Choose a preferred tradition</option>
+                  <option value="exploring">Exploring / not sure yet</option>
                   <option value="protestant">Protestant</option>
                   <option value="catholic">Catholic</option>
                   <option value="jewish">Jewish</option>
@@ -78,6 +80,38 @@ export default async function DashboardSettingsPage() {
                   <option value="hindu">Hindu</option>
                   <option value="buddhist">Buddhist</option>
                 </select>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  You can always choose a different tradition when creating a
+                  prayer.
+                </p>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="preferredPrayerType"
+                  className="mb-2 block text-sm font-semibold text-slate-900"
+                >
+                  Preferred prayer type
+                </label>
+                <select
+                  id="preferredPrayerType"
+                  name="preferredPrayerType"
+                  defaultValue=""
+                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
+                >
+                  <option value="">Choose a preferred prayer type</option>
+                  <option value="personal">Personal prayer</option>
+                  <option value="gratitude">Gratitude</option>
+                  <option value="guidance">Guidance</option>
+                  <option value="healing">Healing</option>
+                  <option value="peace">Peace</option>
+                  <option value="forgiveness">Forgiveness</option>
+                  <option value="strength">Strength</option>
+                </select>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  This helps PWG start closer to the kind of prayer you usually
+                  want.
+                </p>
               </div>
 
               <div>
@@ -85,7 +119,7 @@ export default async function DashboardSettingsPage() {
                   htmlFor="preferredVoice"
                   className="mb-2 block text-sm font-semibold text-slate-900"
                 >
-                  Preferred voice
+                  Preferred read-aloud voice
                 </label>
                 <select
                   id="preferredVoice"
@@ -93,12 +127,15 @@ export default async function DashboardSettingsPage() {
                   defaultValue=""
                   className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
                 >
-                  <option value="">Choose a preferred voice</option>
+                  <option value="">Use the best available voice</option>
                   <option value="default">Default</option>
                   <option value="warm">Warm</option>
                   <option value="calm">Calm</option>
                   <option value="steady">Steady</option>
                 </select>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  Voice options may vary by device and browser.
+                </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -111,11 +148,11 @@ export default async function DashboardSettingsPage() {
                   />
                   <span>
                     <span className="block text-sm font-semibold text-slate-900">
-                      Prayer history preference
+                      Remember prayer history
                     </span>
                     <span className="mt-1 block text-xs leading-5 text-slate-500">
-                      Keep a simple prayer history preference once this setting
-                      is wired up.
+                      Help you return to recent prayers when this option becomes
+                      available.
                     </span>
                   </span>
                 </label>
@@ -129,21 +166,20 @@ export default async function DashboardSettingsPage() {
                   />
                   <span>
                     <span className="block text-sm font-semibold text-slate-900">
-                      Read-aloud preference
+                      Prefer read aloud
                     </span>
                     <span className="mt-1 block text-xs leading-5 text-slate-500">
-                      Keep a default read-aloud preference for future prayer
-                      sessions.
+                      Start with read-aloud controls ready when available.
                     </span>
                   </span>
                 </label>
               </div>
 
-              <div className="rounded-2xl border border-sky-100 bg-sky-50/70 p-4">
+              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
                 <p className="text-sm leading-6 text-slate-700">
-                  Save wiring comes next. After this page is in place, we can
-                  create a <code>user_preferences</code> table and persist these
-                  settings per account.
+                  Preference saving is not turned on yet. You can review the
+                  options here now, and these settings will become active as the
+                  member area grows.
                 </p>
               </div>
 
@@ -153,7 +189,7 @@ export default async function DashboardSettingsPage() {
                   disabled
                   className="cursor-not-allowed rounded-xl bg-black/30 px-4 py-2 text-sm font-semibold text-white"
                 >
-                  Save Settings (next step)
+                  Save Preferences
                 </button>
 
                 <Link
@@ -169,40 +205,66 @@ export default async function DashboardSettingsPage() {
           <div className="space-y-6">
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                Good first settings
+                What settings can help with
               </h2>
 
               <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Default tradition</li>
-                <li>Preferred voice</li>
-                <li>Prayer history preference</li>
-                <li>Read-aloud preference</li>
+                <li>Start prayers closer to your preferred tradition.</li>
+                <li>Remember the type of prayer you often choose.</li>
+                <li>Make read-aloud prayer feel more familiar.</li>
+                <li>Reduce repeated setup when you return.</li>
               </ul>
             </section>
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                Why private settings matter
+                Privacy note
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-slate-700">
-                Settings help PWG feel like a real home base. They reduce repeat
-                setup and give returning users a more personal, steady
-                experience over time.
+                Your preferences are meant to support your own prayer
+                experience. PWG should treat these settings as private account
+                details, not public information.
               </p>
             </section>
 
             <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
               <h2 className="text-lg font-semibold text-slate-900">
-                What comes after this
+                Looking for account details?
               </h2>
 
-              <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-                <li>Make the Settings card live from the dashboard.</li>
-                <li>Create the <code>user_preferences</code> table.</li>
-                <li>Wire these fields to Supabase.</li>
-                <li>Add support and billing tools inside the dashboard.</li>
-              </ol>
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                Your name, location, and basic account profile are managed on
+                the Profile page.
+              </p>
+
+              <div className="mt-4">
+                <Link
+                  href="/dashboard/profile"
+                  className="inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/80"
+                >
+                  Open Profile
+                </Link>
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-black/10 bg-white/75 p-6 shadow-sm backdrop-blur">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Continue praying
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                You can always pray now without changing any settings.
+              </p>
+
+              <div className="mt-4">
+                <Link
+                  href="/pray"
+                  className="inline-flex rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-black/90"
+                >
+                  Pray Now
+                </Link>
+              </div>
             </section>
           </div>
         </div>
