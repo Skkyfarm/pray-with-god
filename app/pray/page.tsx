@@ -509,7 +509,67 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
     </div>
   );
 });
+const DEFAULT_READ_ALOUD_VOLUME = 0.7;
 
+const DISCOURAGED_VOICE_PATTERNS = [
+  /robot/i,
+  /novelty/i,
+  /compact/i,
+  /whisper/i,
+  /child/i,
+  /female/i,
+];
+
+const PREFERRED_VOICE_PATTERNS = [
+  /google uk english male/i,
+  /google us english male/i,
+  /male/i,
+  /daniel/i,
+  /fred/i,
+  /alex/i,
+  /microsoft guy/i,
+  /microsoft david/i,
+  /natural/i,
+  /google english/i,
+];
+
+function isEnglishVoice(voice: SpeechSynthesisVoice) {
+  return /^en(-|_)?/i.test(voice.lang);
+}
+
+function scoreVoiceForPrayer(voice: SpeechSynthesisVoice) {
+  const name = voice.name || "";
+  const lang = voice.lang || "";
+  let score = 0;
+
+  if (isEnglishVoice(voice)) score += 40;
+  if (/^en-GB/i.test(lang)) score += 16;
+  if (/^en-US/i.test(lang)) score += 14;
+  if (voice.localService) score += 4;
+
+  PREFERRED_VOICE_PATTERNS.forEach((pattern, index) => {
+    if (pattern.test(name)) {
+      score += 30 - index;
+    }
+  });
+
+  DISCOURAGED_VOICE_PATTERNS.forEach((pattern) => {
+    if (pattern.test(name)) {
+      score -= 25;
+    }
+  });
+
+  return score;
+}
+
+function chooseBestPrayerVoice(available: SpeechSynthesisVoice[]) {
+  const englishVoices = available.filter(isEnglishVoice);
+  const candidates = englishVoices.length > 0 ? englishVoices : available;
+
+  return [...candidates].sort(
+    (a, b) => scoreVoiceForPrayer(b) - scoreVoiceForPrayer(a)
+  )[0];
+}
 function PrayPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -552,7 +612,7 @@ function PrayPageInner() {
 
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
-  const [volume, setVolume] = useState(0.2);
+  const [volume, setVolume] = useState(DEFAULT_READ_ALOUD_VOLUME);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   function clearSaveState() {
@@ -704,15 +764,9 @@ function PrayPageInner() {
           return prev;
         }
 
-        const preferred =
-          available.find((voice) => voice.name === 'Google UK English Male') ||
-          available.find((voice) => voice.name === 'Google UK English Male (en-GB)') ||
-          available.find((voice) => voice.lang === 'en-GB' && /male/i.test(voice.name)) ||
-          available.find((voice) => voice.lang === 'en-GB') ||
-          available.find((voice) => /^en(-|_)/i.test(voice.lang)) ||
-          available[0];
+ const preferred = chooseBestPrayerVoice(available);
 
-        return preferred?.voiceURI || '';
+return preferred?.voiceURI || '';
       });
     };
 
