@@ -15,6 +15,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PrayWithGod",
   description: "A spiritual space for prayer and reflection.",
+  applicationName: "PrayWithGod",
+  appleWebApp: {
+    title: "PrayWithGod",
+  },
 };
 
 export default function RootLayout({
