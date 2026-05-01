@@ -18,7 +18,7 @@ export default async function DashboardSettingsPage() {
             href="/dashboard"
             className="inline-flex items-center text-sm font-medium text-sky-700 hover:text-sky-900"
           >
-            ← Back to Dashboard
+            Back to Dashboard
           </Link>
         </div>
 
