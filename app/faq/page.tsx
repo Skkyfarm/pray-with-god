@@ -48,6 +48,7 @@ export default function FAQPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
       <h1 className="text-3xl font-semibold">FAQ</h1>
+
       <p className="mt-3 text-gray-800">
         Quick answers to common questions about prayer, accounts, support, and
         how PWG works.
@@ -59,13 +60,28 @@ export default function FAQPage() {
             key={item.q}
             className="group rounded-2xl border border-black/10 bg-white/70 p-5 backdrop-blur"
           >
-            <summary className="cursor-pointer list-none text-sm font-semibold text-gray-950">
-              <span className="mr-2 inline-block text-gray-600 transition-transform group-open:rotate-90">
-                ▶
-              </span>
-              {item.q}
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-gray-950">
+              <span>{item.q}</span>
+
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 20 20"
+                className="h-5 w-5 shrink-0 text-gray-600 transition-transform group-open:rotate-180"
+              >
+                <path
+                  d="M5 8l5 5 5-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-gray-800">{item.a}</p>
+
+            <p className="mt-3 text-sm leading-relaxed text-gray-800">
+              {item.a}
+            </p>
 
             {item.q === "How can I support PWG?" && (
               <div className="mt-4">
@@ -82,7 +98,10 @@ export default function FAQPage() {
       </div>
 
       <div className="mt-10 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold text-gray-950">Still have a question?</h2>
+        <h2 className="text-lg font-semibold text-gray-950">
+          Still have a question?
+        </h2>
+
         <p className="mt-2 text-gray-800">
           For general questions, contact us directly. For bugs or technical
           issues, use the support address below.
@@ -93,6 +112,7 @@ export default function FAQPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-700">
               General contact
             </div>
+
             <a
               href="mailto:contact@praywithgod.ai"
               className="mt-1 inline-block font-medium text-gray-950 underline underline-offset-4 hover:text-gray-700"
@@ -105,6 +125,7 @@ export default function FAQPage() {
             <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-700">
               Support
             </div>
+
             <a
               href="mailto:support@praywithgod.ai"
               className="mt-1 inline-block font-medium text-gray-950 underline underline-offset-4 hover:text-gray-700"
@@ -121,12 +142,14 @@ export default function FAQPage() {
           >
             Report Issue
           </Link>
+
           <Link
             href="/contact"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
           >
             Contact
           </Link>
+
           <Link
             href="/support"
             className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
