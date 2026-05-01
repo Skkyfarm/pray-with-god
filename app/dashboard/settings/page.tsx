@@ -2,12 +2,35 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import PrayerPreferencesForm from "@/components/dashboard/PrayerPreferencesForm";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export default async function DashboardSettingsPage() {
   const { userId } = await auth();
 
   if (!userId) {
     redirect("/signin");
+  }
+
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const { data: profile, error: profileError } = await supabaseAdmin
+    .from("profiles")
+    .select(
+      `
+        preferred_tradition,
+        preferred_prayer_style,
+        preferred_prayer_type,
+        preferred_voice_id,
+        preferred_voice_label,
+        use_saved_prayer_preferences
+      `
+    )
+    .eq("clerk_user_id", userId)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("Could not load prayer preferences:", profileError.message);
   }
 
   return (
@@ -57,149 +80,18 @@ export default async function DashboardSettingsPage() {
               </span>
             </div>
 
-            <form className="mt-6 space-y-5">
-              <div>
-                <label
-                  htmlFor="defaultTradition"
-                  className="mb-2 block text-sm font-semibold text-slate-900"
-                >
-                  Preferred tradition
-                </label>
-                <select
-                  id="defaultTradition"
-                  name="defaultTradition"
-                  defaultValue=""
-                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">Choose a preferred tradition</option>
-                  <option value="exploring">Exploring / not sure yet</option>
-                  <option value="protestant">Protestant</option>
-                  <option value="catholic">Catholic</option>
-                  <option value="jewish">Jewish</option>
-                  <option value="muslim">Muslim</option>
-                  <option value="hindu">Hindu</option>
-                  <option value="buddhist">Buddhist</option>
-                </select>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  You can always choose a different tradition when creating a
-                  prayer.
-                </p>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="preferredPrayerType"
-                  className="mb-2 block text-sm font-semibold text-slate-900"
-                >
-                  Preferred prayer type
-                </label>
-                <select
-                  id="preferredPrayerType"
-                  name="preferredPrayerType"
-                  defaultValue=""
-                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">Choose a preferred prayer type</option>
-                  <option value="personal">Personal prayer</option>
-                  <option value="gratitude">Gratitude</option>
-                  <option value="guidance">Guidance</option>
-                  <option value="healing">Healing</option>
-                  <option value="peace">Peace</option>
-                  <option value="forgiveness">Forgiveness</option>
-                  <option value="strength">Strength</option>
-                </select>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  This helps PWG start closer to the kind of prayer you usually
-                  want.
-                </p>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="preferredVoice"
-                  className="mb-2 block text-sm font-semibold text-slate-900"
-                >
-                  Preferred read-aloud voice
-                </label>
-                <select
-                  id="preferredVoice"
-                  name="preferredVoice"
-                  defaultValue=""
-                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-400"
-                >
-                  <option value="">Use the best available voice</option>
-                  <option value="default">Default</option>
-                  <option value="warm">Warm</option>
-                  <option value="calm">Calm</option>
-                  <option value="steady">Steady</option>
-                </select>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  Voice options may vary by device and browser.
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-4">
-                  <input
-                    type="checkbox"
-                    name="prayerHistoryEnabled"
-                    className="mt-1 h-4 w-4 rounded border-black/20"
-                    disabled
-                  />
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">
-                      Remember prayer history
-                    </span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-500">
-                      Help you return to recent prayers when this option becomes
-                      available.
-                    </span>
-                  </span>
-                </label>
-
-                <label className="flex items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-4">
-                  <input
-                    type="checkbox"
-                    name="readAloudEnabled"
-                    className="mt-1 h-4 w-4 rounded border-black/20"
-                    disabled
-                  />
-                  <span>
-                    <span className="block text-sm font-semibold text-slate-900">
-                      Prefer read aloud
-                    </span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-500">
-                      Start with read-aloud controls ready when available.
-                    </span>
-                  </span>
-                </label>
-              </div>
-
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-                <p className="text-sm leading-6 text-slate-700">
-                  Preference saving is not turned on yet. You can review the
-                  options here now, and these settings will become active as the
-                  member area grows.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button
-                  type="button"
-                  disabled
-                  className="cursor-not-allowed rounded-xl bg-black/30 px-4 py-2 text-sm font-semibold text-white"
-                >
-                  Save Preferences
-                </button>
-
-                <Link
-                  href="/dashboard"
-                  className="rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/80"
-                >
-                  Back to Dashboard
-                </Link>
-              </div>
-            </form>
+            <PrayerPreferencesForm
+              initialPreferredTradition={profile?.preferred_tradition ?? ""}
+              initialPreferredPrayerStyle={
+                profile?.preferred_prayer_style ?? ""
+              }
+              initialPreferredPrayerType={profile?.preferred_prayer_type ?? ""}
+              initialPreferredVoiceId={profile?.preferred_voice_id ?? ""}
+              initialPreferredVoiceLabel={profile?.preferred_voice_label ?? ""}
+              initialUseSavedPrayerPreferences={
+                profile?.use_saved_prayer_preferences ?? false
+              }
+            />
           </section>
 
           <div className="space-y-6">
