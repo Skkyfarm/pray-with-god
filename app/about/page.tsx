@@ -30,7 +30,7 @@ export default function AboutPage() {
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
       <div className="mb-8 flex justify-center">
         <Image
-          src="/brand/pwg-logo.png"
+          src="/brand/pwg-logo-2026-05-01.png"
           alt="PrayWithGod.ai logo"
           width={420}
           height={315}
