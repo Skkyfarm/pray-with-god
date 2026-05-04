@@ -1,4 +1,4 @@
-﻿// app/pray/page.tsx
+// app/pray/page.tsx
 
 'use client';
 
@@ -271,8 +271,8 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   switch (key) {
     case 'muslim':
       return isClassic
-        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.'
-        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.';
+        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.'
+        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.';
 
     case 'hindu':
       return isClassic
@@ -447,7 +447,7 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
             }`}
           >
             {notice.resources.map((resource) => (
-              <li key={resource}>â€¢ {resource}</li>
+              <li key={resource}>• {resource}</li>
             ))}
           </ul>
         </div>
@@ -2154,7 +2154,11 @@ const saveSummaryText =
                           <Heart className="h-4 w-4" />
                           How are you feeling?
                         </div>
-                        <div className="flex flex-wrap gap-3">
+                        <p className="mb-3 text-sm text-zinc-900">
+    Feelings are optional. You can choose any number of them, or none.
+  </p>
+
+  <div className="flex flex-wrap gap-3">
                           {FEELING_OPTIONS.map((feeling) => {
                             const active = selectedFeelings.includes(feeling);
                             return (
@@ -2173,9 +2177,6 @@ const saveSummaryText =
                             );
                           })}
                         </div>
-                        <p className="mt-3 text-sm text-zinc-900">
-                          Feelings are optional. You can choose any number of them, or none.
-                        </p>
                       </div>
                     </>
                   )}
@@ -2489,5 +2490,6 @@ export default function PrayPage() {
     </Suspense>
   );
 }
+
 
 
