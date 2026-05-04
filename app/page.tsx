@@ -134,6 +134,14 @@ export default function Home() {
   };
 
   const traditions = [
+  {
+    name: 'Simple Prayer',
+    path: '/pray?path=grace',
+    avatar: {
+      imagePath: '/brand/pwg-icon-512.png',
+      fallbackPath: '/brand/pwg-icon-512.png',
+    },
+  },
     {
       name: 'Protestant',
       path: '/pray?path=protestant',
@@ -189,7 +197,7 @@ export default function Home() {
             aria-label="Choose a prayer tradition"
             className="mb-4 w-full max-w-5xl md:mb-5"
           >
-            <div className="grid grid-cols-4 gap-2 sm:grid-cols-4 md:grid-cols-7 md:gap-3">
+            <div className="grid grid-cols-4 gap-2 sm:grid-cols-4 md:grid-cols-8 md:gap-3">
               {traditions.map((t) => (
                 <Link key={t.name} href={t.path} className="group block h-full">
                   <div className="glass-panel flex h-full min-h-[96px] flex-col items-center justify-center rounded-2xl border border-black/10 bg-white/35 p-2 text-center shadow-[0_10px_30px_rgba(255,255,255,0.18)] transition-all duration-500 ease-out hover:-translate-y-1.5 hover:scale-[1.05] hover:border-violet-400/90 hover:bg-white/55 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] md:min-h-[116px] md:p-4">
