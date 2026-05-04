@@ -2114,7 +2114,15 @@ const saveSummaryText =
                         >
                           Your prayer request (optional)
                         </label>
-                        <textarea
+                        
+                          <p
+                            id="prayer-input-help"
+                            className="mb-3 text-sm text-zinc-900"
+                          >
+                            Keep it brief so the prayer stays focused and readable.
+                          </p>
+
+<textarea
                           id="prayer-input"
                           value={input}
                           onChange={(e) => setInput(e.target.value.slice(0, PRAYER_REQUEST_MAX))}
@@ -2124,15 +2132,7 @@ const saveSummaryText =
                           className="min-h-[180px] w-full rounded-3xl border border-zinc-200 bg-white px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-500 focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
                         />
 
-                        <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                          <p
-                            id="prayer-input-help"
-                            className="text-sm text-zinc-900"
-                          >
-                            Keep it brief so the prayer stays focused and readable.
-                          </p>
-
-                          <div
+                                                  <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"><div
                             id="prayer-input-counter"
                             className={`text-sm font-medium ${
                               prayerRequestNearLimit ? 'text-amber-700' : 'text-zinc-700'
@@ -2490,6 +2490,7 @@ export default function PrayPage() {
     </Suspense>
   );
 }
+
 
 
 
