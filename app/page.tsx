@@ -136,7 +136,7 @@ export default function Home() {
   const traditions = [
   {
     name: 'Simple Prayer',
-    path: '/pray?path=grace',
+    path: '/pray?path=grace&mode=quick&auto=true',
     avatar: {
       imagePath: '/brand/pwg-icon-512.png',
       fallbackPath: '/brand/pwg-icon-512.png',

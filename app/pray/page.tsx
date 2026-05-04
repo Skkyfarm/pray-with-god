@@ -575,9 +575,10 @@ function PrayPageInner() {
   const searchParams = useSearchParams();
   const { isLoaded: isUserLoaded, isSignedIn } = useUser();
   const abortRef = useRef<AbortController | null>(null);
-
+  const autoQuickPrayerStartedRef = useRef(false);
   const pathParam = searchParams.get('path');
   const modeParam = searchParams.get('mode');
+  const autoParam = searchParams.get('auto');
   const prayerLabelParam = searchParams.get('prayerLabel');
   const prayerKindParam = searchParams.get('prayerKind');
   const prayerTypeParam = searchParams.get('prayerType');
@@ -1124,6 +1125,23 @@ return preferred?.voiceURI || '';
       );
     }
   }
+useEffect(() => {
+  if (autoQuickPrayerStartedRef.current) return;
+  if (!isUserLoaded) return;
+  if (autoParam !== 'true') return;
+  if (pathParam !== 'grace') return;
+  if (modeParam !== 'quick') return;
+  if (isReflecting) return;
+
+  const timer = window.setTimeout(() => {
+    if (autoQuickPrayerStartedRef.current) return;
+
+    autoQuickPrayerStartedRef.current = true;
+    void handleQuickPrayer();
+  }, 250);
+
+  return () => window.clearTimeout(timer);
+}, [autoParam, pathParam, modeParam, isReflecting, isUserLoaded]);
 
   function handleAddIntentions() {
     openCustomizePrayer();
