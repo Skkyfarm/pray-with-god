@@ -1150,38 +1150,66 @@ useEffect(() => {
     }, 100);
   }
 
-  function handleReadAloud() {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !prayer.trim()) {
-      return;
-    }
-
-    if (isSpeaking) {
-      stopSpeaking();
-      return;
-    }
-
-    const synth = window.speechSynthesis;
-    synth.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(prayer);
-    utterance.volume = volume;
-    utterance.rate = 1;
-    utterance.pitch = 1;
-
-    if (selectedVoiceURI) {
-      const chosenVoice = voices.find((voice) => voice.voiceURI === selectedVoiceURI);
-      if (chosenVoice) {
-        utterance.voice = chosenVoice;
-        utterance.lang = chosenVoice.lang;
-      }
-    }
-
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    setIsSpeaking(true);
-    synth.speak(utterance);
+  
+function handleReadAloud() {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    return;
   }
+
+  const textToRead = prayer.trim();
+
+  if (!textToRead) {
+    return;
+  }
+
+  const synth = window.speechSynthesis;
+
+  if (isSpeaking) {
+    synth.cancel();
+    setIsSpeaking(false);
+    return;
+  }
+
+  synth.cancel();
+
+  const freshVoices = synth.getVoices() || [];
+  const chosenVoice =
+    freshVoices.find((voice) => voice.voiceURI === selectedVoiceURI) ||
+    chooseBestPrayerVoice(freshVoices);
+
+  const utterance = new SpeechSynthesisUtterance(textToRead);
+  utterance.volume = volume;
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.lang = chosenVoice?.lang || 'en-US';
+
+  if (chosenVoice) {
+    utterance.voice = chosenVoice;
+  }
+
+  utterance.onstart = () => {
+    setIsSpeaking(true);
+  };
+
+  utterance.onend = () => {
+    setIsSpeaking(false);
+  };
+
+  utterance.onerror = (event) => {
+    console.error('PWG read-aloud error:', event);
+    setIsSpeaking(false);
+  };
+
+  setIsSpeaking(true);
+  synth.speak(utterance);
+
+  // Mobile browsers sometimes need a nudge after speak().
+  window.setTimeout(() => {
+    if (synth.paused) {
+      synth.resume();
+    }
+  }, 250);
+}
 
   async function handleSavePrayer() {
     if (isSavingPrayer) return;
