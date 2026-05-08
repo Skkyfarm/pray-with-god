@@ -9,10 +9,30 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { headerLinks, supportLinks } from "@/lib/siteLinks";
 
+type MenuLink = {
+  label: string;
+  href: string;
+};
+
+const priorityInfoLinks: MenuLink[] = [
+  { label: "ABOUT", href: "/about" },
+  { label: "FAQ", href: "/faq" },
+];
+
+const signedInAccountLinks: MenuLink[] = [
+  { label: "DASHBOARD", href: "/dashboard" },
+  { label: "SAVED PRAYERS", href: "/dashboard/saved" },
+  { label: "PRAYER HISTORY", href: "/dashboard/prayers" },
+  { label: "PROFILE", href: "/dashboard/profile" },
+  { label: "SETTINGS", href: "/dashboard/settings" },
+  { label: "PWG ACCOUNT", href: "/account" },
+];
+
 export default function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [shareFeedback, setShareFeedback] = useState("");
 
   const headerRef = useRef<HTMLElement | null>(null);
@@ -28,15 +48,23 @@ export default function SiteHeader() {
 
   const shareUrl = `${siteUrl}${sharePath || ""}`;
 
+  const extraInfoLinks = useMemo(() => {
+    return priorityInfoLinks.filter(
+      (item) => !headerLinks.some((headerLink) => headerLink.href === item.href)
+    );
+  }, []);
+
   function closeAllMenus() {
     setShareOpen(false);
     setSupportOpen(false);
+    setAccountOpen(false);
     setMobileOpen(false);
   }
 
   function closeDesktopDropdownsOnly() {
     setShareOpen(false);
     setSupportOpen(false);
+    setAccountOpen(false);
   }
 
   useEffect(() => {
@@ -173,6 +201,47 @@ export default function SiteHeader() {
     );
   }
 
+  function renderDesktopMenuLink(item: MenuLink) {
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={closeAllMenus}
+        onMouseEnter={closeDesktopDropdownsOnly}
+        className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  function renderDesktopDropdownLink(item: MenuLink) {
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        role="menuitem"
+        onClick={closeAllMenus}
+        className="block px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:bg-black/5 hover:text-black"
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  function renderMobileLink(item: MenuLink) {
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={closeAllMenus}
+        className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
   return (
     <header
       ref={headerRef}
@@ -206,57 +275,61 @@ export default function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex" aria-label="Primary">
-          {headerLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={closeAllMenus}
-              onMouseEnter={closeDesktopDropdownsOnly}
-              className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {headerLinks.map((item) => renderDesktopMenuLink(item))}
+          {extraInfoLinks.map((item) => renderDesktopMenuLink(item))}
 
           <SignedIn>
-            <>
-              <Link
-                href="/dashboard"
-                onClick={closeAllMenus}
-                onMouseEnter={closeDesktopDropdownsOnly}
+            <div className="relative">
+              <button
+                type="button"
+                onMouseEnter={() => {
+                  setShareOpen(false);
+                  setSupportOpen(false);
+                }}
+                onClick={() => {
+                  setAccountOpen((v) => !v);
+                  setShareOpen(false);
+                  setSupportOpen(false);
+                }}
                 className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
-              >
-                DASHBOARD
-              </Link>
-
-              <Link
-                href="/account"
-                onClick={closeAllMenus}
-                onMouseEnter={closeDesktopDropdownsOnly}
-                className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
+                aria-haspopup="menu"
+                aria-expanded={accountOpen}
               >
                 ACCOUNT
-              </Link>
+              </button>
 
-              <Link
-                href="/signout"
-                onClick={closeAllMenus}
-                onMouseEnter={closeDesktopDropdownsOnly}
-                className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
-              >
-                SIGN OUT
-              </Link>
-            </>
+              {accountOpen ? (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-black/10 bg-sky-50/95 shadow-lg backdrop-blur"
+                >
+                  {signedInAccountLinks.map((item) =>
+                    renderDesktopDropdownLink(item)
+                  )}
+
+                  <Link
+                    href="/signout"
+                    role="menuitem"
+                    onClick={closeAllMenus}
+                    className="block border-t border-black/10 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black/80 hover:bg-black/5 hover:text-black"
+                  >
+                    SIGN OUT
+                  </Link>
+                </div>
+              ) : null}
+            </div>
           </SignedIn>
 
           <div className="relative">
             <button
               type="button"
               onMouseEnter={() => {
+                setAccountOpen(false);
                 setSupportOpen(false);
               }}
               onClick={() => {
                 setShareOpen((v) => !v);
+                setAccountOpen(false);
                 setSupportOpen(false);
               }}
               className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
@@ -299,10 +372,12 @@ export default function SiteHeader() {
             <button
               type="button"
               onMouseEnter={() => {
+                setAccountOpen(false);
                 setShareOpen(false);
               }}
               onClick={() => {
                 setSupportOpen((v) => !v);
+                setAccountOpen(false);
                 setShareOpen(false);
               }}
               className="text-[11px] font-semibold tracking-[0.22em] text-black/70 hover:text-black"
@@ -362,6 +437,7 @@ export default function SiteHeader() {
                 if (!next) {
                   setShareOpen(false);
                   setSupportOpen(false);
+                  setAccountOpen(false);
                 }
                 return next;
               });
@@ -379,34 +455,16 @@ export default function SiteHeader() {
         <div className="border-t border-black/10 bg-sky-100/95 md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-2.5">
             <div className="flex flex-col">
-              {headerLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeAllMenus}
-                  className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {headerLinks.map((item) => renderMobileLink(item))}
+              {extraInfoLinks.map((item) => renderMobileLink(item))}
 
               <SignedIn>
                 <>
-                  <Link
-                    href="/dashboard"
-                    onClick={closeAllMenus}
-                    className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
-                  >
-                    DASHBOARD
-                  </Link>
-
-                  <Link
-                    href="/account"
-                    onClick={closeAllMenus}
-                    className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
-                  >
+                  <div className="pb-1 pt-3 text-[10px] font-semibold tracking-[0.18em] text-black/40">
                     ACCOUNT
-                  </Link>
+                  </div>
+
+                  {signedInAccountLinks.map((item) => renderMobileLink(item))}
 
                   <Link
                     href="/signout"
@@ -423,6 +481,7 @@ export default function SiteHeader() {
                 onClick={() => {
                   setShareOpen((v) => !v);
                   setSupportOpen(false);
+                  setAccountOpen(false);
                 }}
                 className="py-2 text-left text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                 aria-expanded={shareOpen}
@@ -460,12 +519,16 @@ export default function SiteHeader() {
               {supportLinks.map((item) => renderSupportItem(item, true))}
 
               <SignedOut>
+                <div className="pb-1 pt-3 text-[10px] font-semibold tracking-[0.18em] text-black/40">
+                  ACCOUNT
+                </div>
+
                 <Link
                   href="/signin"
                   onClick={closeAllMenus}
                   className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                 >
-                  Sign In
+                  SIGN IN
                 </Link>
 
                 <Link
@@ -473,14 +536,14 @@ export default function SiteHeader() {
                   onClick={closeAllMenus}
                   className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                 >
-                  Join
+                  CREATE FREE ACCOUNT
                 </Link>
               </SignedOut>
 
               <SignedIn>
                 <div className="flex items-center gap-3 py-2">
                   <span className="text-[11px] font-semibold tracking-[0.18em] text-black/80">
-                    Clerk Account Menu
+                    ACCOUNT MENU
                   </span>
                   <UserButton />
                 </div>
