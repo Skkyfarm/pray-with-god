@@ -419,7 +419,7 @@ export default function SiteHeader() {
               onClick={closeAllMenus}
               className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
             >
-              JOIN
+              LOG IN
             </Link>
           </SignedOut>
 
