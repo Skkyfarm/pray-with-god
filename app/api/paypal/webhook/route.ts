@@ -1,7 +1,8 @@
-// app/api/paypal/webhook/route.ts
+// /app/api/paypal/webhook/route.ts
 
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { activatePayPalSupporter } from "@/lib/support/activatePayPalSupporter";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,12 +19,23 @@ type PayPalWebhookEvent = {
 type DonationDetails = {
   captureId: string | null;
   orderId: string | null;
+  supportOrderId: string | null;
   subscriptionId: string | null;
   payerEmail: string | null;
   payerId: string | null;
   profileIdCandidate: string | null;
   amountCents: number | null;
   currency: string | null;
+};
+
+type SupportOrderRow = {
+  id: string;
+  profile_id: string;
+  provider_order_id: string | null;
+  status: string | null;
+  amount_cents: number | null;
+  currency: string | null;
+  metadata: unknown;
 };
 
 function requireEnv(name: string): string {
@@ -37,24 +49,17 @@ function requireEnv(name: string): string {
 }
 
 function getPayPalBaseUrl(): string {
+  const explicitBase = process.env.PAYPAL_API_BASE?.replace(/\/$/, "");
+
+  if (explicitBase) {
+    return explicitBase;
+  }
+
   const environment = (process.env.PAYPAL_ENVIRONMENT || "sandbox").toLowerCase();
 
   return environment === "live"
     ? "https://api-m.paypal.com"
     : "https://api-m.sandbox.paypal.com";
-}
-
-function getSupabaseAdmin() {
-  return createClient(
-    requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    }
-  );
 }
 
 function getHeader(headers: Headers, name: string): string {
@@ -97,13 +102,6 @@ function parseAmountCents(value: unknown): number | null {
   if (!Number.isFinite(numericValue)) return null;
 
   return Math.round(numericValue * 100);
-}
-
-function addMonths(date: Date, months: number): Date {
-  const result = new Date(date);
-  result.setMonth(result.getMonth() + months);
-
-  return result;
 }
 
 function getOrderIdFromResource(resource: any): string | null {
@@ -241,6 +239,11 @@ async function extractDonationDetails(
   const payer = order?.payer || resource?.payer || resource?.payer_info || {};
   const captureFromOrder = purchaseUnit?.payments?.captures?.[0];
 
+  const referenceId =
+    asString(resource?.reference_id) ||
+    asString(purchaseUnit?.reference_id) ||
+    null;
+
   const customId =
     asString(resource?.custom_id) ||
     asString(purchaseUnit?.custom_id) ||
@@ -252,11 +255,10 @@ async function extractDonationDetails(
     purchaseUnit?.amount ||
     null;
 
-  const profileIdCandidate = isUuid(customId) ? customId : null;
-
   return {
     captureId: asString(resource?.id) || asString(captureFromOrder?.id),
     orderId,
+    supportOrderId: isUuid(referenceId) ? referenceId : null,
     subscriptionId:
       asString(resource?.billing_agreement_id) ||
       asString(resource?.subscription_id) ||
@@ -271,18 +273,67 @@ async function extractDonationDetails(
       asString(payer?.payer_id) ||
       asString(resource?.payer_id) ||
       asString(resource?.payer?.payer_id),
-    profileIdCandidate,
+    profileIdCandidate: isUuid(customId) ? customId : null,
     amountCents: parseAmountCents(amount?.value),
     currency: asString(amount?.currency_code),
   };
 }
 
-async function findProfileId(
-  supabase: ReturnType<typeof getSupabaseAdmin>,
-  details: DonationDetails
-): Promise<string | null> {
+async function findSupportOrder({
+  supabaseAdmin,
+  details,
+}: {
+  supabaseAdmin: ReturnType<typeof createSupabaseAdminClient>;
+  details: DonationDetails;
+}): Promise<SupportOrderRow | null> {
+  if (details.supportOrderId) {
+    const { data, error } = await supabaseAdmin
+      .from("support_orders")
+      .select(
+        "id, profile_id, provider_order_id, status, amount_cents, currency, metadata"
+      )
+      .eq("id", details.supportOrderId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (data) {
+      return data as SupportOrderRow;
+    }
+  }
+
+  if (details.orderId) {
+    const { data, error } = await supabaseAdmin
+      .from("support_orders")
+      .select(
+        "id, profile_id, provider_order_id, status, amount_cents, currency, metadata"
+      )
+      .eq("provider_order_id", details.orderId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (data) {
+      return data as SupportOrderRow;
+    }
+  }
+
+  return null;
+}
+
+async function findProfileId({
+  supabaseAdmin,
+  details,
+}: {
+  supabaseAdmin: ReturnType<typeof createSupabaseAdminClient>;
+  details: DonationDetails;
+}): Promise<string | null> {
   if (details.profileIdCandidate) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("profiles")
       .select("id")
       .eq("id", details.profileIdCandidate)
@@ -298,7 +349,7 @@ async function findProfileId(
   }
 
   if (details.payerEmail) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("profiles")
       .select("id")
       .ilike("email", details.payerEmail)
@@ -317,14 +368,14 @@ async function findProfileId(
 }
 
 async function logWebhookEvent({
-  supabase,
+  supabaseAdmin,
   event,
   details,
   status,
   profileId,
   errorMessage,
 }: {
-  supabase: ReturnType<typeof getSupabaseAdmin>;
+  supabaseAdmin: ReturnType<typeof createSupabaseAdminClient>;
   event: PayPalWebhookEvent;
   details?: Partial<DonationDetails>;
   status: "received" | "processed" | "ignored" | "unmatched" | "error";
@@ -356,7 +407,7 @@ async function logWebhookEvent({
     updated_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from("paypal_webhook_events")
     .upsert(payload, {
       onConflict: "paypal_event_id",
@@ -368,13 +419,13 @@ async function logWebhookEvent({
 }
 
 async function hasAlreadyFinishedProcessing({
-  supabase,
+  supabaseAdmin,
   eventId,
 }: {
-  supabase: ReturnType<typeof getSupabaseAdmin>;
+  supabaseAdmin: ReturnType<typeof createSupabaseAdminClient>;
   eventId: string;
 }): Promise<boolean> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("paypal_webhook_events")
     .select("processing_status")
     .eq("paypal_event_id", eventId)
@@ -389,108 +440,9 @@ async function hasAlreadyFinishedProcessing({
   );
 }
 
-async function activateOneTimeSupporter({
-  supabase,
-  profileId,
-  details,
-  event,
-}: {
-  supabase: ReturnType<typeof getSupabaseAdmin>;
-  profileId: string;
-  details: DonationDetails;
-  event: PayPalWebhookEvent;
-}) {
-  const now = new Date();
-  const nowIso = now.toISOString();
-  const supportMonths = Number(process.env.PAYPAL_ONE_TIME_SUPPORT_MONTHS || 12);
-
-  const { data: existing, error: existingError } = await supabase
-    .from("member_status")
-    .select(
-      "profile_id, member_since, support_started_at, support_expires_at, lifetime_support_cents, support_notes"
-    )
-    .eq("profile_id", profileId)
-    .maybeSingle();
-
-  if (existingError) {
-    throw existingError;
-  }
-
-  const existingExpiresAt = existing?.support_expires_at
-    ? new Date(existing.support_expires_at)
-    : null;
-
-  const extensionBase =
-    existingExpiresAt && existingExpiresAt > now ? existingExpiresAt : now;
-
-  const expiresAt = addMonths(extensionBase, supportMonths).toISOString();
-
-  const previousLifetime =
-    typeof existing?.lifetime_support_cents === "number"
-      ? existing.lifetime_support_cents
-      : 0;
-
-  const newLifetime =
-    previousLifetime + (typeof details.amountCents === "number" ? details.amountCents : 0);
-
-  const newNote = `PayPal one-time support activated by webhook ${
-    event.id || "unknown"
-  } on ${nowIso}. Capture: ${details.captureId || "unknown"}. Order: ${
-    details.orderId || "unknown"
-  }.`;
-
-  const supportNotes = [existing?.support_notes, newNote]
-    .filter(Boolean)
-    .join("\n");
-
-  const payload = {
-    profile_id: profileId,
-    is_member: true,
-    support_status: "active",
-    support_type: "paypal_one_time",
-    support_plan: `one_time_${supportMonths}_months`,
-    support_provider: "paypal",
-    member_since: existing?.member_since || nowIso,
-    support_started_at: existing?.support_started_at || nowIso,
-    last_support_at: nowIso,
-    support_expires_at: expiresAt,
-    expires_at: expiresAt,
-    support_current_period_end: expiresAt,
-    lifetime_support_cents: newLifetime,
-    last_support_amount_cents: details.amountCents,
-    last_support_currency: details.currency,
-    paypal_payer_email: details.payerEmail,
-    paypal_payer_id: details.payerId,
-    paypal_capture_id: details.captureId,
-    paypal_order_id: details.orderId,
-    paypal_subscription_id: details.subscriptionId,
-    last_payment_provider_event_id: event.id,
-    support_notes: supportNotes,
-  };
-
-  if (existing?.profile_id) {
-    const { error } = await supabase
-      .from("member_status")
-      .update(payload)
-      .eq("profile_id", profileId);
-
-    if (error) {
-      throw error;
-    }
-
-    return;
-  }
-
-  const { error } = await supabase.from("member_status").insert(payload);
-
-  if (error) {
-    throw error;
-  }
-}
-
 export async function POST(request: Request) {
   let event: PayPalWebhookEvent | null = null;
-  const supabase = getSupabaseAdmin();
+  const supabaseAdmin = createSupabaseAdminClient();
 
   try {
     const rawBody = await request.text();
@@ -513,13 +465,16 @@ export async function POST(request: Request) {
 
     if (!isVerified) {
       return NextResponse.json(
-        { received: false, error: "PayPal webhook signature verification failed." },
+        {
+          received: false,
+          error: "PayPal webhook signature verification failed.",
+        },
         { status: 400 }
       );
     }
 
     const alreadyFinished = await hasAlreadyFinishedProcessing({
-      supabase,
+      supabaseAdmin,
       eventId: event.id,
     });
 
@@ -532,7 +487,7 @@ export async function POST(request: Request) {
 
     if (event.event_type !== "PAYMENT.CAPTURE.COMPLETED") {
       await logWebhookEvent({
-        supabase,
+        supabaseAdmin,
         event,
         status: "ignored",
       });
@@ -547,39 +502,75 @@ export async function POST(request: Request) {
     const details = await extractDonationDetails(event, accessToken);
 
     await logWebhookEvent({
-      supabase,
+      supabaseAdmin,
       event,
       details,
       status: "received",
     });
 
-    const profileId = await findProfileId(supabase, details);
+    const supportOrder = await findSupportOrder({
+      supabaseAdmin,
+      details,
+    });
 
-    if (!profileId) {
+    if (!supportOrder) {
       await logWebhookEvent({
-        supabase,
+        supabaseAdmin,
         event,
         details,
         status: "unmatched",
         errorMessage:
-          "No matching PWG profile found by PayPal custom_id/profile_id or payer email.",
+          "No matching PWG support order found by PayPal reference_id or provider_order_id.",
       });
 
       return NextResponse.json({
         received: true,
         matched: false,
+        reason: "support_order_not_found",
       });
     }
 
-    await activateOneTimeSupporter({
-      supabase,
+    const profileId =
+      supportOrder.profile_id ||
+      (await findProfileId({
+        supabaseAdmin,
+        details,
+      }));
+
+    if (!profileId) {
+      await logWebhookEvent({
+        supabaseAdmin,
+        event,
+        details,
+        status: "unmatched",
+        errorMessage:
+          "Matching support order found, but no matching PWG profile was available.",
+      });
+
+      return NextResponse.json({
+        received: true,
+        matched: false,
+        reason: "profile_not_found",
+      });
+    }
+
+    const activationResult = await activatePayPalSupporter({
+      supabaseAdmin,
       profileId,
-      details,
-      event,
+      supportOrderId: supportOrder.id,
+      paypalOrderId: details.orderId || supportOrder.provider_order_id || null,
+      paypalCaptureId: details.captureId,
+      paypalSubscriptionId: details.subscriptionId,
+      paypalPayerEmail: details.payerEmail,
+      paypalPayerId: details.payerId,
+      amountCents: details.amountCents || supportOrder.amount_cents || null,
+      currency: details.currency || supportOrder.currency || "USD",
+      providerEventId: event.id,
+      source: "paypal_webhook",
     });
 
     await logWebhookEvent({
-      supabase,
+      supabaseAdmin,
       event,
       details,
       status: "processed",
@@ -589,7 +580,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       received: true,
       processed: true,
+      alreadyProcessed: activationResult.alreadyProcessed,
       profile_id: profileId,
+      support_order_id: supportOrder.id,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -597,7 +590,7 @@ export async function POST(request: Request) {
     if (event?.id && event?.event_type) {
       try {
         await logWebhookEvent({
-          supabase,
+          supabaseAdmin,
           event,
           status: "error",
           errorMessage: message,

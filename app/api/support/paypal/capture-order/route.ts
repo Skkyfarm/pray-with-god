@@ -1,23 +1,17 @@
 // /app/api/support/paypal/capture-order/route.ts
 
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getOrCreateProfile } from "@/lib/profile/getOrCreateProfile";
+import { activatePayPalSupporter } from "@/lib/support/activatePayPalSupporter";
 
 export const runtime = "nodejs";
-
-type CapturePayPalOrderBody = {
-  paypalOrderId?: string;
-};
+export const dynamic = "force-dynamic";
 
 type PayPalAccessTokenResponse = {
   access_token?: string;
-  token_type?: string;
-  expires_in?: number;
 };
 
-type PayPalCaptureResponse = {
+type PayPalCaptureOrderResponse = {
   id?: string;
   status?: string;
   payer?: {
@@ -31,37 +25,13 @@ type PayPalCaptureResponse = {
       captures?: Array<{
         id?: string;
         status?: string;
-        custom_id?: string;
         amount?: {
           currency_code?: string;
           value?: string;
         };
-        final_capture?: boolean;
-        create_time?: string;
-        update_time?: string;
       }>;
     };
   }>;
-};
-
-type SupportOrderRow = {
-  id: string;
-  profile_id: string | null;
-  status: string;
-  provider_order_id: string | null;
-  provider_capture_id: string | null;
-  provider_payer_id: string | null;
-  support_plan: string;
-  support_type: string;
-  amount_cents: number;
-  currency: string;
-  support_term_months: number;
-  metadata: unknown;
-};
-
-type ExistingMemberStatusRow = {
-  member_since: string | null;
-  lifetime_support_cents: number | null;
 };
 
 function getRequiredEnv(name: string): string {
@@ -75,36 +45,69 @@ function getRequiredEnv(name: string): string {
 }
 
 function getPayPalApiBase(): string {
-  return (
-    process.env.PAYPAL_API_BASE?.replace(/\/$/, "") ||
-    "https://api-m.sandbox.paypal.com"
-  );
-}
+  const explicitBase = process.env.PAYPAL_API_BASE?.replace(/\/$/, "");
 
-function asRecord(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
+  if (explicitBase) {
+    return explicitBase;
   }
 
-  return value as Record<string, unknown>;
+  const environment = (process.env.PAYPAL_ENVIRONMENT || "sandbox").toLowerCase();
+
+  return environment === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
 }
 
-function addMonths(date: Date, months: number): Date {
-  const next = new Date(date);
-  next.setMonth(next.getMonth() + months);
-  return next;
+function getSiteBaseUrl(req: Request): string {
+  const configuredBase =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.SITE_URL;
+
+  if (configuredBase) {
+    return configuredBase.replace(/\/$/, "");
+  }
+
+  return new URL(req.url).origin.replace(/\/$/, "");
 }
 
-function paypalAmountToCents(value: string | null | undefined): number | null {
-  if (!value) return null;
+function redirectToDonateThankYou(
+  req: Request,
+  status: "success" | "pending" | "error" | "cancelled",
+  message?: string
+) {
+  const siteBaseUrl = getSiteBaseUrl(req);
+  const redirectUrl = new URL("/donate/thank-you", siteBaseUrl);
 
-  const amount = Number(value);
+  redirectUrl.searchParams.set("status", status);
 
-  if (!Number.isFinite(amount)) {
+  if (message) {
+    redirectUrl.searchParams.set("message", message);
+  }
+
+  return NextResponse.redirect(redirectUrl);
+}
+
+function parseAmountCents(value: unknown): number | null {
+  if (typeof value !== "string" && typeof value !== "number") {
     return null;
   }
 
-  return Math.round(amount * 100);
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  return Math.round(numericValue * 100);
+}
+
+function getCaptureFromPayPalOrder(order: PayPalCaptureOrderResponse) {
+  return order.purchase_units?.[0]?.payments?.captures?.[0] || null;
+}
+
+function getPurchaseUnitFromPayPalOrder(order: PayPalCaptureOrderResponse) {
+  return order.purchase_units?.[0] || null;
 }
 
 async function getPayPalAccessToken(): Promise<string> {
@@ -121,6 +124,8 @@ async function getPayPalAccessToken(): Promise<string> {
     headers: {
       Authorization: `Basic ${credentials}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Accept-Language": "en_US",
     },
     body: "grant_type=client_credentials",
   });
@@ -138,312 +143,182 @@ async function getPayPalAccessToken(): Promise<string> {
   return data.access_token;
 }
 
-export async function POST(req: Request) {
+async function capturePayPalOrder(
+  paypalOrderId: string,
+  supportOrderId: string
+): Promise<PayPalCaptureOrderResponse> {
+  const paypalApiBase = getPayPalApiBase();
+  const accessToken = await getPayPalAccessToken();
+
+  const response = await fetch(
+    `${paypalApiBase}/v2/checkout/orders/${paypalOrderId}/capture`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        "PayPal-Request-Id": `${supportOrderId}-capture`,
+      },
+    }
+  );
+
+  const data = (await response.json()) as PayPalCaptureOrderResponse;
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to capture PayPal order: ${response.status} ${JSON.stringify(
+        data
+      )}`
+    );
+  }
+
+  return data;
+}
+
+export async function GET(req: Request) {
+  const supabaseAdmin = createSupabaseAdminClient();
+
   try {
-    const { userId } = await auth();
+    const url = new URL(req.url);
+    const supportOrderId = url.searchParams.get("supportOrderId");
+    const paypalOrderId = url.searchParams.get("token");
 
-    if (!userId) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Sign in or create a free account before supporting PWG for account benefits.",
-          errorCode: "auth_required",
-        },
-        { status: 401 }
+    if (!supportOrderId || !paypalOrderId) {
+      return redirectToDonateThankYou(
+        req,
+        "error",
+        "missing-paypal-return-data"
       );
     }
-
-    const body = (await req.json().catch(() => ({}))) as CapturePayPalOrderBody;
-    const paypalOrderId = String(body.paypalOrderId || "").trim();
-
-    if (!paypalOrderId) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Missing PayPal order ID.",
-        },
-        { status: 400 }
-      );
-    }
-
-    const profile = await getOrCreateProfile();
-    const supabaseAdmin = createSupabaseAdminClient();
 
     const { data: supportOrder, error: supportOrderError } = await supabaseAdmin
       .from("support_orders")
       .select(
-        [
-          "id",
-          "profile_id",
-          "status",
-          "provider_order_id",
-          "provider_capture_id",
-          "provider_payer_id",
-          "support_plan",
-          "support_type",
-          "amount_cents",
-          "currency",
-          "support_term_months",
-          "metadata",
-        ].join(", ")
+        "id, profile_id, provider_order_id, status, amount_cents, currency, metadata"
       )
-      .eq("provider", "paypal")
-      .eq("provider_order_id", paypalOrderId)
-      .eq("profile_id", profile.id)
-      .maybeSingle<SupportOrderRow>();
+      .eq("id", supportOrderId)
+      .maybeSingle();
 
-    if (supportOrderError) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Could not load PWG support order.",
-          details: supportOrderError.message,
-        },
-        { status: 500 }
-      );
+    if (supportOrderError || !supportOrder) {
+      return redirectToDonateThankYou(req, "error", "support-order-not-found");
     }
 
-    if (!supportOrder) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "No matching PWG support order found for this account.",
-        },
-        { status: 404 }
-      );
-    }
-
-    if (
-      supportOrder.status === "completed" &&
-      supportOrder.provider_capture_id
-    ) {
-      return NextResponse.json({
-        ok: true,
-        alreadyCompleted: true,
-        supportOrderId: supportOrder.id,
-        providerCaptureId: supportOrder.provider_capture_id,
-      });
-    }
-
-    const paypalApiBase = getPayPalApiBase();
-    const accessToken = await getPayPalAccessToken();
-
-    const captureResponse = await fetch(
-      `${paypalApiBase}/v2/checkout/orders/${encodeURIComponent(
-        paypalOrderId
-      )}/capture`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const captureData = (await captureResponse.json()) as PayPalCaptureResponse;
-
-    if (!captureResponse.ok) {
+    if (supportOrder.provider_order_id !== paypalOrderId) {
       await supabaseAdmin
         .from("support_orders")
         .update({
-          status: "failed",
-          failed_at: new Date().toISOString(),
+          status: "paypal_capture_blocked",
           metadata: {
-            ...asRecord(supportOrder.metadata),
-            paypal_capture_error: captureData,
+            ...(typeof supportOrder.metadata === "object" &&
+            supportOrder.metadata !== null
+              ? supportOrder.metadata
+              : {}),
+            paypal_capture_blocked_reason: "provider_order_id_mismatch",
+            returned_paypal_order_id: paypalOrderId,
+            updated_by: "paypal_capture_order_route",
           },
           updated_at: new Date().toISOString(),
         })
         .eq("id", supportOrder.id);
 
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Could not capture PayPal order.",
-          details: captureData,
-        },
-        { status: 502 }
-      );
-    }
-
-    const purchaseUnit = captureData.purchase_units?.[0] || null;
-    const capture = purchaseUnit?.payments?.captures?.[0] || null;
-
-    const captureId = capture?.id || null;
-    const captureStatus = capture?.status || captureData.status || null;
-    const payerId = captureData.payer?.payer_id || null;
-    const referenceId = purchaseUnit?.reference_id || null;
-    const customId = capture?.custom_id || purchaseUnit?.custom_id || null;
-    const captureCurrency = capture?.amount?.currency_code || null;
-    const captureAmountCents = paypalAmountToCents(capture?.amount?.value);
-
-    if (captureStatus !== "COMPLETED" || !captureId) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "PayPal order was not completed.",
-          details: captureData,
-        },
-        { status: 400 }
-      );
-    }
-
-    if (referenceId && referenceId !== supportOrder.id) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "PayPal reference ID did not match PWG support order.",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (customId && customId !== supportOrder.id) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "PayPal custom ID did not match PWG support order.",
-        },
-        { status: 400 }
-      );
+      return redirectToDonateThankYou(req, "error", "paypal-order-mismatch");
     }
 
     if (
-      captureCurrency !== supportOrder.currency ||
-      captureAmountCents !== supportOrder.amount_cents
+      supportOrder.status === "paypal_support_activated" ||
+      supportOrder.status === "paypal_capture_processed" ||
+      supportOrder.status === "processed" ||
+      supportOrder.status === "completed"
     ) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "PayPal capture amount did not match PWG support order.",
-          expected: {
-            amountCents: supportOrder.amount_cents,
-            currency: supportOrder.currency,
-          },
-          actual: {
-            amountCents: captureAmountCents,
-            currency: captureCurrency,
-          },
-        },
-        { status: 400 }
-      );
+      return redirectToDonateThankYou(req, "success", "already-activated");
     }
 
-    const now = new Date();
-    const supportEndsAt = addMonths(now, supportOrder.support_term_months || 12);
-    const nowIso = now.toISOString();
-    const supportEndsAtIso = supportEndsAt.toISOString();
+    const capturedOrder = await capturePayPalOrder(paypalOrderId, supportOrderId);
+    const purchaseUnit = getPurchaseUnitFromPayPalOrder(capturedOrder);
+    const capture = getCaptureFromPayPalOrder(capturedOrder);
 
-    const { error: supportOrderUpdateError } = await supabaseAdmin
+    const captureStatus = capture?.status || capturedOrder.status || "UNKNOWN";
+    const isCompleted = captureStatus === "COMPLETED";
+
+    if (!isCompleted) {
+      await supabaseAdmin
+        .from("support_orders")
+        .update({
+          status: "paypal_capture_pending",
+          metadata: {
+            ...(typeof supportOrder.metadata === "object" &&
+            supportOrder.metadata !== null
+              ? supportOrder.metadata
+              : {}),
+            paypal_capture_order_status: capturedOrder.status || null,
+            paypal_capture_id: capture?.id || null,
+            paypal_capture_status: captureStatus,
+            paypal_capture_amount: capture?.amount || null,
+            captured_by: "paypal_capture_order_route",
+            captured_at: new Date().toISOString(),
+          },
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", supportOrder.id);
+
+      return redirectToDonateThankYou(req, "pending", "capture-pending");
+    }
+
+    const activationResult = await activatePayPalSupporter({
+      supabaseAdmin,
+      profileId: supportOrder.profile_id,
+      supportOrderId: supportOrder.id,
+      paypalOrderId,
+      paypalCaptureId: capture?.id || null,
+      paypalSubscriptionId: null,
+      paypalPayerEmail: capturedOrder.payer?.email_address || null,
+      paypalPayerId: capturedOrder.payer?.payer_id || null,
+      amountCents:
+        parseAmountCents(capture?.amount?.value) ||
+        supportOrder.amount_cents ||
+        null,
+      currency: capture?.amount?.currency_code || supportOrder.currency || "USD",
+      providerEventId: null,
+      source: "paypal_capture_return",
+    });
+
+    await supabaseAdmin
       .from("support_orders")
       .update({
-        provider_capture_id: captureId,
-        provider_payer_id: payerId,
-        status: "completed",
-        support_starts_at: nowIso,
-        support_ends_at: supportEndsAtIso,
-        completed_at: nowIso,
+        status: "paypal_capture_processed",
         metadata: {
-          ...asRecord(supportOrder.metadata),
+          ...(typeof supportOrder.metadata === "object" &&
+          supportOrder.metadata !== null
+            ? supportOrder.metadata
+            : {}),
+          paypal_capture_order_status: capturedOrder.status || null,
+          paypal_purchase_unit_reference_id: purchaseUnit?.reference_id || null,
+          paypal_purchase_unit_custom_id: purchaseUnit?.custom_id || null,
+          paypal_capture_id: capture?.id || null,
           paypal_capture_status: captureStatus,
-          paypal_order_status: captureData.status || null,
-          paypal_capture: {
-            id: captureId,
-            status: captureStatus,
-            amount_cents: captureAmountCents,
-            currency: captureCurrency,
-            final_capture: capture?.final_capture ?? null,
-            create_time: capture?.create_time ?? null,
-            update_time: capture?.update_time ?? null,
-          },
+          paypal_capture_amount: capture?.amount || null,
+          supporter_activation_result: activationResult,
+          captured_by: "paypal_capture_order_route",
+          captured_at: new Date().toISOString(),
         },
-        updated_at: nowIso,
+        updated_at: new Date().toISOString(),
       })
       .eq("id", supportOrder.id);
 
-    if (supportOrderUpdateError) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "PayPal captured, but PWG could not update the support order.",
-          details: supportOrderUpdateError.message,
-        },
-        { status: 500 }
-      );
-    }
-
-    const { data: existingMemberStatus } = await supabaseAdmin
-      .from("member_status")
-      .select("member_since, lifetime_support_cents")
-      .eq("profile_id", profile.id)
-      .maybeSingle<ExistingMemberStatusRow>();
-
-    const previousLifetimeSupportCents =
-      existingMemberStatus?.lifetime_support_cents || 0;
-
-    const { data: memberStatus, error: memberStatusError } = await supabaseAdmin
-      .from("member_status")
-      .upsert(
-        {
-          profile_id: profile.id,
-          is_member: true,
-          support_status: "active",
-          support_type: supportOrder.support_type || "one_time",
-          support_plan: supportOrder.support_plan || "paypal_one_time_12_months",
-          support_provider: "paypal",
-          member_since: existingMemberStatus?.member_since || nowIso,
-          last_support_at: nowIso,
-          expires_at: supportEndsAtIso,
-          support_started_at: nowIso,
-          support_expires_at: supportEndsAtIso,
-          support_current_period_start: nowIso,
-          support_current_period_end: supportEndsAtIso,
-          last_support_payment_at: nowIso,
-          lifetime_support_cents:
-            previousLifetimeSupportCents + supportOrder.amount_cents,
-          notes: "Active PayPal supporter access granted after completed capture.",
-          support_notes:
-            "Active PayPal supporter access granted after completed capture.",
-          updated_at: nowIso,
-        },
-        {
-          onConflict: "profile_id",
-        }
-      )
-      .select("*")
-      .single();
-
-    if (memberStatusError) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "PayPal captured, but PWG could not activate supporter benefits.",
-          details: memberStatusError.message,
-        },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({
-      ok: true,
-      supportOrderId: supportOrder.id,
-      providerOrderId: paypalOrderId,
-      providerCaptureId: captureId,
-      supportStatus: "active",
-      supportEndsAt: supportEndsAtIso,
-      memberStatus,
-    });
+    return redirectToDonateThankYou(
+      req,
+      "success",
+      activationResult.alreadyProcessed
+        ? "already-activated"
+        : "supporter-activated"
+    );
   } catch (error) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: "Something went wrong while capturing the PayPal support order.",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
+    console.error("PayPal capture return failed:", error);
+
+    return redirectToDonateThankYou(
+      req,
+      "error",
+      error instanceof Error ? error.message : "unknown-capture-error"
     );
   }
 }

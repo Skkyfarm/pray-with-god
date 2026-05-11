@@ -1,90 +1,83 @@
 // /app/donate/page.tsx
-'use client';
+"use client";
 
 import Link from "next/link";
-import Script from "next/script";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-declare global {
-  interface Window {
-    paypal?: {
-      HostedButtons?: (options: { hostedButtonId: string }) => {
-        render: (selector: string) => Promise<void> | void;
-      };
-    };
-  }
-}
+type PayPalCreateOrderResponse = {
+  ok?: boolean;
+  error?: string;
+  errorCode?: string;
+  details?: unknown;
+  supportOrderId?: string;
+  paypalOrderId?: string;
+  paypalApprovalUrl?: string;
+};
 
-const PAYPAL_HOSTED_BUTTON_ID = "FNQFJXQAXQKEQ";
-const PAYPAL_CONTAINER_ID = "paypal-container-FNQFJXQAXQKEQ";
+const SUPPORT_AMOUNTS = [
+  { label: "$3", amountCents: 300 },
+  { label: "$5", amountCents: 500 },
+  { label: "$10", amountCents: 1000 },
+  { label: "$20", amountCents: 2000 },
+  { label: "$25", amountCents: 2500 },
+  { label: "$50", amountCents: 5000 },
+  { label: "$100", amountCents: 10000 },
+];
 
 export default function DonatePage() {
-  const [paypalStatus, setPaypalStatus] = useState<"loading" | "ready" | "error">(
-    "loading"
-  );
+  const [selectedAmountCents, setSelectedAmountCents] = useState(500);
+  const [isStartingCheckout, setIsStartingCheckout] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
-  const renderedRef = useRef(false);
-  const attemptsRef = useRef(0);
+  async function startPayPalCheckout() {
+    setCheckoutError(null);
+    setIsStartingCheckout(true);
 
-  const renderPayPalButton = useCallback(() => {
-    if (renderedRef.current) return;
+    try {
+      const response = await fetch("/api/support/paypal/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amountCents: selectedAmountCents,
+        }),
+      });
 
-    const container = document.getElementById(PAYPAL_CONTAINER_ID);
+      const data = (await response.json()) as PayPalCreateOrderResponse;
 
-    if (!container) {
-      setPaypalStatus("error");
-      return;
-    }
+      if (!response.ok || !data.ok || !data.paypalApprovalUrl) {
+        if (data.errorCode === "auth_required") {
+          setCheckoutError(
+            "Please sign in or create a free account first so PWG can connect your support to your account benefits."
+          );
+          return;
+        }
 
-    if (!window.paypal?.HostedButtons) {
-      attemptsRef.current += 1;
-
-      if (attemptsRef.current <= 10) {
-        window.setTimeout(renderPayPalButton, 250);
+        setCheckoutError(
+          data.error ||
+            "PayPal checkout could not be started. Please try again in a moment."
+        );
         return;
       }
 
-      setPaypalStatus("error");
-      return;
-    }
-
-    try {
-      container.innerHTML = "";
-
-      window.paypal
-        .HostedButtons({
-          hostedButtonId: PAYPAL_HOSTED_BUTTON_ID,
-        })
-        .render(`#${PAYPAL_CONTAINER_ID}`);
-
-      renderedRef.current = true;
-      setPaypalStatus("ready");
+      window.location.href = data.paypalApprovalUrl;
     } catch {
-      renderedRef.current = false;
-      setPaypalStatus("error");
+      setCheckoutError(
+        "PayPal checkout could not be started. Please check your connection and try again."
+      );
+    } finally {
+      setIsStartingCheckout(false);
     }
-  }, []);
-
-  useEffect(() => {
-    renderPayPalButton();
-  }, [renderPayPalButton]);
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12 text-gray-950">
-      <Script
-        id="paypal-hosted-buttons-sdk"
-        src="https://www.paypal.com/sdk/js?client-id=BAApc_qR3uEvAJzGK4iYq-DLrXiezQitPWyrktYASlHu77cGhKtdFLgJfXqYKEQkNoueS85RrJ6GRAc6OA&components=hosted-buttons&enable-funding=venmo&currency=USD"
-        strategy="afterInteractive"
-        onLoad={renderPayPalButton}
-        onReady={renderPayPalButton}
-        onError={() => setPaypalStatus("error")}
-      />
-
       <h1 className="text-3xl font-semibold">Support PWG</h1>
 
       <p className="mt-3 text-gray-800">
         Prayer companionship and exploration remain free for everyone on
-        PrayWithGod.ai. If PWG has been meaningful to you, your donation helps
+        PrayWithGod.ai. If PWG has been meaningful to you, your support helps
         keep the site running, maintained, and growing.
       </p>
 
@@ -104,43 +97,81 @@ export default function DonatePage() {
         </Link>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold">Give with PayPal</h2>
-
-        <p className="mt-2 text-gray-800">
-          You can make a donation securely using the PayPal options below.
+      <section className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 shadow-sm backdrop-blur">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-700">
+          Supporter checkout
         </p>
 
-        <div className="mt-5 min-h-[140px]" id={PAYPAL_CONTAINER_ID} />
+        <h2 className="mt-2 text-xl font-semibold">
+          Support PrayWithGod.ai with PayPal
+        </h2>
 
-        {paypalStatus === "loading" ? (
-          <p className="mt-3 text-sm text-gray-600">
-            Loading secure PayPal donation options...
-          </p>
-        ) : null}
+        <p className="mt-2 text-sm leading-relaxed text-gray-800">
+          Choose an amount below. PWG will create a secure PayPal checkout and
+          return you here after PayPal confirms the payment.
+        </p>
 
-        {paypalStatus === "error" ? (
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {SUPPORT_AMOUNTS.map((amount) => {
+            const isSelected = selectedAmountCents === amount.amountCents;
+
+            return (
+              <button
+                key={amount.amountCents}
+                type="button"
+                onClick={() => setSelectedAmountCents(amount.amountCents)}
+                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                  isSelected
+                    ? "border-purple-500 bg-purple-50 text-purple-950 shadow-sm"
+                    : "border-black/15 bg-white text-gray-950 hover:bg-white/80"
+                }`}
+                aria-pressed={isSelected}
+              >
+                {amount.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          onClick={startPayPalCheckout}
+          disabled={isStartingCheckout}
+          className="mt-6 w-full rounded-2xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        >
+          {isStartingCheckout ? "Starting PayPal checkout..." : "Continue to PayPal"}
+        </button>
+
+        {checkoutError ? (
           <div className="mt-4 rounded-2xl border border-amber-300/70 bg-amber-50/80 p-4 text-sm leading-6 text-gray-800">
-            PayPal did not load correctly. Please refresh the page and try
-            again.
+            <p>{checkoutError}</p>
+
+            {checkoutError.includes("sign in") ? (
+              <Link
+                href="/signin"
+                className="mt-3 inline-flex rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-semibold text-gray-950 hover:bg-white/80"
+              >
+                Sign in or create a free account
+              </Link>
+            ) : null}
           </div>
         ) : null}
 
         <p className="mt-6 text-xs leading-relaxed text-gray-600">
-          Donations in support of PrayWithGod.ai are not tax-deductible. Skky
-          Farm Publishing LLC is not a qualified charitable organization.
+          Support payments to PrayWithGod.ai are not tax-deductible. Skky Farm
+          Publishing LLC is not a qualified charitable organization.
         </p>
-      </div>
+      </section>
 
-      <div className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
-        <h2 className="text-lg font-semibold">Why donations matter</h2>
+      <section className="mt-8 rounded-2xl border border-black/10 bg-white/70 p-6 backdrop-blur">
+        <h2 className="text-lg font-semibold">Why support matters</h2>
 
         <p className="mt-2 text-sm leading-relaxed text-gray-800">
-          Your donation helps keep PrayWithGod.ai free for everyone while
+          Your support helps keep PrayWithGod.ai free for everyone while
           supporting hosting, maintenance, and careful development of this prayer
           companion.
         </p>
-      </div>
+      </section>
     </main>
   );
 }
