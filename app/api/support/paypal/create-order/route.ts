@@ -15,14 +15,16 @@ type PayPalAccessTokenResponse = {
   expires_in?: number;
 };
 
+type PayPalOrderLink = {
+  href?: string;
+  rel?: string;
+  method?: string;
+};
+
 type PayPalCreateOrderResponse = {
   id?: string;
   status?: string;
-  links?: Array<{
-    href?: string;
-    rel?: string;
-    method?: string;
-  }>;
+  links?: PayPalOrderLink[];
 };
 
 const DEFAULT_AMOUNT_CENTS = 500;
@@ -31,6 +33,7 @@ const ALLOWED_AMOUNT_CENTS = new Set([
   300,
   500,
   1000,
+  2000,
   2500,
   5000,
   10000,
@@ -47,10 +50,30 @@ function getRequiredEnv(name: string): string {
 }
 
 function getPayPalApiBase(): string {
-  return (
-    process.env.PAYPAL_API_BASE?.replace(/\/$/, "") ||
-    "https://api-m.sandbox.paypal.com"
-  );
+  const explicitBase = process.env.PAYPAL_API_BASE?.replace(/\/$/, "");
+
+  if (explicitBase) {
+    return explicitBase;
+  }
+
+  const environment = (process.env.PAYPAL_ENVIRONMENT || "sandbox").toLowerCase();
+
+  return environment === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
+}
+
+function getSiteBaseUrl(req: Request): string {
+  const configuredBase =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.SITE_URL;
+
+  if (configuredBase) {
+    return configuredBase.replace(/\/$/, "");
+  }
+
+  return new URL(req.url).origin.replace(/\/$/, "");
 }
 
 function formatUsdAmount(amountCents: number): string {
@@ -71,6 +94,22 @@ function normalizeAmountCents(value: unknown): number {
   return amountCents;
 }
 
+function getPayPalApprovalUrl(order: PayPalCreateOrderResponse): string | null {
+  const payerActionLink = order.links?.find(
+    (link) => link.rel === "payer-action" && link.href
+  );
+
+  if (payerActionLink?.href) {
+    return payerActionLink.href;
+  }
+
+  const approveLink = order.links?.find(
+    (link) => link.rel === "approve" && link.href
+  );
+
+  return approveLink?.href || null;
+}
+
 async function getPayPalAccessToken(): Promise<string> {
   const clientId = getRequiredEnv("PAYPAL_CLIENT_ID");
   const clientSecret = getRequiredEnv("PAYPAL_CLIENT_SECRET");
@@ -85,6 +124,8 @@ async function getPayPalAccessToken(): Promise<string> {
     headers: {
       Authorization: `Basic ${credentials}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Accept-Language": "en_US",
     },
     body: "grant_type=client_credentials",
   });
@@ -110,7 +151,8 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           ok: false,
-          error: "Sign in or create a free account before supporting PWG for account benefits.",
+          error:
+            "Sign in or create a free account before supporting PWG for account benefits.",
           errorCode: "auth_required",
         },
         { status: 401 }
@@ -132,6 +174,8 @@ export async function POST(req: Request) {
       profile.email ||
       null;
 
+    const siteBaseUrl = getSiteBaseUrl(req);
+
     const { data: supportOrder, error: supportOrderError } = await supabaseAdmin
       .from("support_orders")
       .insert({
@@ -147,6 +191,7 @@ export async function POST(req: Request) {
         support_term_months: 12,
         metadata: {
           source: "paypal_create_order_route",
+          site_base_url: siteBaseUrl,
         },
       })
       .select("id")
@@ -163,6 +208,9 @@ export async function POST(req: Request) {
       );
     }
 
+    const returnUrl = `${siteBaseUrl}/api/support/paypal/capture-order?supportOrderId=${supportOrder.id}`;
+    const cancelUrl = `${siteBaseUrl}/donate?paypal=cancelled`;
+
     const paypalApiBase = getPayPalApiBase();
     const accessToken = await getPayPalAccessToken();
 
@@ -173,13 +221,14 @@ export async function POST(req: Request) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+          "PayPal-Request-Id": supportOrder.id,
         },
         body: JSON.stringify({
           intent: "CAPTURE",
           purchase_units: [
             {
               reference_id: supportOrder.id,
-              custom_id: supportOrder.id,
+              custom_id: profile.id,
               description: "PrayWithGod.ai support",
               amount: {
                 currency_code: "USD",
@@ -187,6 +236,19 @@ export async function POST(req: Request) {
               },
             },
           ],
+          payment_source: {
+            paypal: {
+              payment_method_preference: "IMMEDIATE_PAYMENT_REQUIRED",
+              experience_context: {
+                brand_name: "PrayWithGod.ai",
+                landing_page: "LOGIN",
+                shipping_preference: "NO_SHIPPING",
+                user_action: "PAY_NOW",
+                return_url: returnUrl,
+                cancel_url: cancelUrl,
+              },
+            },
+          },
         }),
       }
     );
@@ -194,7 +256,9 @@ export async function POST(req: Request) {
     const paypalOrder =
       (await paypalOrderResponse.json()) as PayPalCreateOrderResponse;
 
-    if (!paypalOrderResponse.ok || !paypalOrder.id) {
+    const paypalApprovalUrl = getPayPalApprovalUrl(paypalOrder);
+
+    if (!paypalOrderResponse.ok || !paypalOrder.id || !paypalApprovalUrl) {
       await supabaseAdmin
         .from("support_orders")
         .update({
@@ -203,6 +267,9 @@ export async function POST(req: Request) {
           metadata: {
             source: "paypal_create_order_route",
             paypal_create_order_error: paypalOrder,
+            paypal_create_order_status: paypalOrderResponse.status,
+            return_url: returnUrl,
+            cancel_url: cancelUrl,
           },
           updated_at: new Date().toISOString(),
         })
@@ -211,7 +278,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           ok: false,
-          error: "Could not create PayPal order.",
+          error: "Could not create PayPal checkout link.",
           details: paypalOrder,
         },
         { status: 502 }
@@ -227,6 +294,9 @@ export async function POST(req: Request) {
           source: "paypal_create_order_route",
           paypal_order_status: paypalOrder.status || null,
           paypal_order_links: paypalOrder.links || [],
+          paypal_approval_url: paypalApprovalUrl,
+          return_url: returnUrl,
+          cancel_url: cancelUrl,
         },
         updated_at: new Date().toISOString(),
       })
@@ -247,6 +317,7 @@ export async function POST(req: Request) {
       ok: true,
       supportOrderId: supportOrder.id,
       paypalOrderId: paypalOrder.id,
+      paypalApprovalUrl,
     });
   } catch (error) {
     return NextResponse.json(
