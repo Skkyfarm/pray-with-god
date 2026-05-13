@@ -409,14 +409,6 @@ export default function SiteHeader() {
             <Link
               href="/signin"
               onClick={closeAllMenus}
-              className="hidden text-[11px] font-semibold tracking-[0.18em] text-black/70 hover:text-black md:inline"
-            >
-              Sign In
-            </Link>
-
-            <Link
-              href="/signin"
-              onClick={closeAllMenus}
               className="rounded-lg bg-black px-3 py-1.5 text-[11px] font-semibold tracking-[0.18em] text-white hover:bg-black/90"
             >
               LOG IN
