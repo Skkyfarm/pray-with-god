@@ -514,21 +514,12 @@ export default function SiteHeader() {
                 <div className="pb-1 pt-3 text-[10px] font-semibold tracking-[0.18em] text-black/40">
                   ACCOUNT
                 </div>
-
                 <Link
                   href="/signin"
                   onClick={closeAllMenus}
                   className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
                 >
-                  SIGN IN
-                </Link>
-
-                <Link
-                  href="/signin"
-                  onClick={closeAllMenus}
-                  className="py-2 text-[11px] font-semibold tracking-[0.18em] text-black/80 hover:text-black"
-                >
-                  CREATE FREE ACCOUNT
+                  SIGN IN OR CREATE FREE ACCOUNT
                 </Link>
               </SignedOut>
 
