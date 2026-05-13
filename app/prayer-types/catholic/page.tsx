@@ -1,4 +1,4 @@
-﻿// app/prayer-types/catholic/page.tsx
+// app/prayer-types/catholic/page.tsx
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -57,7 +57,7 @@ export default function CatholicPrayerTypesPage() {
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
-          <h2 className="text-2xl font-semibold">What youâ€™ll find here</h2>
+          <h2 className="text-2xl font-semibold">What you'll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
             Some Catholic prayers are deeply recognizable in traditional form.

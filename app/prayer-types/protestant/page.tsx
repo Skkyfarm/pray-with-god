@@ -1,4 +1,4 @@
-﻿// app/prayer-types/protestant/page.tsx
+// app/prayer-types/protestant/page.tsx
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -59,7 +59,7 @@ export default function ProtestantPrayerTypesPage() {
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
-          <h2 className="text-2xl font-semibold">What youâ€™ll find here</h2>
+          <h2 className="text-2xl font-semibold">What you'll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
             Some prayers are focused on worship. Some are focused on confession,
@@ -71,7 +71,7 @@ export default function ProtestantPrayerTypesPage() {
           <p className="mt-4 text-base leading-7 text-slate-700">
             These pages are also meant to help people who may not know the
             traditional names for different types of prayer. A visitor may not
-            search for â€œpetitionary prayer,â€ but they may know they need help,
+            search for "petitionary prayer," but they may know they need help,
             comfort, healing, or direction.
           </p>
         </div>
