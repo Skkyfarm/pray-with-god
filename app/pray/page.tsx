@@ -1579,13 +1579,12 @@ function handleReadAloud() {
         ? 'border-red-200 bg-red-50 text-red-700'
         : 'border-sky-200 bg-sky-50 text-zinc-900';
 
-const saveSummaryText =
+  const saveSummaryText =
     saveModalMode === 'join'
       ? saveFeedback ||
         'Sign in or create a free account to continue. Support PWG when you are ready to save prayers and build your personal prayer library.'
       : saveModalMode === 'support'
-        ? saveFeedback ||
-          'Support PWG to save prayers, build your personal prayer library, and return to meaningful moments later.'
+        ? 'Saving prayers is a supporter feature. Prayer access remains free for everyone.'
         : saveModalMode === 'expired'
           ? saveFeedback ||
             'Your PWG support appears to have lapsed. Renew support to save prayers and continue building your prayer library.'
@@ -1598,7 +1597,7 @@ const saveSummaryText =
     saveModalMode === 'join'
       ? 'Sign in to create a free account'
       : saveModalMode === 'support'
-        ? 'Support PWG to save prayers'
+        ? 'Save prayers with supporter access'
         : saveModalMode === 'expired'
           ? 'Renew support to save prayers'
           : 'Save Prayer';
