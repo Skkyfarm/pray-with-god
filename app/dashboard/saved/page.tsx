@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import LocalDateTime from "@/components/dashboard/LocalDateTime";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import DeleteSavedPrayerButton from "@/components/dashboard/DeleteSavedPrayerButton";
 import RenameSavedPrayerButton from "@/components/dashboard/RenameSavedPrayerButton";
@@ -36,20 +37,7 @@ type GeneratedPrayerRow = {
   created_at: string | null;
 };
 
-function formatPrayerDate(value: string | null) {
-  if (!value) return "Unknown date";
 
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Unknown date";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-}
 
 function prettifyValue(value: string | null, fallback: string) {
   if (!value) return fallback;
@@ -353,7 +341,7 @@ export default async function DashboardSavedPrayersPage() {
                         </div>
 
                         <span className="text-xs text-slate-500">
-                          Saved {formatPrayerDate(savedPrayer.created_at)}
+                          Saved <LocalDateTime value={savedPrayer.created_at} />
                         </span>
                       </div>
 
