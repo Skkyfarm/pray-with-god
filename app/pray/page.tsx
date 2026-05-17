@@ -2324,11 +2324,10 @@ function handleReadAloud() {
               <button
                 type="button"
                 onClick={() => setShowSaveModal(false)}
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-900 transition hover:bg-zinc-50"
                 aria-label="Close save modal"
               >
                 <X className="h-4 w-4" />
-                Close
               </button>
             </div>
 
@@ -2488,7 +2487,7 @@ function handleReadAloud() {
                 onClick={() => setShowSaveModal(false)}
                 className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50"
               >
-                Close
+                {saveModalMode === 'support' ? 'Not now' : 'Close'}
               </button>
             </div>
           </div>
