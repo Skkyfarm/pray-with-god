@@ -36,11 +36,11 @@ const faqs = [
   },
   {
     q: "Is my prayer private?",
-    a: "PWG is designed for private-first use. When features involve saved data or account activity, PWG aims to be clear about what is stored and what remains private.",
+    a: "PWG does not sell your prayer content, publish your saved prayers, or share saved prayers publicly. Prayer requests may be processed by PWG's AI provider to generate prayer responses. Saved prayers are stored privately with your account.",
   },
   {
     q: "How can I support PWG?",
-    a: "You can support PWG by donating, sharing it with someone who may benefit, or sending thoughtful feedback about what feels helpful and what needs improvement. You can also visit the Support page to learn more.",
+    a: "You can support PWG through a support payment, by sharing it with someone who may benefit, or by sending thoughtful feedback about what feels helpful and what needs improvement. Support payments are not tax-deductible charitable donations at this time. You can also visit the Support page to learn more.",
   },
 ];
 
