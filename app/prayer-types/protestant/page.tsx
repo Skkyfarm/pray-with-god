@@ -7,7 +7,7 @@ import { PROTESTANT_PRAYER_TYPES } from "@/lib/protestantPrayerTypes";
 export const metadata: Metadata = {
   title: "Protestant Prayer Types | PrayWithGod.ai",
   description:
-    "Explore Protestant prayer types including adoration, confession, thanksgiving, intercession, petition, praise, lament, healing, guidance, and more on PrayWithGod.ai.",
+    "Explore Protestant prayer types and foundational Protestant prayers including adoration, confession, thanksgiving, intercession, petition, praise, lament, healing, guidance, and more on PrayWithGod.ai.",
   alternates: {
     canonical: "/prayer-types/protestant",
   },
@@ -20,6 +20,34 @@ function getPrayerTypeHref(slug: string) {
 function getPrayThisTypeHref(slug: string) {
   return `/pray?path=protestant&type=${slug}`;
 }
+
+const PROTESTANT_FOUNDATIONAL_PRAYERS = [
+  {
+    name: "The Lord's Prayer",
+    status: "Traditional wording review pending",
+    note: "A central Christian prayer taught by Jesus and prayed across many Protestant traditions.",
+  },
+  {
+    name: "Apostles' Creed",
+    status: "Traditional wording review pending",
+    note: "A historic summary of core Christian belief used in many churches and teaching settings.",
+  },
+  {
+    name: "Nicene Creed",
+    status: "Traditional wording review pending",
+    note: "A widely received confession of Christian faith used across many branches of Christianity.",
+  },
+  {
+    name: "Psalm 23",
+    status: "Source/version review pending",
+    note: "A beloved biblical prayer of trust, comfort, and God's shepherding care.",
+  },
+  {
+    name: "Prayer of St. Francis",
+    status: "Source/permissions review pending",
+    note: "A widely loved Christian prayer associated with peace, humility, love, forgiveness, and service.",
+  },
+];
 
 export default function ProtestantPrayerTypesPage() {
   return (
@@ -59,7 +87,7 @@ export default function ProtestantPrayerTypesPage() {
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
-          <h2 className="text-2xl font-semibold">What you'll find here</h2>
+          <h2 className="text-2xl font-semibold">What you&apos;ll find here</h2>
 
           <p className="mt-4 text-base leading-7 text-slate-700">
             Some prayers are focused on worship. Some are focused on confession,
@@ -71,9 +99,57 @@ export default function ProtestantPrayerTypesPage() {
           <p className="mt-4 text-base leading-7 text-slate-700">
             These pages are also meant to help people who may not know the
             traditional names for different types of prayer. A visitor may not
-            search for "petitionary prayer," but they may know they need help,
-            comfort, healing, or direction.
+            search for the formal term petitionary prayer, but they may know
+            they need help, comfort, healing, or direction.
           </p>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-5xl rounded-3xl border border-sky-100 bg-white/90 p-8 shadow-sm backdrop-blur-sm">
+          <h2 className="text-2xl font-semibold">
+            Foundational Protestant Prayers
+          </h2>
+
+          <p className="mt-4 text-base leading-7 text-slate-700">
+            Some named prayers are especially important in Protestant life,
+            worship, and Christian formation. PWG may mention and explain these
+            prayers while their exact traditional wording is reviewed for
+            source, translation, and permission status.
+          </p>
+
+          <p className="mt-4 text-base leading-7 text-slate-700">
+            In the meantime, PWG can offer original prayer support inspired by
+            the themes of these prayers. Those prayers are not official
+            translations, liturgical texts, or substitutes for the traditional
+            wording.
+          </p>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {PROTESTANT_FOUNDATIONAL_PRAYERS.map((item) => (
+              <article
+                key={item.name}
+                className="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm"
+              >
+                <h3 className="text-lg font-semibold">{item.name}</h3>
+
+                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">
+                  {item.status}
+                </p>
+
+                <p className="mt-3 text-sm leading-6 text-slate-700">
+                  {item.note}
+                </p>
+
+                <div className="mt-4">
+                  <Link
+                    href="/pray?path=protestant"
+                    className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                  >
+                    Pray in this spirit
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
