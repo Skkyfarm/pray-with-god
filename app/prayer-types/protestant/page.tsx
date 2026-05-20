@@ -18,15 +18,34 @@ function getPrayerTypeHref(slug: string) {
 }
 
 function getPrayThisTypeHref(slug: string) {
-  return `/pray?path=protestant&type=${slug}`;
+  return `/pray?path=protestant&prayerType=${encodeURIComponent(slug)}`;
+}
+
+const LORDS_PRAYER_KJV_PRAY_HREF =
+  "/pray?path=protestant&mode=classic&prayerLabel=The+Lord%27s+Prayer&prayerKind=named";
+
+function getFoundationalPrayerHref(name: string) {
+  if (name === "The Lord's Prayer") {
+    return LORDS_PRAYER_KJV_PRAY_HREF;
+  }
+
+  return "/pray?path=protestant";
+}
+
+function getFoundationalPrayerActionLabel(name: string) {
+  if (name === "The Lord's Prayer") {
+    return "Read / pray this prayer";
+  }
+
+  return "Pray in this spirit";
 }
 
 const PROTESTANT_FOUNDATIONAL_PRAYERS = [
   {
-    name: "The Lord's Prayer",
-    status: "Traditional wording review pending",
-    note: "A central Christian prayer taught by Jesus and prayed across many Protestant traditions.",
-  },
+  name: "The Lord's Prayer",
+  status: "KJV text available",
+  note: "A central Christian prayer taught by Jesus and prayed across many Protestant traditions.",
+},
   {
     name: "Apostles' Creed",
     status: "Traditional wording review pending",
@@ -127,7 +146,7 @@ export default function ProtestantPrayerTypesPage() {
             {PROTESTANT_FOUNDATIONAL_PRAYERS.map((item) => (
               <article
                 key={item.name}
-                className="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm transition hover:border-purple-200 hover:shadow-[0_0_28px_rgba(168,85,247,0.24)]"
               >
                 <h3 className="text-lg font-semibold">{item.name}</h3>
 
@@ -141,11 +160,12 @@ export default function ProtestantPrayerTypesPage() {
 
                 <div className="mt-4">
                   <Link
-                    href="/pray?path=protestant"
-                    className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                    href={getFoundationalPrayerHref(item.name)}
+                    className="pwg-guided-action inline-flex rounded-full border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 hover:shadow-[0_0_22px_rgba(14,165,233,0.35)] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 active:shadow-[0_0_28px_rgba(14,165,233,0.45)]"
                   >
-                    Pray in this spirit
+                    {getFoundationalPrayerActionLabel(item.name)}
                   </Link>
+
                 </div>
               </article>
             ))}

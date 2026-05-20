@@ -877,19 +877,49 @@ return preferred?.voiceURI || '';
   }, [mode, activeCatalogKey, freePrayerOptions, prayerTypeParam]);
 
   useEffect(() => {
-    if (mode !== 'classic') return;
-    if (traditionalOptions.length === 0) return;
+    const isProtestantLordsPrayer =
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
+      selectedPrayerKind === 'named' &&
+      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Lord's Prayer";
 
-    const exists = traditionalOptions.some(
-      (item) =>
-        item.label === selectedPrayerLabel && item.kind === selectedPrayerKind
-    );
+    if (!isProtestantLordsPrayer) return;
 
-    if (!exists) {
-      setSelectedPrayerLabel(traditionalOptions[0].label);
-      setSelectedPrayerKind(traditionalOptions[0].kind);
+    if (
+      prayer === PROTESTANT_LORDS_PRAYER_KJV &&
+      hasSubmitted &&
+      !isReflecting &&
+      !error
+    ) {
+      return;
     }
-  }, [mode, traditionalOptions, selectedPrayerLabel, selectedPrayerKind]);
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    abortRef.current?.abort();
+    abortRef.current = null;
+
+    setIsSpeaking(false);
+    setPrayer(PROTESTANT_LORDS_PRAYER_KJV);
+    setGeneratedPrayerId('');
+    setError('');
+    setHasSubmitted(true);
+    setShowSaveModal(false);
+    setSafetyNotice(null);
+    setIsReflecting(false);
+  }, [
+    mode,
+    activeCatalogKey,
+    selectedTradition,
+    selectedPrayerKind,
+    selectedPrayerLabel,
+    prayer,
+    hasSubmitted,
+    isReflecting,
+    error,
+  ]);
 
   function stopSpeaking() {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
