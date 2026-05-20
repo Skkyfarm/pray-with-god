@@ -57,6 +57,7 @@ export const PRAYER_CATALOG: Record<TraditionKey, PrayerCatalogItem[]> = {
     { id: "protestant_lamentation", label: "Lamentation Prayers", kind: "type" },
     { id: "protestant_confessional", label: "Confessional Prayers", kind: "type" },
     { id: "protestant_penitence", label: "Prayers of Penitence", kind: "type" },
+    { id: "protestant_lords_prayer_kjv", label: "The Lord's Prayer", kind: "named" },
   ],
 
   jewish: [

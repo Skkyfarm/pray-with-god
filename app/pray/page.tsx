@@ -98,6 +98,18 @@ type ClassicPrayerTypeGridProps = {
 const PRAYER_REQUEST_MAX = 500;
 const PROTESTANT_PERSONAL_BASE = 'Petitionary Prayers';
 
+const PROTESTANT_LORDS_PRAYER_KJV = `Our Father which art in heaven, Hallowed be thy name.
+
+Thy kingdom come. Thy will be done in earth, as it is in heaven.
+
+Give us this day our daily bread.
+
+And forgive us our debts, as we forgive our debtors.
+
+And lead us not into temptation, but deliver us from evil:
+
+For thine is the kingdom, and the power, and the glory, for ever. Amen.`;
+
 const FEELING_OPTIONS = [
   'Grateful',
   'Anxious',
@@ -1041,7 +1053,26 @@ return preferred?.voiceURI || '';
       return;
     }
 
+    if (
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
+      selectedPrayerKind === 'named' &&
+      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Lord's Prayer"
+    ) {
+      stopSpeaking();
+      stopGenerating();
+      setPrayer(PROTESTANT_LORDS_PRAYER_KJV);
+      setError('');
+      setHasSubmitted(true);
+      setShowSaveModal(false);
+      setSafetyNotice(null);
+      setIsReflecting(false);
+      clearSaveState();
+      return;
+    }
+
     const timeContext = getLocalTimeContext();
+
     const effectiveFreePrayerType = isProtestantPrayerPath
       ? PROTESTANT_PERSONAL_BASE
       : selectedPrayerType || freePrayerOptions[0]?.label || 'General Prayer';
