@@ -94,6 +94,7 @@ export const PRAYER_CATALOG: Record<TraditionKey, PrayerCatalogItem[]> = {
     { id: "protestant_guidance", label: "Guidance Prayers", kind: "type" },
     { id: "protestant_protection", label: "Protection Prayers", kind: "type" },
     { id: "protestant_lords_prayer_kjv", label: "The Lord's Prayer", kind: "named" },
+    { id: "protestant_jabez_kjv", label: "The Prayer of Jabez", kind: "named" },
   ],
 
   jewish: [

@@ -110,6 +110,8 @@ And lead us not into temptation, but deliver us from evil:
 
 For thine is the kingdom, and the power, and the glory, for ever. Amen.`;
 
+const PROTESTANT_JABEZ_KJV = `And Jabez called on the God of Israel, saying, Oh that thou wouldest bless me indeed, and enlarge my coast, and that thine hand might be with me, and that thou wouldest keep me from evil, that it may not grieve me! And God granted him that which he requested.`;
+
 const FEELING_OPTIONS = [
   'Grateful',
   'Anxious',
@@ -283,8 +285,8 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   switch (key) {
     case 'muslim':
       return isClassic
-        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.'
-        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qur’an, not a translation of Qur’an, and not an official religious text.';
+        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.'
+        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.';
 
     case 'hindu':
       return isClassic
@@ -459,7 +461,7 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
             }`}
           >
             {notice.resources.map((resource) => (
-              <li key={resource}>• {resource}</li>
+              <li key={resource}>â€¢ {resource}</li>
             ))}
           </ul>
         </div>
@@ -881,7 +883,7 @@ return preferred?.voiceURI || '';
       mode === 'classic' &&
       (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
       selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Lord's Prayer";
+      selectedPrayerLabel.replace(/[â€™â€˜]/g, "'") === "The Lord's Prayer";
 
     if (!isProtestantLordsPrayer) return;
 
@@ -921,6 +923,50 @@ return preferred?.voiceURI || '';
     error,
   ]);
 
+  useEffect(() => {
+    const isProtestantJabez =
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
+      selectedPrayerKind === 'named' &&
+      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez";
+
+    if (!isProtestantJabez) return;
+
+    if (
+      prayer === PROTESTANT_JABEZ_KJV &&
+      hasSubmitted &&
+      !isReflecting &&
+      !error
+    ) {
+      return;
+    }
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    abortRef.current?.abort();
+    abortRef.current = null;
+
+    setIsSpeaking(false);
+    setPrayer(PROTESTANT_JABEZ_KJV);
+    setGeneratedPrayerId('');
+    setError('');
+    setHasSubmitted(true);
+    setShowSaveModal(false);
+    setSafetyNotice(null);
+    setIsReflecting(false);
+  }, [
+    mode,
+    activeCatalogKey,
+    selectedTradition,
+    selectedPrayerKind,
+    selectedPrayerLabel,
+    prayer,
+    hasSubmitted,
+    isReflecting,
+    error,
+  ]);
   function stopSpeaking() {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
@@ -1087,7 +1133,7 @@ return preferred?.voiceURI || '';
       mode === 'classic' &&
       (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
       selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Lord's Prayer"
+      selectedPrayerLabel.replace(/[â€™â€˜]/g, "'") === "The Lord's Prayer"
     ) {
       stopSpeaking();
       stopGenerating();
@@ -1101,6 +1147,23 @@ return preferred?.voiceURI || '';
       return;
     }
 
+    if (
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
+      selectedPrayerKind === 'named' &&
+      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez"
+    ) {
+      stopSpeaking();
+      stopGenerating();
+      setPrayer(PROTESTANT_JABEZ_KJV);
+      setError('');
+      setHasSubmitted(true);
+      setShowSaveModal(false);
+      setSafetyNotice(null);
+      setIsReflecting(false);
+      clearSaveState();
+      return;
+    }
     const timeContext = getLocalTimeContext();
 
     const effectiveFreePrayerType = isProtestantPrayerPath
@@ -1134,6 +1197,23 @@ return preferred?.voiceURI || '';
   }
 
   async function handleQuickPrayer() {
+    if (
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
+      selectedPrayerKind === 'named' &&
+      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez"
+    ) {
+      stopSpeaking();
+      stopGenerating();
+      setPrayer(PROTESTANT_JABEZ_KJV);
+      setError('');
+      setHasSubmitted(true);
+      setShowSaveModal(false);
+      setSafetyNotice(null);
+      setIsReflecting(false);
+      clearSaveState();
+      return;
+    }
     const timeContext = getLocalTimeContext();
     const quickPrayerContent = buildFreePrayerContent(input, selectedFeelings);
 

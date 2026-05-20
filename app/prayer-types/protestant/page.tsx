@@ -24,9 +24,16 @@ function getPrayThisTypeHref(slug: string) {
 const LORDS_PRAYER_KJV_PRAY_HREF =
   "/pray?path=protestant&mode=classic&prayerLabel=The+Lord%27s+Prayer&prayerKind=named";
 
+const PRAYER_OF_JABEZ_KJV_PRAY_HREF =
+  "/pray?path=protestant&mode=classic&prayerLabel=The+Prayer+of+Jabez&prayerKind=named";
+
 function getFoundationalPrayerHref(name: string) {
   if (name === "The Lord's Prayer") {
     return LORDS_PRAYER_KJV_PRAY_HREF;
+  }
+
+  if (name === "The Prayer of Jabez") {
+    return PRAYER_OF_JABEZ_KJV_PRAY_HREF;
   }
 
   return "/pray?path=protestant";
@@ -37,12 +44,24 @@ function getFoundationalPrayerActionLabel(name: string) {
     return "Read / pray this prayer";
   }
 
+  if (name === "The Prayer of Jabez") {
+    return "Read / pray this prayer";
+  }
+
   return "Pray in this spirit";
 }
 
 function getFoundationalPrayerReadMoreHref(name: string) {
   if (name === "The Lord's Prayer") {
     return "/prayer-types/protestant/prayers/lords-prayer";
+  }
+
+  if (name === "Apostles' Creed") {
+    return "/prayer-types/protestant/prayers/apostles-creed";
+  }
+
+  if (name === "The Prayer of Jabez") {
+    return "/prayer-types/protestant/prayers/prayer-of-jabez";
   }
 
   return null;
@@ -58,6 +77,11 @@ const PROTESTANT_FOUNDATIONAL_PRAYERS = [
     name: "Apostles' Creed",
     status: "Traditional wording review pending",
     note: "A historic summary of core Christian belief used in many churches and teaching settings.",
+  },
+  {
+    name: "The Prayer of Jabez",
+    status: "Biblical Prayer — KJV text available",
+    note: "A short biblical prayer from 1 Chronicles 4:10 asking God for blessing, enlarged influence, His hand of help, and protection from evil.",
   },
   {
     name: "Nicene Creed",
