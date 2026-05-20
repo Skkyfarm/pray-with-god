@@ -40,6 +40,14 @@ function getFoundationalPrayerActionLabel(name: string) {
   return "Pray in this spirit";
 }
 
+function getFoundationalPrayerReadMoreHref(name: string) {
+  if (name === "The Lord's Prayer") {
+    return "/prayer-types/protestant/prayers/lords-prayer";
+  }
+
+  return null;
+}
+
 const PROTESTANT_FOUNDATIONAL_PRAYERS = [
   {
   name: "The Lord's Prayer",
@@ -158,15 +166,23 @@ export default function ProtestantPrayerTypesPage() {
                   {item.note}
                 </p>
 
-                <div className="mt-4">
-                  <Link
-                    href={getFoundationalPrayerHref(item.name)}
-                    className="pwg-guided-action inline-flex rounded-full border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 hover:shadow-[0_0_22px_rgba(14,165,233,0.35)] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 active:shadow-[0_0_28px_rgba(14,165,233,0.45)]"
-                  >
-                    {getFoundationalPrayerActionLabel(item.name)}
-                  </Link>
+                <div className="mt-4 flex flex-wrap gap-3">
+  <Link
+    href={getFoundationalPrayerHref(item.name)}
+    className="pwg-guided-action inline-flex rounded-full border border-sky-700 bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 hover:shadow-[0_0_22px_rgba(14,165,233,0.35)] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 active:shadow-[0_0_28px_rgba(14,165,233,0.45)]"
+  >
+    {getFoundationalPrayerActionLabel(item.name)}
+  </Link>
 
-                </div>
+  {getFoundationalPrayerReadMoreHref(item.name) ? (
+    <Link
+      href={getFoundationalPrayerReadMoreHref(item.name) || "#"}
+      className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-purple-200 hover:bg-purple-50 hover:shadow-[0_0_22px_rgba(168,85,247,0.22)] focus:outline-none focus-visible:ring-4 focus-visible:ring-purple-100"
+    >
+      Read more
+    </Link>
+  ) : null}
+</div>
               </article>
             ))}
           </div>
@@ -235,3 +251,4 @@ export default function ProtestantPrayerTypesPage() {
     </main>
   );
 }
+
