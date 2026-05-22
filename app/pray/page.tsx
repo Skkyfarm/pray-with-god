@@ -112,6 +112,35 @@ For thine is the kingdom, and the power, and the glory, for ever. Amen.`;
 
 const PROTESTANT_JABEZ_KJV = `And Jabez called on the God of Israel, saying, Oh that thou wouldest bless me indeed, and enlarge my coast, and that thine hand might be with me, and that thou wouldest keep me from evil, that it may not grieve me! And God granted him that which he requested.`;
 
+const PSALM_23_KJV = `The LORD is my shepherd; I shall not want.
+
+He maketh me to lie down in green pastures: he leadeth me beside the still waters.
+
+He restoreth my soul: he leadeth me in the paths of righteousness for his name's sake.
+
+Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me; thy rod and thy staff they comfort me.
+
+Thou preparest a table before me in the presence of mine enemies: thou anointest my head with oil; my cup runneth over.
+
+Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the LORD for ever.`;
+
+const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
+  "The Lord's Prayer": PROTESTANT_LORDS_PRAYER_KJV,
+  "The Prayer of Jabez": PROTESTANT_JABEZ_KJV,
+  "Psalm 23": PSALM_23_KJV,
+};
+
+function normalizeNamedPrayerLabel(label: string) {
+  return label
+    .replace(/\u2018|\u2019/g, "'")
+    .replace(/â€˜|â€™|Ã¢â‚¬Ëœ|Ã¢â‚¬â„¢/g, "'")
+    .trim();
+}
+
+function getKjvNamedPrayerText(label: string) {
+  return KJV_NAMED_PRAYER_TEXTS[normalizeNamedPrayerLabel(label)] || null;
+}
+
 const FEELING_OPTIONS = [
   'Grateful',
   'Anxious',
@@ -879,16 +908,20 @@ return preferred?.voiceURI || '';
   }, [mode, activeCatalogKey, freePrayerOptions, prayerTypeParam]);
 
   useEffect(() => {
-    const isProtestantLordsPrayer =
+    const namedKjvPrayerText =
       mode === 'classic' &&
-      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
-      selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[â€™â€˜]/g, "'") === "The Lord's Prayer";
+      (activeCatalogKey === 'protestant' ||
+        activeCatalogKey === 'catholic' ||
+        selectedTradition === 'protestant' ||
+        selectedTradition === 'catholic') &&
+      selectedPrayerKind === 'named'
+        ? getKjvNamedPrayerText(selectedPrayerLabel)
+        : null;
 
-    if (!isProtestantLordsPrayer) return;
+    if (!namedKjvPrayerText) return;
 
     if (
-      prayer === PROTESTANT_LORDS_PRAYER_KJV &&
+      prayer === namedKjvPrayerText &&
       hasSubmitted &&
       !isReflecting &&
       !error
@@ -904,52 +937,7 @@ return preferred?.voiceURI || '';
     abortRef.current = null;
 
     setIsSpeaking(false);
-    setPrayer(PROTESTANT_LORDS_PRAYER_KJV);
-    setGeneratedPrayerId('');
-    setError('');
-    setHasSubmitted(true);
-    setShowSaveModal(false);
-    setSafetyNotice(null);
-    setIsReflecting(false);
-  }, [
-    mode,
-    activeCatalogKey,
-    selectedTradition,
-    selectedPrayerKind,
-    selectedPrayerLabel,
-    prayer,
-    hasSubmitted,
-    isReflecting,
-    error,
-  ]);
-
-  useEffect(() => {
-    const isProtestantJabez =
-      mode === 'classic' &&
-      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
-      selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez";
-
-    if (!isProtestantJabez) return;
-
-    if (
-      prayer === PROTESTANT_JABEZ_KJV &&
-      hasSubmitted &&
-      !isReflecting &&
-      !error
-    ) {
-      return;
-    }
-
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-
-    abortRef.current?.abort();
-    abortRef.current = null;
-
-    setIsSpeaking(false);
-    setPrayer(PROTESTANT_JABEZ_KJV);
+    setPrayer(namedKjvPrayerText);
     setGeneratedPrayerId('');
     setError('');
     setHasSubmitted(true);
@@ -1129,15 +1117,20 @@ return preferred?.voiceURI || '';
       return;
     }
 
-    if (
+    const namedKjvPrayerText =
       mode === 'classic' &&
-      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
-      selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[â€™â€˜]/g, "'") === "The Lord's Prayer"
-    ) {
+      (activeCatalogKey === 'protestant' ||
+        activeCatalogKey === 'catholic' ||
+        selectedTradition === 'protestant' ||
+        selectedTradition === 'catholic') &&
+      selectedPrayerKind === 'named'
+        ? getKjvNamedPrayerText(selectedPrayerLabel)
+        : null;
+
+    if (namedKjvPrayerText) {
       stopSpeaking();
       stopGenerating();
-      setPrayer(PROTESTANT_LORDS_PRAYER_KJV);
+      setPrayer(namedKjvPrayerText);
       setError('');
       setHasSubmitted(true);
       setShowSaveModal(false);
@@ -1147,23 +1140,6 @@ return preferred?.voiceURI || '';
       return;
     }
 
-    if (
-      mode === 'classic' &&
-      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
-      selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez"
-    ) {
-      stopSpeaking();
-      stopGenerating();
-      setPrayer(PROTESTANT_JABEZ_KJV);
-      setError('');
-      setHasSubmitted(true);
-      setShowSaveModal(false);
-      setSafetyNotice(null);
-      setIsReflecting(false);
-      clearSaveState();
-      return;
-    }
     const timeContext = getLocalTimeContext();
 
     const effectiveFreePrayerType = isProtestantPrayerPath
@@ -1197,15 +1173,20 @@ return preferred?.voiceURI || '';
   }
 
   async function handleQuickPrayer() {
-    if (
+    const namedKjvPrayerText =
       mode === 'classic' &&
-      (activeCatalogKey === 'protestant' || selectedTradition === 'protestant') &&
-      selectedPrayerKind === 'named' &&
-      selectedPrayerLabel.replace(/[’‘]/g, "'") === "The Prayer of Jabez"
-    ) {
+      (activeCatalogKey === 'protestant' ||
+        activeCatalogKey === 'catholic' ||
+        selectedTradition === 'protestant' ||
+        selectedTradition === 'catholic') &&
+      selectedPrayerKind === 'named'
+        ? getKjvNamedPrayerText(selectedPrayerLabel)
+        : null;
+
+    if (namedKjvPrayerText) {
       stopSpeaking();
       stopGenerating();
-      setPrayer(PROTESTANT_JABEZ_KJV);
+      setPrayer(namedKjvPrayerText);
       setError('');
       setHasSubmitted(true);
       setShowSaveModal(false);
@@ -1214,6 +1195,7 @@ return preferred?.voiceURI || '';
       clearSaveState();
       return;
     }
+
     const timeContext = getLocalTimeContext();
     const quickPrayerContent = buildFreePrayerContent(input, selectedFeelings);
 

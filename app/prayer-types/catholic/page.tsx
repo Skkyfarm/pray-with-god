@@ -18,6 +18,39 @@ function getPrayerTypeHref(slug: string) {
   return `/prayer-types/catholic/${slug}`;
 }
 
+const CATHOLIC_KJV_FOUNDATIONAL_PRAYER_NAMES = new Set([
+  "The Lord's Prayer",
+  "Psalm 23",
+  "Psalm 51",
+  "Psalm 90 / Prayer of Moses",
+  "The Prayer of Jabez",
+  "Hannah's Prayer",
+  "Solomon's Prayer of Dedication",
+  "Daniel's Prayer",
+  "Jonah's Prayer",
+  "Mary's Magnificat",
+  "Simeon's Song / Nunc Dimittis",
+  "Jesus' High Priestly Prayer",
+]);
+
+function getFoundationalPrayerHref(name: string) {
+  if (CATHOLIC_KJV_FOUNDATIONAL_PRAYER_NAMES.has(name)) {
+    return `/pray?path=catholic&mode=classic&prayerLabel=${encodeURIComponent(
+      name,
+    )}&prayerKind=named`;
+  }
+
+  return getPrayerTypePrayHref("catholic", "Adoration");
+}
+
+function getFoundationalPrayerActionLabel(name: string) {
+  if (CATHOLIC_KJV_FOUNDATIONAL_PRAYER_NAMES.has(name)) {
+    return "Read / pray this prayer";
+  }
+
+  return "Pray in this spirit";
+}
+
 const CATHOLIC_FOUNDATIONAL_PRAYERS = [
   {
     name: "Our Father / The Lord's Prayer",
@@ -220,10 +253,10 @@ export default function CatholicPrayerTypesPage() {
 
                 <div className="mt-4">
                   <Link
-                    href={getPrayerTypePrayHref("catholic", "Adoration")}
+                    href={getFoundationalPrayerHref(item.name)}
                     className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
                   >
-                    Pray in this spirit
+                    {getFoundationalPrayerActionLabel(item.name)}
                   </Link>
                 </div>
               </article>
