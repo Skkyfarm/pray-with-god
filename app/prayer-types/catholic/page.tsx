@@ -21,8 +21,68 @@ function getPrayerTypeHref(slug: string) {
 const CATHOLIC_FOUNDATIONAL_PRAYERS = [
   {
     name: "Our Father / The Lord's Prayer",
-    status: "Traditional wording review pending",
+    status: "Traditional Catholic wording review pending",
     note: "A central Christian prayer taught by Jesus and prayed throughout Catholic life.",
+  },
+  {
+    name: "The Lord's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "The Scripture-based KJV wording of the prayer Jesus taught, offered as a shared biblical Christian text rather than official Catholic liturgical wording.",
+  },
+  {
+    name: "Psalm 23",
+    status: "Biblical Prayer - KJV text available",
+    note: "A beloved biblical prayer of trust, comfort, and God's shepherding care.",
+  },
+  {
+    name: "Psalm 51",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of repentance, mercy, cleansing, and renewal before God.",
+  },
+  {
+    name: "Psalm 90 / Prayer of Moses",
+    status: "Biblical Prayer - KJV text available",
+    note: "A solemn biblical prayer reflecting on God's eternity, human frailty, wisdom, mercy, and lasting work.",
+  },
+  {
+    name: "The Prayer of Jabez",
+    status: "Biblical Prayer - KJV text available",
+    note: "A short biblical prayer from 1 Chronicles 4:10 asking God for blessing, enlarged influence, His hand of help, and protection from evil.",
+  },
+  {
+    name: "Hannah's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of praise from 1 Samuel 2 celebrating God's holiness, strength, justice, and care for the humble.",
+  },
+  {
+    name: "Solomon's Prayer of Dedication",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from the temple dedication asking God to hear, forgive, guide, and show mercy to His people.",
+  },
+  {
+    name: "Daniel's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of confession, repentance, and appeal for God's mercy from Daniel 9.",
+  },
+  {
+    name: "Jonah's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from Jonah 2 offered from distress, remembering God's deliverance and salvation.",
+  },
+  {
+    name: "Mary's Magnificat",
+    status: "Biblical Prayer - KJV text available",
+    note: "Mary's biblical song of praise from Luke 1, rejoicing in God's mercy, faithfulness, and care for the lowly.",
+  },
+  {
+    name: "Simeon's Song / Nunc Dimittis",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from Luke 2 giving thanks for seeing God's salvation and light for the nations.",
+  },
+  {
+    name: "Jesus' High Priestly Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "Jesus' prayer from John 17 for glorification, protection, sanctification, unity, and love among His followers.",
   },
   {
     name: "Hail Mary",

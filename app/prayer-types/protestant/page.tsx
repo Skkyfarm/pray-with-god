@@ -21,30 +21,33 @@ function getPrayThisTypeHref(slug: string) {
   return `/pray?path=protestant&prayerType=${encodeURIComponent(slug)}`;
 }
 
-const LORDS_PRAYER_KJV_PRAY_HREF =
-  "/pray?path=protestant&mode=classic&prayerLabel=The+Lord%27s+Prayer&prayerKind=named";
-
-const PRAYER_OF_JABEZ_KJV_PRAY_HREF =
-  "/pray?path=protestant&mode=classic&prayerLabel=The+Prayer+of+Jabez&prayerKind=named";
+const KJV_FOUNDATIONAL_PRAYER_NAMES = new Set([
+  "The Lord's Prayer",
+  "Psalm 23",
+  "Psalm 51",
+  "Psalm 90 / Prayer of Moses",
+  "The Prayer of Jabez",
+  "Hannah's Prayer",
+  "Solomon's Prayer of Dedication",
+  "Daniel's Prayer",
+  "Jonah's Prayer",
+  "Mary's Magnificat",
+  "Simeon's Song / Nunc Dimittis",
+  "Jesus' High Priestly Prayer",
+]);
 
 function getFoundationalPrayerHref(name: string) {
-  if (name === "The Lord's Prayer") {
-    return LORDS_PRAYER_KJV_PRAY_HREF;
-  }
-
-  if (name === "The Prayer of Jabez") {
-    return PRAYER_OF_JABEZ_KJV_PRAY_HREF;
+  if (KJV_FOUNDATIONAL_PRAYER_NAMES.has(name)) {
+    return `/pray?path=protestant&mode=classic&prayerLabel=${encodeURIComponent(
+      name,
+    )}&prayerKind=named`;
   }
 
   return "/pray?path=protestant";
 }
 
 function getFoundationalPrayerActionLabel(name: string) {
-  if (name === "The Lord's Prayer") {
-    return "Read / pray this prayer";
-  }
-
-  if (name === "The Prayer of Jabez") {
+  if (KJV_FOUNDATIONAL_PRAYER_NAMES.has(name)) {
     return "Read / pray this prayer";
   }
 
@@ -69,29 +72,74 @@ function getFoundationalPrayerReadMoreHref(name: string) {
 
 const PROTESTANT_FOUNDATIONAL_PRAYERS = [
   {
-  name: "The Lord's Prayer",
-  status: "KJV text available",
-  note: "A central Christian prayer taught by Jesus and prayed across many Protestant traditions.",
-},
+    name: "The Lord's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A central Christian prayer taught by Jesus and prayed across many Protestant traditions.",
+  },
+  {
+    name: "Psalm 23",
+    status: "Biblical Prayer - KJV text available",
+    note: "A beloved biblical prayer of trust, comfort, and God's shepherding care.",
+  },
+  {
+    name: "Psalm 51",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of repentance, mercy, cleansing, and renewal before God.",
+  },
+  {
+    name: "Psalm 90 / Prayer of Moses",
+    status: "Biblical Prayer - KJV text available",
+    note: "A solemn biblical prayer reflecting on God's eternity, human frailty, wisdom, mercy, and lasting work.",
+  },
+  {
+    name: "The Prayer of Jabez",
+    status: "Biblical Prayer - KJV text available",
+    note: "A short biblical prayer from 1 Chronicles 4:10 asking God for blessing, enlarged influence, His hand of help, and protection from evil.",
+  },
+  {
+    name: "Hannah's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of praise from 1 Samuel 2 celebrating God's holiness, strength, justice, and care for the humble.",
+  },
+  {
+    name: "Solomon's Prayer of Dedication",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from the temple dedication asking God to hear, forgive, guide, and show mercy to His people.",
+  },
+  {
+    name: "Daniel's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer of confession, repentance, and appeal for God's mercy from Daniel 9.",
+  },
+  {
+    name: "Jonah's Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from Jonah 2 offered from distress, remembering God's deliverance and salvation.",
+  },
+  {
+    name: "Mary's Magnificat",
+    status: "Biblical Prayer - KJV text available",
+    note: "Mary's biblical song of praise from Luke 1, rejoicing in God's mercy, faithfulness, and care for the lowly.",
+  },
+  {
+    name: "Simeon's Song / Nunc Dimittis",
+    status: "Biblical Prayer - KJV text available",
+    note: "A biblical prayer from Luke 2 giving thanks for seeing God's salvation and light for the nations.",
+  },
+  {
+    name: "Jesus' High Priestly Prayer",
+    status: "Biblical Prayer - KJV text available",
+    note: "Jesus' prayer from John 17 for glorification, protection, sanctification, unity, and love among His followers.",
+  },
   {
     name: "Apostles' Creed",
     status: "Traditional wording review pending",
     note: "A historic summary of core Christian belief used in many churches and teaching settings.",
   },
   {
-    name: "The Prayer of Jabez",
-    status: "Biblical Prayer — KJV text available",
-    note: "A short biblical prayer from 1 Chronicles 4:10 asking God for blessing, enlarged influence, His hand of help, and protection from evil.",
-  },
-  {
     name: "Nicene Creed",
     status: "Traditional wording review pending",
     note: "A widely received confession of Christian faith used across many branches of Christianity.",
-  },
-  {
-    name: "Psalm 23",
-    status: "Source/version review pending",
-    note: "A beloved biblical prayer of trust, comfort, and God's shepherding care.",
   },
   {
     name: "Prayer of St. Francis",
