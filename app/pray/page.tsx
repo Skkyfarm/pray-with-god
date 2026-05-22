@@ -943,6 +943,45 @@ return preferred?.voiceURI || '';
     isReflecting,
     error,
   ]);
+  useEffect(() => {
+    if (!hasAppliedUrlParams) return;
+    if (typeof window === 'undefined') return;
+
+    const isStructuredPrayerNavigationUrl = Boolean(
+      pathParam ||
+        modeParam ||
+        prayerLabelParam?.trim() ||
+        prayerKindParam ||
+        prayerTypeParam?.trim()
+    );
+
+    const isAutoQuickPrayerUrl = modeParam === 'quick' || autoParam === 'quick';
+
+    if (!isStructuredPrayerNavigationUrl || isAutoQuickPrayerUrl) return;
+
+    const scrollToPageTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    };
+
+    scrollToPageTop();
+    window.requestAnimationFrame(scrollToPageTop);
+
+    const timerOne = window.setTimeout(scrollToPageTop, 120);
+    const timerTwo = window.setTimeout(scrollToPageTop, 350);
+
+    return () => {
+      window.clearTimeout(timerOne);
+      window.clearTimeout(timerTwo);
+    };
+  }, [
+    hasAppliedUrlParams,
+    pathParam,
+    modeParam,
+    prayerLabelParam,
+    prayerKindParam,
+    prayerTypeParam,
+    autoParam,
+  ]);
   function stopSpeaking() {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
@@ -1026,6 +1065,16 @@ return preferred?.voiceURI || '';
       setSelectedPrayerKind(kind);
 
       if (typeof window === 'undefined') return;
+
+      const isKjvNamedPrayer =
+        kind === 'named' && Boolean(getKjvNamedPrayerText(label));
+
+      if (isKjvNamedPrayer) {
+        window.setTimeout(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }, 0);
+        return;
+      }
 
       window.setTimeout(() => {
         const nextStep = document.getElementById('classic-prayer-next-step');
