@@ -51,6 +51,10 @@ function getFoundationalPrayerActionLabel(name: string) {
   return "Pray in this spirit";
 }
 
+function getFoundationalPrayerReadMoreHref(name: string) {
+  return null;
+}
+
 const CATHOLIC_FOUNDATIONAL_PRAYERS = [
   {
     name: "Our Father / The Lord's Prayer",
@@ -236,31 +240,51 @@ export default function CatholicPrayerTypesPage() {
           </p>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {CATHOLIC_FOUNDATIONAL_PRAYERS.map((item) => (
-              <article
-                key={item.name}
-                className="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm"
-              >
-                <h3 className="text-lg font-semibold">{item.name}</h3>
+            {CATHOLIC_FOUNDATIONAL_PRAYERS.map((item) => {
+              const isKjvPrayer = CATHOLIC_KJV_FOUNDATIONAL_PRAYER_NAMES.has(
+                item.name,
+              );
+              const readMoreHref = getFoundationalPrayerReadMoreHref(item.name);
 
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">
-                  {item.status}
-                </p>
+              return (
+                <article
+                  key={item.name}
+                  className="pwg-guided-action flex h-full flex-col rounded-2xl border border-sky-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_0_24px_rgba(14,165,233,0.18)]"
+                >
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
 
-                <p className="mt-3 text-sm leading-6 text-slate-700">
-                  {item.note}
-                </p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">
+                    {item.status}
+                  </p>
 
-                <div className="mt-4">
-                  <Link
-                    href={getFoundationalPrayerHref(item.name)}
-                    className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
-                  >
-                    {getFoundationalPrayerActionLabel(item.name)}
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  <p className="mt-3 flex-1 text-sm leading-6 text-slate-700">
+                    {item.note}
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Link
+                      href={getFoundationalPrayerHref(item.name)}
+                      className={
+                        isKjvPrayer
+                          ? "pwg-guided-action inline-flex rounded-full bg-sky-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 hover:shadow-[0_0_22px_rgba(14,165,233,0.35)] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
+                          : "inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                      }
+                    >
+                      {getFoundationalPrayerActionLabel(item.name)}
+                    </Link>
+
+                    {readMoreHref ? (
+                      <Link
+                        href={readMoreHref}
+                        className="inline-flex rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                      >
+                        Read more
+                      </Link>
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
 
