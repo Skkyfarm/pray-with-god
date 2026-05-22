@@ -584,6 +584,12 @@ function PrayPageInner() {
   const prayerKindParam = searchParams.get('prayerKind');
   const prayerTypeParam = searchParams.get('prayerType');
 
+  const hasDirectPrayerUrlParams = Boolean(
+    pathParam || modeParam || prayerLabelParam || prayerKindParam || prayerTypeParam || autoParam
+  );
+  const [hasAppliedUrlParams, setHasAppliedUrlParams] = useState(
+    !hasDirectPrayerUrlParams
+  );
   const [userName, setUserName] = useState<string | null>(null);
   const [selectedTradition, setSelectedTradition] = useState<Tradition>('grace');
   const [activeCatalogKey, setActiveCatalogKey] = useState<TraditionKey | null>('grace');
@@ -724,11 +730,33 @@ function PrayPageInner() {
     if (nextMode === 'classic') {
       const initialClassicLabel =
         prayerLabelParam || (protestantPrayerTypeLink ? prayerTypeParam || '' : '');
+      const initialClassicKind = prayerLabelParam
+        ? normalizePrayerKind(prayerKindParam)
+        : 'type';
+      const nextNamedKjvPrayerText =
+        (mappedCatalogKey === 'protestant' ||
+          mappedCatalogKey === 'catholic' ||
+          mappedTradition === 'protestant' ||
+          mappedTradition === 'catholic') &&
+        initialClassicKind === 'named'
+          ? getKjvNamedPrayerText(initialClassicLabel)
+          : null;
 
       setSelectedPrayerLabel(initialClassicLabel);
-      setSelectedPrayerKind(prayerLabelParam ? normalizePrayerKind(prayerKindParam) : 'type');
+      setSelectedPrayerKind(initialClassicKind);
       setSelectedPrayerType('');
       setSelectedFeelings([]);
+
+      if (nextNamedKjvPrayerText) {
+        setPrayer(nextNamedKjvPrayerText);
+        setHasSubmitted(true);
+        setGeneratedPrayerId('');
+        setError('');
+        setSafetyNotice(null);
+        setIsReflecting(false);
+        setShowSaveModal(false);
+        clearSaveState();
+      }
     } else {
       setSelectedPrayerLabel('');
       setSelectedPrayerKind('type');
@@ -739,6 +767,8 @@ function PrayPageInner() {
       );
       setSelectedFeelings([]);
     }
+
+    setHasAppliedUrlParams(true);
   }, [
     pathParam,
     modeParam,
@@ -1567,6 +1597,21 @@ function handleReadAloud() {
   const pathDisplayLabel =
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
+  if (!hasAppliedUrlParams) {
+    return (
+      <main className="relative min-h-screen bg-transparent text-slate-900">
+        <section className="mx-auto max-w-3xl px-6 py-16 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
+            PrayWithGod.ai
+          </p>
+
+          <h1 className="mt-4 text-3xl font-bold tracking-tight">
+            Preparing your prayer...
+          </h1>
+        </section>
+      </main>
+    );
+  }
   const resultTitle = isClassic
     ? selectedTraditionalEntry?.display || selectedPrayerLabel || 'Prayer Type'
     : isProtestantPersonalMode
