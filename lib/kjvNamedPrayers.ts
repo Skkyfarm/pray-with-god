@@ -95,12 +95,51 @@ Make us glad according to the days wherein thou hast afflicted us, and the years
 Let thy work appear unto thy servants, and thy glory unto their children.
 
 And let the beauty of the LORD our God be upon us: and establish thou the work of our hands upon us; yea, the work of our hands establish thou it.`;
+export const HANNAHS_PRAYER_KJV = `And Hannah prayed, and said, My heart rejoiceth in the LORD, mine horn is exalted in the LORD: my mouth is enlarged over mine enemies; because I rejoice in thy salvation.
+
+There is none holy as the LORD: for there is none beside thee: neither is there any rock like our God.
+
+Talk no more so exceeding proudly; let not arrogancy come out of your mouth: for the LORD is a God of knowledge, and by him actions are weighed.
+
+The bows of the mighty men are broken, and they that stumbled are girded with strength.
+
+They that were full have hired out themselves for bread; and they that were hungry ceased: so that the barren hath born seven; and she that hath many children is waxed feeble.
+
+The LORD killeth, and maketh alive: he bringeth down to the grave, and bringeth up.
+
+The LORD maketh poor, and maketh rich: he bringeth low, and lifteth up.
+
+He raiseth up the poor out of the dust, and lifteth up the beggar from the dunghill, to set them among princes, and to make them inherit the throne of glory: for the pillars of the earth are the LORD's, and he hath set the world upon them.
+
+He will keep the feet of his saints, and the wicked shall be silent in darkness; for by strength shall no man prevail.
+
+The adversaries of the LORD shall be broken to pieces; out of heaven shall he thunder upon them: the LORD shall judge the ends of the earth; and he shall give strength unto his king, and exalt the horn of his anointed.`;
+
+export const JONAHS_PRAYER_KJV = `Then Jonah prayed unto the LORD his God out of the fish's belly,
+
+And said, I cried by reason of mine affliction unto the LORD, and he heard me; out of the belly of hell cried I, and thou heardest my voice.
+
+For thou hadst cast me into the deep, in the midst of the seas; and the floods compassed me about: all thy billows and thy waves passed over me.
+
+Then I said, I am cast out of thy sight; yet I will look again toward thy holy temple.
+
+The waters compassed me about, even to the soul: the depth closed me round about, the weeds were wrapped about my head.
+
+I went down to the bottoms of the mountains; the earth with her bars was about me for ever: yet hast thou brought up my life from corruption, O LORD my God.
+
+When my soul fainted within me I remembered the LORD: and my prayer came in unto thee, into thine holy temple.
+
+They that observe lying vanities forsake their own mercy.
+
+But I will sacrifice unto thee with the voice of thanksgiving; I will pay that that I have vowed. Salvation is of the LORD.`;
 export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "The Lord's Prayer": PROTESTANT_LORDS_PRAYER_KJV,
   "The Prayer of Jabez": PROTESTANT_JABEZ_KJV,
   "Psalm 23": PSALM_23_KJV,
   "Psalm 51": PSALM_51_KJV,
   "Psalm 90 / Prayer of Moses": PSALM_90_KJV,
+  "Hannah's Prayer": HANNAHS_PRAYER_KJV,
+  "Jonah's Prayer": JONAHS_PRAYER_KJV,
 };
 
 export function normalizeNamedPrayerLabel(label: string) {
