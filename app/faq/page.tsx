@@ -31,6 +31,10 @@ const faqs = [
     a: "PWG is designed to support multiple traditions. You choose the tradition and prayer style you want, and PWG aims to remain respectful, thoughtful, and welcoming.",
   },
   {
+    q: "What does KJV mean?",
+    a: "KJV stands for King James Version, a classic English Bible translation first published in 1611. On PWG, KJV usually means we are using traditional biblical wording from that translation, especially for Scripture-based prayers such as the Lord's Prayer or Psalm 23. It is often used for public-domain Scripture text in the United States, though publishing rights and rules can vary by country.",
+  },
+  {
     q: "Is this a replacement for clergy, therapy, or medical care?",
     a: "No. PWG can be a supportive spiritual tool, but it is not a substitute for professional care, crisis services, or spiritual leadership in your own community.",
   },
