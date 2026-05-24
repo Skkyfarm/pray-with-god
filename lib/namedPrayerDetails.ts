@@ -180,6 +180,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "psalm-23",
+    label: "Psalm 23",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Psalm 23",
+    intro:
+      "Psalm 23 is one of the most beloved biblical prayers of trust, comfort, and confidence in God's shepherding care.",
+    metadataTitle: "Psalm 23 | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Psalm 23 as a biblical prayer of trust, comfort, guidance, and God's shepherding care in Protestant prayer life.",
+    canonical: "/prayer-types/protestant/prayers/psalm-23",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Psalm+23&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Psalm 23 is traditionally associated with David and is one of the most recognized prayers in the Book of Psalms. It speaks of the LORD as shepherd, guide, provider, protector, and host.",
+          "Its imagery moves from green pastures and still waters to the valley of the shadow of death, and finally to the goodness and mercy of God's presence.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant life, Psalm 23 is often prayed or read in times of fear, grief, illness, uncertainty, or deep need for reassurance. It gives language to trust when a person may not know what else to say.",
+          "The psalm is also treasured in worship, pastoral care, funerals, hospital visits, family prayer, and private devotion because it holds comfort and courage together.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Psalm 23 may be prayed word for word, read slowly as a meditation, or used phrase by phrase as a guide for personal prayer. Its themes include trust, rest, restoration, courage, provision, and hope.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Psalm 23 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
