@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PROTESTANT_PRAYER_TYPES } from "@/lib/protestantPrayerTypes";
+import { getNamedPrayerDetailHref } from "@/lib/namedPrayerDetails";
 
 export const metadata: Metadata = {
   title: "Protestant Prayer Types | PrayWithGod.ai",
@@ -55,19 +56,7 @@ function getFoundationalPrayerActionLabel(name: string) {
 }
 
 function getFoundationalPrayerReadMoreHref(name: string) {
-  if (name === "The Lord's Prayer") {
-    return "/prayer-types/protestant/prayers/lords-prayer";
-  }
-
-  if (name === "Apostles' Creed") {
-    return "/prayer-types/protestant/prayers/apostles-creed";
-  }
-
-  if (name === "The Prayer of Jabez") {
-    return "/prayer-types/protestant/prayers/prayer-of-jabez";
-  }
-
-  return null;
+  return getNamedPrayerDetailHref("protestant", name);
 }
 
 const PROTESTANT_FOUNDATIONAL_PRAYERS = [
