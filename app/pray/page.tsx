@@ -272,8 +272,8 @@ function getPrayerDisclosure(tradition: Tradition, isClassic: boolean) {
   switch (key) {
     case 'muslim':
       return isClassic
-        ? 'This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.'
-        : 'This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qurâ€™an, not a translation of Qurâ€™an, and not an official religious text.';
+        ? "This is a tradition-faithful devotional rendering inspired by Islamic tradition. It is not Qur'an, not a translation of Qur'an, and not an official religious text."
+        : "This is a newly formed devotional prayer inspired by Islamic tradition. It is not Qur'an, not a translation of Qur'an, and not an official religious text.";
 
     case 'hindu':
       return isClassic
@@ -448,7 +448,7 @@ function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
             }`}
           >
             {notice.resources.map((resource) => (
-              <li key={resource}>â€¢ {resource}</li>
+              <li key={resource}>{'\u2022'} {resource}</li>
             ))}
           </ul>
         </div>

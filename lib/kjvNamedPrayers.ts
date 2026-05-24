@@ -145,7 +145,7 @@ export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
 export function normalizeNamedPrayerLabel(label: string) {
   return label
     .replace(/\u2018|\u2019/g, "'")
-    .replace(/â€˜|â€™|Ã¢â‚¬Ëœ|Ã¢â‚¬â„¢/g, "'")
+    .replace(/\u00e2\u20ac[\u02dc\u2122]|\u00c3\u00a2\u00e2\u201a\u00ac(?:\u00cb\u0153|\u00e2\u201e\u00a2)/g, "'")
     .trim();
 }
 
