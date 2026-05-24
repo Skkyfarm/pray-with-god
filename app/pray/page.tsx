@@ -26,7 +26,8 @@ import {
   detectPrayerSafety,
   type PrayerSafetyNotice,
 } from '@/lib/safety';
-import { getPrayerTypeDefinitionHref } from '@/lib/prayerTypeLinks';
+import { getPrayerTypeDefinitionHref } from '@/lib/prayerTypeLinks';
+import { getNamedPrayerDetailHref } from '@/lib/namedPrayerDetails';
 import { getKjvNamedPrayerText } from '@/lib/kjvNamedPrayers';
 import {
   ArrowLeft,
@@ -257,6 +258,22 @@ function getFreePrayerOptions(catalogKey: TraditionKey | null): PrayerEntry[] {
   }));
 }
 
+function getClassicPrayerReadMoreHref(
+  definitionKey: TraditionKey | Tradition,
+  item: PrayerEntry,
+) {
+  if (item.kind === 'named') {
+    const key = String(definitionKey).toLowerCase();
+
+    if (key === 'protestant' || key === 'catholic') {
+      return getNamedPrayerDetailHref(key, item.label);
+    }
+
+    return null;
+  }
+
+  return getPrayerTypeDefinitionHref(definitionKey, item.label);
+}
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, '&amp;')
@@ -475,7 +492,7 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
           const active =
             selectedPrayerLabel === item.label &&
             selectedPrayerKind === item.kind;
-          const aboutHref = getPrayerTypeDefinitionHref(definitionKey, item.label);
+          const aboutHref = getClassicPrayerReadMoreHref(definitionKey, item);
 
           return (
             <div key={`${item.kind}-${item.label}`} className="flex flex-col gap-2">
@@ -1310,7 +1327,7 @@ useEffect(() => {
     }, 100);
   }
 
-  
+
 function handleReadAloud() {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
     return;
@@ -2316,7 +2333,7 @@ function handleReadAloud() {
                         >
                           Your prayer request (optional)
                         </label>
-                        
+
                           <p
                             id="prayer-input-help"
                             className="mb-3 text-sm text-zinc-900"
