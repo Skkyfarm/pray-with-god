@@ -132,6 +132,38 @@ When my soul fainted within me I remembered the LORD: and my prayer came in unto
 They that observe lying vanities forsake their own mercy.
 
 But I will sacrifice unto thee with the voice of thanksgiving; I will pay that that I have vowed. Salvation is of the LORD.`;
+export const DANIELS_PRAYER_KJV = `And I prayed unto the LORD my God, and made my confession, and said, O Lord, the great and dreadful God, keeping the covenant and mercy to them that love him, and to them that keep his commandments;
+
+We have sinned, and have committed iniquity, and have done wickedly, and have rebelled, even by departing from thy precepts and from thy judgments:
+
+Neither have we hearkened unto thy servants the prophets, which spake in thy name to our kings, our princes, and our fathers, and to all the people of the land.
+
+O Lord, righteousness belongeth unto thee, but unto us confusion of faces, as at this day; to the men of Judah, and to the inhabitants of Jerusalem, and unto all Israel, that are near, and that are far off, through all the countries whither thou hast driven them, because of their trespass that they have trespassed against thee.
+
+O Lord, to us belongeth confusion of face, to our kings, to our princes, and to our fathers, because we have sinned against thee.
+
+To the Lord our God belong mercies and forgivenesses, though we have rebelled against him;
+
+Neither have we obeyed the voice of the LORD our God, to walk in his laws, which he set before us by his servants the prophets.
+
+Yea, all Israel have transgressed thy law, even by departing, that they might not obey thy voice; therefore the curse is poured upon us, and the oath that is written in the law of Moses the servant of God, because we have sinned against him.
+
+And he hath confirmed his words, which he spake against us, and against our judges that judged us, by bringing upon us a great evil: for under the whole heaven hath not been done as hath been done upon Jerusalem.
+
+As it is written in the law of Moses, all this evil is come upon us: yet made we not our prayer before the LORD our God, that we might turn from our iniquities, and understand thy truth.
+
+Therefore hath the LORD watched upon the evil, and brought it upon us: for the LORD our God is righteous in all his works which he doeth: for we obeyed not his voice.
+
+And now, O Lord our God, that hast brought thy people forth out of the land of Egypt with a mighty hand, and hast gotten thee renown, as at this day; we have sinned, we have done wickedly.
+
+O Lord, according to all thy righteousness, I beseech thee, let thine anger and thy fury be turned away from thy city Jerusalem, thy holy mountain: because for our sins, and for the iniquities of our fathers, Jerusalem and thy people are become a reproach to all that are about us.
+
+Now therefore, O our God, hear the prayer of thy servant, and his supplications, and cause thy face to shine upon thy sanctuary that is desolate, for the Lord's sake.
+
+O my God, incline thine ear, and hear; open thine eyes, and behold our desolations, and the city which is called by thy name: for we do not present our supplications before thee for our righteousnesses, but for thy great mercies.
+
+O Lord, hear; O Lord, forgive; O Lord, hearken and do; defer not, for thine own sake, O my God: for thy city and thy people are called by thy name.`;
+
 export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "The Lord's Prayer": PROTESTANT_LORDS_PRAYER_KJV,
   "The Prayer of Jabez": PROTESTANT_JABEZ_KJV,
@@ -139,6 +171,7 @@ export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "Psalm 51": PSALM_51_KJV,
   "Psalm 90 / Prayer of Moses": PSALM_90_KJV,
   "Hannah's Prayer": HANNAHS_PRAYER_KJV,
+  "Daniel's Prayer": DANIELS_PRAYER_KJV,
   "Jonah's Prayer": JONAHS_PRAYER_KJV,
 };
 

@@ -430,6 +430,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "daniels-prayer",
+    label: "Daniel's Prayer",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Daniel's Prayer",
+    intro:
+      "Daniel's Prayer is a biblical prayer of confession, repentance, intercession, and appeal for God's mercy from Daniel 9.",
+    metadataTitle: "Daniel's Prayer | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Daniel's Prayer from Daniel 9, a biblical prayer of confession, repentance, intercession, covenant mercy, and hope in God's restoration.",
+    canonical: "/prayer-types/protestant/prayers/daniels-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Daniel%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Daniel's Prayer appears in Daniel 9 as Daniel seeks the LORD with prayer, supplications, fasting, sackcloth, and ashes.",
+          "The prayer confesses the sins of the people, acknowledges God's righteousness, remembers God's covenant mercy, and asks Him to hear, forgive, and restore.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Daniel's Prayer is often remembered as a model of humble confession, intercession, repentance, and appeal to God's mercy.",
+          "It gives language for praying not only as an individual, but on behalf of a people, a church, a community, or a nation in need of God's forgiveness and restoration.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Daniel's Prayer may be prayed word for word, read slowly as a confession, or used as a guide for interceding with humility, honesty, and trust in God's covenant mercy.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Daniel 9:4-19 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
