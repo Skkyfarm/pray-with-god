@@ -57,11 +57,7 @@ function getFoundationalPrayerReadMoreHref(name: string) {
 }
 
 const CATHOLIC_FOUNDATIONAL_PRAYERS = [
-  {
-    name: "Our Father / The Lord's Prayer",
-    status: "Traditional Catholic wording review pending",
-    note: "A central Christian prayer taught by Jesus and prayed throughout Catholic life.",
-  },
+
   {
     name: "The Lord's Prayer",
     status: "Biblical Prayer - KJV text available",
