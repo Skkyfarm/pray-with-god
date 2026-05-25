@@ -230,6 +230,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "psalm-51",
+    label: "Psalm 51",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Psalm 51",
+    intro:
+      "Psalm 51 is a biblical prayer of confession, repentance, cleansing, and renewed devotion to God.",
+    metadataTitle: "Psalm 51 | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Psalm 51 as a biblical prayer of confession, mercy, cleansing, restoration, and renewed devotion in Protestant prayer life.",
+    canonical: "/prayer-types/protestant/prayers/psalm-51",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Psalm+51&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Psalm 51 is traditionally associated with David's repentance after his sin involving Bathsheba and Uriah. It gives voice to honest confession before God and a plea for mercy, cleansing, and renewal.",
+          "The psalm moves from confession and forgiveness toward restoration, a clean heart, a steadfast spirit, and renewed praise.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Psalm 51 is often used as a prayer of repentance, humility, and spiritual renewal. It helps believers bring sin, failure, and guilt honestly before God while trusting in His mercy.",
+          "The psalm is especially meaningful because it does not treat confession as despair. It points toward cleansing, restored joy, and a renewed willingness to walk faithfully with God.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Psalm 51 may be prayed word for word, read slowly as a confession, or used phrase by phrase as a guide for personal repentance and renewal. Its themes include mercy, cleansing, truth, restoration, joy, and a clean heart.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Psalm 51 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
