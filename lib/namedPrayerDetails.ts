@@ -580,6 +580,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "jesus-high-priestly-prayer",
+    label: "Jesus' High Priestly Prayer",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Jesus' High Priestly Prayer",
+    intro:
+      "Jesus' High Priestly Prayer is the biblical prayer from John 17 in which Jesus prays for glorification, protection, sanctification, unity, and love among His followers.",
+    metadataTitle: "Jesus' High Priestly Prayer | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Jesus' High Priestly Prayer from John 17, a biblical prayer for glorification, protection, sanctification, unity, love, and faithful witness.",
+    canonical: "/prayer-types/protestant/prayers/jesus-high-priestly-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Jesus%27+High+Priestly+Prayer&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Jesus' High Priestly Prayer appears in John 17 near the close of Jesus' farewell words to His disciples. Jesus lifts His eyes to heaven and prays to the Father before the events of His betrayal and crucifixion unfold.",
+          "The prayer includes Jesus' petitions concerning His glory, His disciples, their protection from evil, their sanctification in truth, and the unity of all who will believe through their witness.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Jesus' High Priestly Prayer is treasured because it shows Jesus praying for His people with love, purpose, and intercession.",
+          "It gives language for praying about holiness, mission, unity, protection, truth, love, and faithful witness in the world.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Jesus' High Priestly Prayer may be read word for word, prayed slowly in sections, or used as a guide for interceding for disciples, churches, families, and believers throughout the world.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of John 17 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
