@@ -380,6 +380,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "jonahs-prayer",
+    label: "Jonah's Prayer",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Jonah's Prayer",
+    intro:
+      "Jonah's Prayer is a biblical prayer from Jonah 2, spoken from distress and remembered as a prayer of repentance, deliverance, thanksgiving, and renewed obedience to God.",
+    metadataTitle: "Jonah's Prayer | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Jonah's Prayer from Jonah 2, a biblical prayer of distress, repentance, deliverance, thanksgiving, and renewed trust in God's mercy.",
+    canonical: "/prayer-types/protestant/prayers/jonahs-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Jonah%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Jonah's Prayer appears in Jonah 2 after Jonah has fled from God's call and finds himself in deep distress. From the belly of the fish, Jonah cries out to the LORD and remembers God's power to save.",
+          "The prayer moves through danger, judgment, remembrance, thanksgiving, and surrender. It ends with the declaration that salvation belongs to the LORD.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Jonah's Prayer is often remembered as a prayer for moments of distress, repentance, rescue, and returning to God's will.",
+          "It gives language for crying out when a person feels overwhelmed, far from where they should be, or in need of God's mercy and deliverance.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Jonah's Prayer may be prayed word for word, read slowly as a confession of dependence, or used as a guide for returning to God with honesty, gratitude, and renewed obedience.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Jonah's Prayer from Jonah 2 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
