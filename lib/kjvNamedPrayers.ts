@@ -164,6 +164,26 @@ O my God, incline thine ear, and hear; open thine eyes, and behold our desolatio
 
 O Lord, hear; O Lord, forgive; O Lord, hearken and do; defer not, for thine own sake, O my God: for thy city and thy people are called by thy name.`;
 
+export const MAGNIFICAT_KJV = `And Mary said, My soul doth magnify the Lord,
+
+And my spirit hath rejoiced in God my Saviour.
+
+For he hath regarded the low estate of his handmaiden: for, behold, from henceforth all generations shall call me blessed.
+
+For he that is mighty hath done to me great things; and holy is his name.
+
+And his mercy is on them that fear him from generation to generation.
+
+He hath shewed strength with his arm; he hath scattered the proud in the imagination of their hearts.
+
+He hath put down the mighty from their seats, and exalted them of low degree.
+
+He hath filled the hungry with good things; and the rich he hath sent empty away.
+
+He hath holpen his servant Israel, in remembrance of his mercy;
+
+As he spake to our fathers, to Abraham, and to his seed for ever.`;
+
 export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "The Lord's Prayer": PROTESTANT_LORDS_PRAYER_KJV,
   "The Prayer of Jabez": PROTESTANT_JABEZ_KJV,
@@ -172,6 +192,7 @@ export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "Psalm 90 / Prayer of Moses": PSALM_90_KJV,
   "Hannah's Prayer": HANNAHS_PRAYER_KJV,
   "Daniel's Prayer": DANIELS_PRAYER_KJV,
+  "Mary's Magnificat": MAGNIFICAT_KJV,
   "Jonah's Prayer": JONAHS_PRAYER_KJV,
 };
 

@@ -480,6 +480,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "marys-magnificat",
+    label: "Mary's Magnificat",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Mary's Magnificat",
+    intro:
+      "Mary's Magnificat is a biblical song of praise from Luke 1, rejoicing in God's mercy, holiness, faithfulness, and care for the lowly.",
+    metadataTitle: "Mary's Magnificat | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Mary's Magnificat from Luke 1, a biblical prayer of praise, mercy, humility, reversal, and God's covenant faithfulness.",
+    canonical: "/prayer-types/protestant/prayers/marys-magnificat",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Mary%27s+Magnificat&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Mary's Magnificat appears in Luke 1 after Mary visits Elisabeth. Mary responds with a song of praise that magnifies the Lord and rejoices in God her Saviour.",
+          "The prayer celebrates God's mercy, holiness, strength, and faithfulness to His promises. It also speaks of God lifting the lowly, filling the hungry, and humbling the proud.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Mary's Magnificat is treasured as a biblical song of worship, humility, hope, and trust in God's saving work.",
+          "It gives language for praising God when His mercy becomes personal, while also remembering that His faithfulness reaches across generations.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Mary's Magnificat may be prayed word for word, read slowly as a song of praise, or used as a guide for worshiping God for His mercy, holiness, justice, and faithfulness.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Luke 1:46-55 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
