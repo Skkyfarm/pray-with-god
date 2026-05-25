@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPrayerTypePrayHref } from "@/lib/prayerTypeLinks";
+import { getNamedPrayerDetailHref } from "@/lib/namedPrayerDetails";
 import { CATHOLIC_PRAYER_TYPES } from "@/lib/catholicPrayerTypes";
 
 export const metadata: Metadata = {
@@ -52,7 +53,7 @@ function getFoundationalPrayerActionLabel(name: string) {
 }
 
 function getFoundationalPrayerReadMoreHref(name: string) {
-  return null;
+  return getNamedPrayerDetailHref("catholic", name);
 }
 
 const CATHOLIC_FOUNDATIONAL_PRAYERS = [
@@ -292,7 +293,7 @@ export default function CatholicPrayerTypesPage() {
           {CATHOLIC_PRAYER_TYPES.map((item) => (
             <article
               key={item.slug}
-              className="pwg-guided-action flex h-full flex-col rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm"
+              className="pwg-guided-action flex h-full flex-col rounded-3xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_0_28px_rgba(14,165,233,0.18)]"
             >
               <h2 className="text-2xl font-semibold">{item.title}</h2>
 
@@ -303,7 +304,7 @@ export default function CatholicPrayerTypesPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href={getPrayerTypePrayHref("catholic", item.title)}
-                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sky-800"
+                  className="pwg-guided-action rounded-full bg-sky-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-800 hover:shadow-[0_0_22px_rgba(14,165,233,0.35)] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
                 >
                   Pray this type
                 </Link>
