@@ -680,6 +680,55 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "nicene-creed",
+    label: "Nicene Creed",
+    eyebrow: "Foundational Protestant Prayer",
+    title: "Nicene Creed",
+    intro:
+      "The Nicene Creed is a historic Christian confession of faith received across many branches of Christianity. Many Protestant traditions use it in worship, teaching, discipleship, and doctrinal formation.",
+    metadataTitle: "Nicene Creed | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about the Nicene Creed in Protestant Christian practice, its historical role, and why PWG is reviewing exact wording before displaying the traditional text.",
+    canonical: "/prayer-types/protestant/prayers/nicene-creed",
+    primaryActionLabel: "Start a Protestant Prayer",
+    primaryActionHref: "/pray?path=protestant",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Historical setting",
+        paragraphs: [
+          "The Nicene Creed is one of the most widely recognized statements of Christian faith. It is historically connected with the early church councils of Nicaea and Constantinople and has been used for centuries to summarize core Christian belief.",
+          "Its themes include faith in God the Father, Jesus Christ the Son, the Holy Spirit, the church, baptism, resurrection, and the life of the world to come.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant life, the Nicene Creed is often used as a confession of faith in worship and teaching. It helps believers speak shared Christian belief clearly and reverently.",
+          "Although it is more of a creed than a personal petition, it can still shape prayer by turning the heart toward worship, trust, doctrine, and the mystery of God's saving work.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be used devotionally",
+        paragraphs: [
+          "The Nicene Creed may be reflected on line by line, studied as a summary of Christian belief, or used as a prompt for worship and thanksgiving. PWG currently presents this page as educational background while exact traditional wording remains under review.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Wording review note",
+        paragraphs: [
+          "PWG is reviewing the exact wording and source status for traditional versions of the Nicene Creed before making any full copyable text available. Until that review is complete, this page provides educational context rather than a verbatim creed text.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
