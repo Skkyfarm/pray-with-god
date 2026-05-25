@@ -733,7 +733,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
     tradition: "protestant",
     slug: "prayer-of-st-francis",
     label: "Prayer of St. Francis",
-    eyebrow: "Christian Prayer ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Source Review Pending",
+    eyebrow: "Christian Prayer ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Source Review Pending",
     title: "Prayer of St. Francis",
     intro:
       "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
@@ -974,6 +974,106 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         heading: "Source note",
         paragraphs: [
           "PWG currently provides King James Version wording for this Catholic prayer path as a shared biblical Christian text. This is not presented as official Catholic liturgical wording, and other modern Bible translations or official liturgical forms may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "prayer-of-jabez",
+    label: "The Prayer of Jabez",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "The Prayer of Jabez",
+    intro:
+      "The Prayer of Jabez is a short biblical prayer from 1 Chronicles 4:10. It asks God for blessing, enlarged territory, His hand of help, and protection from evil.",
+    metadataTitle: "The Prayer of Jabez | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about The Prayer of Jabez from 1 Chronicles 4:10, its biblical setting, devotional meaning, and use as a Catholic biblical prayer.",
+    canonical: "/prayer-types/catholic/prayers/prayer-of-jabez",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=The+Prayer+of+Jabez&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Jabez appears briefly in 1 Chronicles among the genealogies of Israel. His prayer stands out because the biblical text pauses to remember both his character and his request to God.",
+          "The prayer is direct and compact. Jabez asks God to bless him, to enlarge his coast, to keep His hand with him, and to keep him from evil and grief.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic prayer life, the Prayer of Jabez may be received as a brief biblical prayer of dependence, trust, calling, and protection.",
+          "PWG presents it as a biblical prayer, not as a formula or guarantee. Its themes can help a person ask humbly for God's blessing, guidance, presence, and protection.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "The Prayer of Jabez may be prayed word for word, reflected on line by line, or used as a starting point for personal prayer. Its themes include blessing, calling, God's presence, protection, and freedom from harm.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of 1 Chronicles 4:10 for this Catholic prayer path. Other modern Bible translations and official Catholic biblical or liturgical texts may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "hannahs-prayer",
+    label: "Hannah's Prayer",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "Hannah's Prayer",
+    intro:
+      "Hannah's Prayer is a biblical prayer of praise from 1 Samuel 2 that celebrates God's holiness, strength, justice, and care for the humble.",
+    metadataTitle: "Hannah's Prayer | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Hannah's Prayer from 1 Samuel 2, a biblical prayer of praise, gratitude, reversal, humility, and trust in God's justice and strength.",
+    canonical: "/prayer-types/catholic/prayers/hannahs-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=Hannah%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Hannah's Prayer appears in 1 Samuel 2 after God answers Hannah's long season of grief and longing with the birth of Samuel.",
+          "Her prayer is not only personal thanksgiving. It rises into praise of God's holiness, strength, justice, and power to lift the lowly.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic prayer life, Hannah's Prayer may be received as a biblical song of gratitude, surrendered trust, and praise after suffering.",
+          "It gives language for worshiping God as the One who sees the humble, reverses human pride, strengthens the weak, and acts with holy justice.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Hannah's Prayer may be prayed word for word, read as a song of thanksgiving, or used as a guide for praising God after a season of waiting, grief, answered prayer, or renewed hope.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Hannah's Prayer from 1 Samuel 2:1-10 for this Catholic prayer path. Other modern Bible translations and official Catholic biblical or liturgical texts may have separate copyright or permission considerations.",
         ],
       },
     ],
