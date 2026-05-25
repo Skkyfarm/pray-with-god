@@ -733,7 +733,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
     tradition: "protestant",
     slug: "prayer-of-st-francis",
     label: "Prayer of St. Francis",
-    eyebrow: "Christian Prayer Ã¢â‚¬â€ Source Review Pending",
+    eyebrow: "Christian Prayer ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Source Review Pending",
     title: "Prayer of St. Francis",
     intro:
       "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
@@ -874,6 +874,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         heading: "Source note",
         paragraphs: [
           "PWG currently provides the King James Version wording of Psalm 51 for this Catholic prayer path. Other modern Bible translations and official liturgical versions may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "psalm-90-prayer-of-moses",
+    label: "Psalm 90 / Prayer of Moses",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "Psalm 90 / Prayer of Moses",
+    intro:
+      "Psalm 90 is a biblical prayer of Moses that reflects on God's eternity, human frailty, wisdom, mercy, and the lasting work of God's hands.",
+    metadataTitle: "Psalm 90 / Prayer of Moses | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Psalm 90 as the Prayer of Moses, a biblical prayer of God's eternity, human frailty, wisdom, mercy, and lasting work in Catholic prayer life.",
+    canonical: "/prayer-types/catholic/prayers/psalm-90-prayer-of-moses",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=Psalm+90+%2F+Prayer+of+Moses&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Psalm 90 is traditionally identified as a prayer of Moses. It stands as one of the most solemn and reflective prayers in the Book of Psalms, holding God's eternity beside the shortness and fragility of human life.",
+          "The prayer asks God to teach His people to number their days, to satisfy them with mercy, and to establish the work of their hands.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic prayer life, Psalm 90 can be used for reflection, repentance, wisdom, grief, aging, legacy, and renewed dependence on God.",
+          "The psalm does not end in despair. It turns toward God's mercy, gladness, beauty, and the hope that God can make faithful work endure.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Psalm 90 may be prayed word for word, read slowly as a meditation on time and eternity, or used as a guide for asking God for wisdom, mercy, joy, and lasting fruitfulness.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Psalm 90 for this Catholic prayer path. Other modern Bible translations and official liturgical versions may have separate copyright or permission considerations.",
         ],
       },
     ],
