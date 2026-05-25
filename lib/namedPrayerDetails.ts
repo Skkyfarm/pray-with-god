@@ -733,7 +733,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
     tradition: "protestant",
     slug: "prayer-of-st-francis",
     label: "Prayer of St. Francis",
-    eyebrow: "Christian Prayer — Source Review Pending",
+    eyebrow: "Christian Prayer â€” Source Review Pending",
     title: "Prayer of St. Francis",
     intro:
       "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
@@ -774,6 +774,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         heading: "Source note",
         paragraphs: [
           "The Prayer of St. Francis is commonly associated with St. Francis of Assisi, but it is generally treated by modern source research as a later prayer, with the current form traced to early twentieth-century France. PWG is presenting educational context here while source, wording, and permission status are reviewed.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "psalm-23",
+    label: "Psalm 23",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "Psalm 23",
+    intro:
+      "Psalm 23 is one of the most beloved biblical prayers of trust, comfort, and confidence in God's shepherding care.",
+    metadataTitle: "Psalm 23 | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Psalm 23 as a biblical prayer of trust, comfort, guidance, and God's shepherding care in Catholic prayer life.",
+    canonical: "/prayer-types/catholic/prayers/psalm-23",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=Psalm+23&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Psalm 23 is traditionally associated with David and is one of the most recognized prayers in the Book of Psalms. It speaks of the LORD as shepherd, guide, provider, protector, and host.",
+          "Its imagery moves from green pastures and still waters to the valley of the shadow of death, and finally to the goodness and mercy of God's presence.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic life, Psalm 23 is often prayed, sung, or read in times of fear, grief, illness, uncertainty, or deep need for reassurance.",
+          "The psalm is also treasured in pastoral care, funerals, hospital visits, family prayer, private devotion, and moments when a person needs to rest in God's care.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Psalm 23 may be prayed word for word, read slowly as a meditation, or used phrase by phrase as a guide for personal prayer. Its themes include trust, rest, restoration, courage, provision, and hope.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Psalm 23 for this Catholic prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
         ],
       },
     ],
