@@ -117,6 +117,7 @@ export const PRAYER_CATALOG: Record<TraditionKey, PrayerCatalogItem[]> = {
     { id: "protestant_nunc_dimittis_kjv", label: "Simeon's Song / Nunc Dimittis", kind: "named" },
     { id: "protestant_high_priestly_prayer_kjv", label: "Jesus' High Priestly Prayer", kind: "named" },
     { id: "protestant_nicene_creed", label: "Nicene Creed", kind: "named" },
+    { id: "protestant_prayer_of_st_francis", label: "Prayer of St. Francis", kind: "named" },
   ],
   jewish: [
     { id: "jewish_shacharit", label: "Shacharit", kind: "type" },

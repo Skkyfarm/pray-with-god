@@ -729,6 +729,55 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "prayer-of-st-francis",
+    label: "Prayer of St. Francis",
+    eyebrow: "Christian Prayer — Source Review Pending",
+    title: "Prayer of St. Francis",
+    intro:
+      "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
+    metadataTitle: "Prayer of St. Francis | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about the Prayer of St. Francis, its devotional themes of peace, humility, love, forgiveness, and service, and why PWG is reviewing exact wording before displaying the full text.",
+    canonical: "/prayer-types/protestant/prayers/prayer-of-st-francis",
+    primaryActionLabel: "Start a Protestant Prayer",
+    primaryActionHref: "/pray?path=protestant",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "What is the Prayer of St. Francis?",
+        paragraphs: [
+          "The Prayer of St. Francis, sometimes called the Peace Prayer, is a beloved Christian prayer connected with themes of peace, humility, forgiveness, love, consolation, understanding, and self-giving service.",
+          "Although it is commonly associated with St. Francis of Assisi, source history indicates that the prayer in its familiar form is much later than Francis himself.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant life",
+        paragraphs: [
+          "In Protestant settings, the Prayer of St. Francis is often appreciated devotionally for its call to be an instrument of peace and reconciliation.",
+          "Even when not used liturgically, its themes can help shape prayers for humility, forgiveness, mercy, service, and love toward neighbors.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How PWG treats this text",
+        paragraphs: [
+          "Because the Prayer of St. Francis is not a King James Version biblical passage and its familiar English wording has a separate publication history, PWG is keeping the exact wording under source and permissions review before displaying a copyable version.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "The Prayer of St. Francis is commonly associated with St. Francis of Assisi, but it is generally treated by modern source research as a later prayer, with the current form traced to early twentieth-century France. PWG is presenting educational context here while source, wording, and permission status are reviewed.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
