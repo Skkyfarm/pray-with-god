@@ -330,6 +330,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "hannahs-prayer",
+    label: "Hannah's Prayer",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Hannah's Prayer",
+    intro:
+      "Hannah's Prayer is a biblical prayer of praise from 1 Samuel 2 that celebrates God's holiness, strength, justice, and care for the humble.",
+    metadataTitle: "Hannah's Prayer | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Hannah's Prayer from 1 Samuel 2, a biblical prayer of praise, gratitude, reversal, humility, and trust in God's justice and strength.",
+    canonical: "/prayer-types/protestant/prayers/hannahs-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Hannah%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Hannah's Prayer appears in 1 Samuel 2 after God answers Hannah's long season of grief and longing with the birth of Samuel.",
+          "Her prayer is not only personal thanksgiving. It rises into praise of God's holiness, strength, justice, and power to lift the lowly.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Hannah's Prayer is often remembered as a model of gratitude, surrendered trust, and praise after suffering.",
+          "It gives language for worshiping God as the One who sees the humble, reverses human pride, strengthens the weak, and acts with holy justice.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Hannah's Prayer may be prayed word for word, read as a song of thanksgiving, or used as a guide for praising God after a season of waiting, grief, answered prayer, or renewed hope.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Hannah's Prayer from 1 Samuel 2:1-10 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
