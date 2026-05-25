@@ -630,6 +630,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "solomons-prayer-of-dedication",
+    label: "Solomon's Prayer of Dedication",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Solomon's Prayer of Dedication",
+    intro:
+      "Solomon's Prayer of Dedication is a biblical prayer from 1 Kings 8 asking God to hear, forgive, guide, and show mercy to His people.",
+    metadataTitle: "Solomon's Prayer of Dedication | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Solomon's Prayer of Dedication from 1 Kings 8, a biblical prayer for God's presence, mercy, forgiveness, justice, and faithfulness.",
+    canonical: "/prayer-types/protestant/prayers/solomons-prayer-of-dedication",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Solomon%27s+Prayer+of+Dedication&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Solomon's Prayer of Dedication appears in 1 Kings 8 during the dedication of the temple in Jerusalem. Solomon stands before the altar of the LORD and prays in the presence of the congregation of Israel.",
+          "The prayer praises God's covenant faithfulness, asks that His eyes be open toward the temple, and repeatedly asks God to hear from heaven, forgive, and act with mercy.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Solomon's Prayer of Dedication is remembered as a model of reverence, confession, intercession, and trust in God's mercy.",
+          "It gives language for dedicating sacred work to God while acknowledging that no building, ministry, or human effort can contain Him.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Solomon's Prayer may be read word for word, prayed in sections, or used as a guide when dedicating a church, ministry, household, project, or season of service to God.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of 1 Kings 8:22-53 for this Protestant prayer path. A parallel temple dedication prayer also appears in 2 Chronicles 6, and other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
