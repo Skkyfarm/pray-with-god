@@ -639,6 +639,7 @@ function PrayPageInner() {
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
   const [volume, setVolume] = useState(DEFAULT_READ_ALOUD_VOLUME);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const namedPrayerRegistrationKeyRef = useRef('');
 
   function clearSaveState() {
     setGeneratedPrayerId('');
@@ -1165,6 +1166,101 @@ return preferred?.voiceURI || '';
     }
   }
 
+  useEffect(() => {
+    const namedKjvPrayerText =
+      mode === 'classic' &&
+      (activeCatalogKey === 'protestant' ||
+        activeCatalogKey === 'catholic' ||
+        selectedTradition === 'protestant' ||
+        selectedTradition === 'catholic') &&
+      selectedPrayerKind === 'named'
+        ? getKjvNamedPrayerText(selectedPrayerLabel)
+        : null;
+
+    if (
+      !isSignedIn ||
+      !hasSubmitted ||
+      generatedPrayerId ||
+      !selectedPrayerLabel.trim() ||
+      !namedKjvPrayerText
+    ) {
+      if (!isSignedIn) {
+        namedPrayerRegistrationKeyRef.current = '';
+      }
+
+      return;
+    }
+
+    const registerTradition =
+      activeCatalogKey === 'catholic' || selectedTradition === 'catholic'
+        ? 'catholic'
+        : 'protestant';
+
+    const registrationKey = `${registerTradition}|${selectedPrayerLabel}|${namedKjvPrayerText.length}`;
+
+    if (namedPrayerRegistrationKeyRef.current === registrationKey) return;
+
+    namedPrayerRegistrationKeyRef.current = registrationKey;
+    let isCancelled = false;
+
+    async function registerNamedPrayerForSaving() {
+      try {
+        const res = await fetch('/api/prayers/register-named', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tradition: registerTradition,
+            prayerLabel: selectedPrayerLabel,
+            generatedText: namedKjvPrayerText,
+          }),
+        });
+
+        const data = (await res.json()) as PrayerResponse & {
+          error?: string;
+          details?: string;
+        };
+
+        if (!res.ok) {
+          console.error(
+            'Could not register named prayer for saving:',
+            data.error || data.details
+          );
+          namedPrayerRegistrationKeyRef.current = '';
+          return;
+        }
+
+        const nextGeneratedPrayerId = getGeneratedPrayerIdFromResponse(data);
+
+        if (!nextGeneratedPrayerId) {
+          console.error('Named prayer registration did not return an id.');
+          namedPrayerRegistrationKeyRef.current = '';
+          return;
+        }
+
+        if (!isCancelled) {
+          setGeneratedPrayerId(nextGeneratedPrayerId);
+        }
+      } catch (err) {
+        console.error('Could not register named prayer for saving:', err);
+        namedPrayerRegistrationKeyRef.current = '';
+      }
+    }
+
+    void registerNamedPrayerForSaving();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    activeCatalogKey,
+    generatedPrayerId,
+    hasSubmitted,
+    isSignedIn,
+    mode,
+    selectedPrayerKind,
+    selectedPrayerLabel,
+    selectedTradition,
+  ]);
   async function handleGeneratePrayer() {
     if (mode === 'classic' && !selectedPrayerLabel.trim()) {
       setError('Please choose a prayer type first.');
@@ -1417,21 +1513,71 @@ function handleReadAloud() {
 
     setSaveModalMode('save');
 
-    if (!generatedPrayerId) {
-      setSaveFeedbackTone('error');
-      setSaveFeedback(
-        'This prayer is not ready to save yet. The page did not receive its generated prayer id from the pray route.'
-      );
-      return;
-    }
+    let saveableGeneratedPrayerId = generatedPrayerId;
 
     try {
       setIsSavingPrayer(true);
 
+      if (!saveableGeneratedPrayerId) {
+        const namedKjvPrayerText =
+          mode === 'classic' &&
+          (activeCatalogKey === 'protestant' ||
+            activeCatalogKey === 'catholic' ||
+            selectedTradition === 'protestant' ||
+            selectedTradition === 'catholic') &&
+          selectedPrayerKind === 'named'
+            ? getKjvNamedPrayerText(selectedPrayerLabel)
+            : null;
+
+        if (namedKjvPrayerText && selectedPrayerLabel.trim()) {
+          const registerTradition =
+            activeCatalogKey === 'catholic' || selectedTradition === 'catholic'
+              ? 'catholic'
+              : 'protestant';
+
+          const registerRes = await fetch('/api/prayers/register-named', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              tradition: registerTradition,
+              prayerLabel: selectedPrayerLabel,
+              generatedText: namedKjvPrayerText,
+            }),
+          });
+
+          const registerData = (await registerRes.json()) as PrayerResponse & {
+            error?: string;
+            details?: string;
+          };
+
+          if (!registerRes.ok) {
+            throw new Error(
+              registerData?.details ||
+                registerData?.error ||
+                'Could not prepare this named prayer for saving.'
+            );
+          }
+
+          saveableGeneratedPrayerId = getGeneratedPrayerIdFromResponse(registerData);
+
+          if (saveableGeneratedPrayerId) {
+            setGeneratedPrayerId(saveableGeneratedPrayerId);
+          }
+        }
+      }
+
+      if (!saveableGeneratedPrayerId) {
+        setSaveFeedbackTone('error');
+        setSaveFeedback(
+          'This prayer is not ready to save yet. The page did not receive its generated prayer id from the pray route.'
+        );
+        return;
+      }
+
       const res = await fetch('/api/prayers/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ generatedPrayerId }),
+        body: JSON.stringify({ generatedPrayerId: saveableGeneratedPrayerId }),
       });
 
       const data = (await res.json()) as SavePrayerResponse;
