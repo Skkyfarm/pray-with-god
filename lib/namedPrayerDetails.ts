@@ -733,7 +733,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
     tradition: "protestant",
     slug: "prayer-of-st-francis",
     label: "Prayer of St. Francis",
-    eyebrow: "Christian Prayer ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Source Review Pending",
+    eyebrow: "Christian Prayer ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Source Review Pending",
     title: "Prayer of St. Francis",
     intro:
       "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
@@ -924,6 +924,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         heading: "Source note",
         paragraphs: [
           "PWG currently provides the King James Version wording of Psalm 90 for this Catholic prayer path. Other modern Bible translations and official liturgical versions may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "lords-prayer",
+    label: "The Lord's Prayer",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "The Lord's Prayer",
+    intro:
+      "The Lord's Prayer is the prayer Jesus taught His disciples and is central to Christian prayer. PWG currently offers the King James Version wording as a shared biblical text rather than official Catholic liturgical wording.",
+    metadataTitle: "The Lord's Prayer | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about The Lord's Prayer as a biblical prayer taught by Jesus and treasured in Catholic prayer life, with KJV wording provided as a shared biblical text.",
+    canonical: "/prayer-types/catholic/prayers/lords-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=The+Lord%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "The Lord's Prayer is taught by Jesus in the Gospels and has become one of the central prayers of Christian life.",
+          "Its petitions turn the heart toward God's name, kingdom, will, daily provision, forgiveness, mercy, and deliverance from evil.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic life, the Lord's Prayer is prayed in the Mass, in the Rosary, in personal devotion, and in many moments of family and communal prayer.",
+          "PWG presents this page as a biblical prayer path using KJV wording, while recognizing that official Catholic liturgical wording and modern translations may have separate source and permission considerations.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "The Lord's Prayer may be prayed word for word, reflected on line by line, or used as a pattern for personal prayer: adoration, surrender, daily dependence, forgiveness, and trust in God's protection.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides King James Version wording for this Catholic prayer path as a shared biblical Christian text. This is not presented as official Catholic liturgical wording, and other modern Bible translations or official liturgical forms may have separate copyright or permission considerations.",
         ],
       },
     ],
