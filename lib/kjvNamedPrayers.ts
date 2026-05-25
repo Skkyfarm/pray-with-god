@@ -184,6 +184,14 @@ He hath holpen his servant Israel, in remembrance of his mercy;
 
 As he spake to our fathers, to Abraham, and to his seed for ever.`;
 
+export const NUNC_DIMITTIS_KJV = `Lord, now lettest thou thy servant depart in peace, according to thy word:
+
+For mine eyes have seen thy salvation,
+
+Which thou hast prepared before the face of all people;
+
+A light to lighten the Gentiles, and the glory of thy people Israel.`;
+
 export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "The Lord's Prayer": PROTESTANT_LORDS_PRAYER_KJV,
   "The Prayer of Jabez": PROTESTANT_JABEZ_KJV,
@@ -193,6 +201,7 @@ export const KJV_NAMED_PRAYER_TEXTS: Record<string, string> = {
   "Hannah's Prayer": HANNAHS_PRAYER_KJV,
   "Daniel's Prayer": DANIELS_PRAYER_KJV,
   "Mary's Magnificat": MAGNIFICAT_KJV,
+  "Simeon's Song / Nunc Dimittis": NUNC_DIMITTIS_KJV,
   "Jonah's Prayer": JONAHS_PRAYER_KJV,
 };
 

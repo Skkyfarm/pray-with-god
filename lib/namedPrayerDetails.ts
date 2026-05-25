@@ -530,6 +530,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       },
     ],
   },
+  {
+    tradition: "protestant",
+    slug: "simeons-song-nunc-dimittis",
+    label: "Simeon's Song / Nunc Dimittis",
+    eyebrow: "Biblical Protestant Prayer",
+    title: "Simeon's Song / Nunc Dimittis",
+    intro:
+      "Simeon's Song, also known as the Nunc Dimittis, is a biblical prayer from Luke 2 giving thanks for seeing God's salvation and light for the nations.",
+    metadataTitle: "Simeon's Song / Nunc Dimittis | Protestant Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Simeon's Song, also known as the Nunc Dimittis, from Luke 2:29-32, a biblical prayer of peace, fulfillment, salvation, and light for the nations.",
+    canonical: "/prayer-types/protestant/prayers/simeons-song-nunc-dimittis",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=protestant&mode=classic&prayerLabel=Simeon%27s+Song+%2F+Nunc+Dimittis&prayerKind=named",
+    backLabel: "Back to Protestant Prayers",
+    backHref: "/prayer-types/protestant",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Simeon's Song appears in Luke 2 when Simeon sees the child Jesus in the temple. Having waited for the consolation of Israel, Simeon blesses God and speaks of peace, salvation, light, and glory.",
+          "The Latin title Nunc Dimittis comes from the opening idea of departing in peace. The prayer is brief, but it holds deep trust that God's promise has been fulfilled.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Protestant prayer",
+        paragraphs: [
+          "In Protestant prayer life, Simeon's Song is often associated with peace, fulfillment, evening prayer, readiness, and confidence in God's salvation.",
+          "It gives language for resting in God's promises and recognizing Christ as light for the Gentiles and glory for Israel.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Simeon's Song may be prayed word for word, read slowly as a prayer of peace, or used as a guide for thanking God for salvation, fulfilled promises, and light in times of waiting.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Luke 2:29-32 for this Protestant prayer path. Other modern Bible translations may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getNamedPrayerDetail(
