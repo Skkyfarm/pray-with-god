@@ -27,7 +27,8 @@ import {
   type PrayerSafetyNotice,
 } from '@/lib/safety';
 import { getPrayerTypeDefinitionHref } from '@/lib/prayerTypeLinks';
-import { getNamedPrayerDetailHref } from '@/lib/namedPrayerDetails';
+import { getNamedPrayerDetailHref } from '@/lib/namedPrayerDetails';
+
 import { getKjvNamedPrayerText } from '@/lib/kjvNamedPrayers';
 import {
   ArrowLeft,
@@ -417,6 +418,8 @@ function buildFreePrayerContent(inputValue: string, feelings: string[]) {
 function SafetyNoticeCard({ notice }: { notice: PrayerSafetyNotice }) {
   const isCrisis = notice.level === 'crisis';
 
+  const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
   return (
     <div
       className={`rounded-[1.5rem] border px-5 py-4 shadow-sm ${
@@ -481,6 +484,8 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
   definitionKey,
   onSelect,
 }: ClassicPrayerTypeGridProps) {
+  const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
   return (
     <div className="mb-8">
       <div className="mb-3 block text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
@@ -494,7 +499,9 @@ const ClassicPrayerTypeGrid = React.memo(function ClassicPrayerTypeGrid({
             selectedPrayerKind === item.kind;
           const aboutHref = getClassicPrayerReadMoreHref(definitionKey, item);
 
-          return (
+          const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return (
             <div key={`${item.kind}-${item.label}`} className="flex flex-col gap-2">
               <button
                 type="button"
@@ -657,7 +664,9 @@ function PrayPageInner() {
   useEffect(() => {
     if (!shareFeedback) return;
     const timer = setTimeout(() => setShareFeedback(''), 2200);
-    return () => clearTimeout(timer);
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => clearTimeout(timer);
   }, [shareFeedback]);
 
   useEffect(() => {
@@ -670,7 +679,9 @@ function PrayPageInner() {
     };
 
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => window.removeEventListener('keydown', onKeyDown);
   }, [showSaveModal]);
 
   useEffect(() => {
@@ -823,7 +834,9 @@ return preferred?.voiceURI || '';
     loadVoices();
     synth.onvoiceschanged = loadVoices;
 
-    return () => {
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => {
       synth.cancel();
       synth.onvoiceschanged = null;
       setIsSpeaking(false);
@@ -831,7 +844,9 @@ return preferred?.voiceURI || '';
   }, []);
 
   useEffect(() => {
-    return () => {
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => {
       abortRef.current?.abort();
     };
   }, []);
@@ -863,7 +878,9 @@ return preferred?.voiceURI || '';
   const showExpandedPrayerPanel = !isStructuredPrayerPath || launcherView !== 'quick';
 
   const selectedTraditionalEntry = useMemo(() => {
-    return (
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return (
       traditionalOptions.find(
         (item) =>
           item.label === selectedPrayerLabel && item.kind === selectedPrayerKind
@@ -987,7 +1004,9 @@ return preferred?.voiceURI || '';
     const timerOne = window.setTimeout(scrollToPageTop, 120);
     const timerTwo = window.setTimeout(scrollToPageTop, 350);
 
-    return () => {
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => {
       window.clearTimeout(timerOne);
       window.clearTimeout(timerTwo);
     };
@@ -1248,7 +1267,9 @@ return preferred?.voiceURI || '';
 
     void registerNamedPrayerForSaving();
 
-    return () => {
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return () => {
       isCancelled = true;
     };
   }, [
@@ -1413,6 +1434,8 @@ useEffect(() => {
     void handleQuickPrayer();
   }, 250);
 
+  const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
   return () => window.clearTimeout(timer);
 }, [autoParam, pathParam, modeParam, isReflecting, isUserLoaded]);
 
@@ -1483,6 +1506,31 @@ function handleReadAloud() {
     }
   }, 250);
 }
+
+  function handleTryAnotherPrayer() {
+    stopSpeaking();
+    stopGenerating();
+    setPrayer('');
+    setError('');
+    setHasSubmitted(false);
+    setShowSaveModal(false);
+    setSafetyNotice(null);
+    setShareFeedback('');
+    clearSaveState();
+
+    if (typeof window !== 'undefined') {
+      const scrollToPrayerTop = () => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      };
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(scrollToPrayerTop);
+      });
+
+      window.setTimeout(scrollToPrayerTop, 250);
+      window.setTimeout(scrollToPrayerTop, 600);
+    }
+  }
 
   async function handleSavePrayer() {
     if (isSavingPrayer) return;
@@ -1810,7 +1858,9 @@ function handleReadAloud() {
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
   if (!hasAppliedUrlParams) {
-    return (
+    const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return (
       <main className="relative min-h-screen bg-transparent text-slate-900">
         <section className="mx-auto max-w-3xl px-6 py-16 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-sky-700">
@@ -1940,9 +1990,11 @@ function handleReadAloud() {
           ? 'Renew support to save prayers'
           : 'Save Prayer';
 
+  const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
   return (
     <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
-      <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+      <div id="pray-page-top" className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
             href="/"
@@ -2023,9 +2075,18 @@ function handleReadAloud() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     type="button"
+                    onClick={handleTryAnotherPrayer}
+                    className={`inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass}`}
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Try Another Prayer
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={handleSavePrayer}
                     disabled={isSavingPrayer}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200 disabled:cursor-not-allowed disabled:opacity-70"
+                    className={`inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass} disabled:cursor-not-allowed disabled:opacity-70`}
                   >
                     {isSavingPrayer ? (
                       <>
@@ -2045,7 +2106,7 @@ function handleReadAloud() {
                   <button
                     type="button"
                     onClick={handleReadAloud}
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                    className={`inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white ${prayerResultGlowClass}`}
                   >
                     {isSpeaking ? (
                       <>
@@ -2063,7 +2124,7 @@ function handleReadAloud() {
                   <button
                     type="button"
                     onClick={handleAddIntentions}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
+                    className={`inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass}`}
                   >
                     <RefreshCw className="h-4 w-4" />
                     Add Intentions
@@ -2072,7 +2133,7 @@ function handleReadAloud() {
                   <button
                     type="button"
                     onClick={handleSharePrayer}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
+                    className={`inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass}`}
                   >
                     <Share2 className="h-4 w-4" />
                     Share This Prayer
@@ -2081,7 +2142,7 @@ function handleReadAloud() {
                   <button
                     type="button"
                     onClick={handlePrint}
-                    className="inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-sky-200"
+                    className={`inline-flex items-center gap-2 rounded-full border border-sky-300 bg-sky-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass}`}
                   >
                     <Printer className="h-4 w-4" />
                     Print
@@ -2089,7 +2150,7 @@ function handleReadAloud() {
 
                   <Link
                     href="/"
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:bg-zinc-50"
+                    className={`inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 ${prayerResultGlowClass}`}
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Change Tradition
@@ -2158,7 +2219,7 @@ function handleReadAloud() {
                 <div className="mt-2 flex justify-center">
                   <Link
                     href="/"
-                    className="inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                    className={`inline-flex items-center gap-2 rounded-full border border-zinc-900 bg-zinc-900 px-6 py-3 text-sm font-semibold text-white ${prayerResultGlowClass}`}
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Return Home
@@ -2443,7 +2504,9 @@ function handleReadAloud() {
                                 item.label
                               );
 
-                              return (
+                              const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return (
                                 <div key={item.id} className="flex flex-col items-start gap-1">
                                   <button
                                     type="button"
@@ -2526,7 +2589,9 @@ function handleReadAloud() {
   <div className="flex flex-wrap gap-3">
                           {FEELING_OPTIONS.map((feeling) => {
                             const active = selectedFeelings.includes(feeling);
-                            return (
+                            const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
+  return (
                               <button
                                 key={feeling}
                                 type="button"
@@ -2836,11 +2901,13 @@ function handleReadAloud() {
 }
 
 export default function PrayPage() {
+  const prayerResultGlowClass =
+    'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
   return (
     <Suspense
       fallback={
         <main className="relative min-h-screen overflow-hidden bg-transparent text-zinc-900">
-          <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+          <div id="pray-page-top" className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
             <div className="rounded-[2rem] border border-white/70 bg-white/75 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl">
               <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
                 Loading prayer page...
