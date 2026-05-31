@@ -733,7 +733,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
     tradition: "protestant",
     slug: "prayer-of-st-francis",
     label: "Prayer of St. Francis",
-    eyebrow: "Christian Prayer ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Source Review Pending",
+    eyebrow: "Christian Prayer ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Source Review Pending",
     title: "Prayer of St. Francis",
     intro:
       "The Prayer of St. Francis is a widely loved Christian prayer associated with peace, humility, love, forgiveness, and service. PWG is reviewing its source and wording status before displaying a copyable version.",
@@ -1124,6 +1124,56 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         heading: "Source note",
         paragraphs: [
           "PWG currently provides the King James Version wording of Jonah's Prayer from Jonah 2 for this Catholic prayer path. Other modern Bible translations and official Catholic biblical or liturgical texts may have separate copyright or permission considerations.",
+        ],
+      },
+    ],
+  },
+  {
+    tradition: "catholic",
+    slug: "daniels-prayer",
+    label: "Daniel's Prayer",
+    eyebrow: "Biblical Catholic Prayer",
+    title: "Daniel's Prayer",
+    intro:
+      "Daniel's Prayer is a biblical prayer of confession, repentance, intercession, and appeal for God's mercy from Daniel 9.",
+    metadataTitle: "Daniel's Prayer | Catholic Prayers | PrayWithGod.ai",
+    metadataDescription:
+      "Learn about Daniel's Prayer from Daniel 9, a biblical prayer of confession, repentance, intercession, covenant mercy, and hope in God's restoration.",
+    canonical: "/prayer-types/catholic/prayers/daniels-prayer",
+    primaryActionLabel: "Read / pray this prayer",
+    primaryActionHref:
+      "/pray?path=catholic&mode=classic&prayerLabel=Daniel%27s+Prayer&prayerKind=named",
+    backLabel: "Back to Catholic Prayers",
+    backHref: "/prayer-types/catholic",
+    sections: [
+      {
+        tone: "sky",
+        heading: "Biblical setting",
+        paragraphs: [
+          "Daniel's Prayer appears in Daniel 9 as Daniel seeks the LORD with prayer, supplications, fasting, sackcloth, and ashes.",
+          "The prayer confesses the sins of the people, acknowledges God's righteousness, remembers God's covenant mercy, and asks Him to hear, forgive, and restore.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "Why it matters in Catholic prayer",
+        paragraphs: [
+          "In Catholic prayer life, Daniel's Prayer may be received as a biblical model of humble confession, intercession, repentance, and appeal to God's mercy.",
+          "It gives language for praying not only as an individual, but on behalf of a people, a church, a community, or a nation in need of God's forgiveness and restoration.",
+        ],
+      },
+      {
+        tone: "slate",
+        heading: "How it may be prayed",
+        paragraphs: [
+          "Daniel's Prayer may be prayed word for word, read slowly as a confession, or used as a guide for interceding with humility, honesty, and trust in God's covenant mercy.",
+        ],
+      },
+      {
+        tone: "amber",
+        heading: "Source note",
+        paragraphs: [
+          "PWG currently provides the King James Version wording of Daniel 9:4-19 for this Catholic prayer path. Other modern Bible translations and official Catholic biblical or liturgical texts may have separate copyright or permission considerations.",
         ],
       },
     ],
