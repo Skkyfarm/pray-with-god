@@ -1857,6 +1857,8 @@ function handleReadAloud() {
   const pathDisplayLabel =
     toDisplayLabel(activeCatalogKey || selectedTradition) || 'Prayer';
 
+  const traditionAboutHref = `/prayer-types/${activeCatalogKey || selectedTradition}/about`;
+
   if (!hasAppliedUrlParams) {
     const prayerResultGlowClass =
     'outline-none transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.86),0_0_20px_rgba(255,255,255,0.92),0_0_42px_rgba(139,92,246,0.58),0_0_78px_rgba(91,33,182,0.42),0_0_110px_rgba(49,46,129,0.28)] focus-visible:ring-2 focus-visible:ring-violet-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 focus-visible:shadow-[0_0_0_1px_rgba(255,255,255,0.92),0_0_22px_rgba(255,255,255,0.92),0_0_44px_rgba(139,92,246,0.62),0_0_82px_rgba(91,33,182,0.42)]';
@@ -2260,6 +2262,13 @@ function handleReadAloud() {
                   <div className="mt-5 border-t border-amber-100 pt-5">
                     <div className="flex flex-col gap-4">
                       <div className="flex flex-wrap gap-3">
+                        <Link
+                          href={traditionAboutHref}
+                          className={launcherButtonClass(false)}
+                        >
+                          About this tradition
+                        </Link>
+
                         <button
                           type="button"
                           onClick={handleQuickPrayer}
@@ -2300,7 +2309,7 @@ function handleReadAloud() {
 
                       {launcherView === 'quick' ? (
                         <p className="text-sm text-zinc-900">
-                          Quick Prayer generates immediately. Choose Customize or Prayer by Type to open more options.
+                          Learn about this tradition, generate a quick prayer, customize a prayer, or explore prayer types.
                         </p>
                       ) : launcherView === 'free' ? (
                         <p className="text-sm text-zinc-900">
