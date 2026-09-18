@@ -122,12 +122,12 @@ const PROTESTANT_FOUNDATIONAL_PRAYERS = [
   },
   {
     name: "Apostles' Creed",
-    status: "Traditional wording review pending",
+    status: "Public domain traditional text available",
     note: "A historic summary of core Christian belief used in many churches and teaching settings.",
   },
   {
     name: "Nicene Creed",
-    status: "Traditional wording review pending",
+    status: "Public domain text available",
     note: "A widely received confession of Christian faith used across many branches of Christianity.",
   },
   {

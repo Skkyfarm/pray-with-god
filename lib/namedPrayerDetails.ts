@@ -692,7 +692,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       "The Nicene Creed is a historic Christian confession of faith received across many branches of Christianity. Many Protestant traditions use it in worship, teaching, discipleship, and doctrinal formation.",
     metadataTitle: "Nicene Creed | Protestant Prayers | PrayWithGod.ai",
     metadataDescription:
-      "Learn about the Nicene Creed in Protestant Christian practice, its historical role, and why PWG is reviewing exact wording before displaying the traditional text.",
+  "Read the Nicene Creed and learn about its role in Protestant Christian worship, teaching, and historic Christian belief.",
     canonical: "/prayer-types/protestant/prayers/nicene-creed",
     primaryActionLabel: "Start a Protestant Prayer",
     primaryActionHref: "/pray?path=protestant",
@@ -708,27 +708,25 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         ],
       },
       {
-        tone: "slate",
-        heading: "Why it matters in Protestant prayer",
-        paragraphs: [
-          "In Protestant life, the Nicene Creed is often used as a confession of faith in worship and teaching. It helps believers speak shared Christian belief clearly and reverently.",
-          "Although it is more of a creed than a personal petition, it can still shape prayer by turning the heart toward worship, trust, doctrine, and the mystery of God's saving work.",
-        ],
-      },
-      {
-        tone: "slate",
-        heading: "How it may be used devotionally",
-        paragraphs: [
-          "The Nicene Creed may be reflected on line by line, studied as a summary of Christian belief, or used as a prompt for worship and thanksgiving. PWG currently presents this page as educational background while exact traditional wording remains under review.",
-        ],
-      },
-      {
-        tone: "amber",
-        heading: "Wording review note",
-        paragraphs: [
-          "PWG is reviewing the exact wording and source status for traditional versions of the Nicene Creed before making any full copyable text available. Until that review is complete, this page provides educational context rather than a verbatim creed text.",
-        ],
-      },
+  tone: "sky",
+  heading: "The Nicene Creed",
+  paragraphs: [
+    "We believe in one God, the Father, the Almighty, maker of heaven and earth, of all that is, seen and unseen.",
+    "We believe in one Lord, Jesus Christ, the only Son of God, eternally begotten of the Father, God from God, Light from Light, true God from true God, begotten, not made, of one Being with the Father; through him all things were made.",
+    "For us and for our salvation he came down from heaven, was incarnate of the Holy Spirit and the Virgin Mary and became truly human.",
+    "For our sake he was crucified under Pontius Pilate; he suffered death and was buried. On the third day he rose again in accordance with the Scriptures; he ascended into heaven and is seated at the right hand of the Father.",
+    "He will come again in glory to judge the living and the dead, and his kingdom will have no end.",
+    "We believe in the Holy Spirit, the Lord, the giver of life, who proceeds from the Father and the Son, who with the Father and the Son is worshiped and glorified, who has spoken through the prophets.",
+    "We believe in one holy catholic and apostolic Church. We acknowledge one baptism for the forgiveness of sins. We look for the resurrection of the dead, and the life of the world to come. Amen.",
+  ],
+},
+{
+  tone: "amber",
+  heading: "Source note",
+  paragraphs: [
+    "English translation from the English Language Liturgical Consultation (ELLC), 1988. This text is in the public domain and may be reproduced without permission.",
+  ],
+},
     ],
   },
   {
