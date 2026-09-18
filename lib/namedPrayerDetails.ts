@@ -92,7 +92,7 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
       "The Apostles' Creed is a historic Christian confession of faith. Many Protestant traditions use it in worship, teaching, discipleship, and confirmation as a concise summary of core Christian belief.",
     metadataTitle: "Apostles' Creed | Protestant Prayers | PrayWithGod.ai",
     metadataDescription:
-      "Learn about the Apostles' Creed in Protestant Christian practice, its historical role, and why PWG is reviewing exact wording before displaying the traditional text.",
+    "Read the traditional Apostles' Creed and learn about its role in Protestant Christian worship, teaching, and historic Christian belief.",
     canonical: "/prayer-types/protestant/prayers/apostles-creed",
     primaryActionLabel: "Start a Protestant Prayer",
     primaryActionHref: "/pray?path=protestant",
@@ -115,19 +115,21 @@ export const NAMED_PRAYER_DETAILS: NamedPrayerDetail[] = [
         ],
       },
       {
-        tone: "slate",
-        heading: "How PWG treats this text",
-        paragraphs: [
-          "Because the Apostles' Creed is a historical creed rather than a passage from the King James Version Bible, PWG is keeping its exact traditional wording under source and permission review before displaying a copyable version.",
-        ],
-      },
+  tone: "sky",
+  heading: "The Apostles' Creed",
+  paragraphs: [
+    "I believe in God the Father Almighty, Maker of heaven and earth:",
+    "And in Jesus Christ his only Son our Lord: Who was conceived by the Holy Ghost, Born of the Virgin Mary: Suffered under Pontius Pilate, Was crucified, dead, and buried: He descended into hell; The third day he rose again from the dead: He ascended into heaven, And sitteth on the right hand of God the Father Almighty: From thence he shall come to judge the quick and the dead.",
+    "I believe in the Holy Ghost: The holy Catholic Church; The Communion of Saints: The Forgiveness of sins: The Resurrection of the body: And the Life everlasting. Amen.",
+  ],
+},
       {
-        tone: "amber",
-        heading: "Source note",
-        paragraphs: [
-          "This page explains the historical and devotional significance of the Apostles' Creed. PWG is not currently displaying the full traditional creed text here while wording, source, and permission status are reviewed.",
-        ],
-      },
+  tone: "amber",
+  heading: "Source note",
+  paragraphs: [
+    "Traditional English text from the 1928 U.S. Book of Common Prayer. This wording is in the public domain in the United States.",
+  ],
+},
     ],
   },
   {
